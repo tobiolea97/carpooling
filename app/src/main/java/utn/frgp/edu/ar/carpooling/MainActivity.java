@@ -3,9 +3,20 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.utils.Helper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!isValid) return;
 
+        new IngresoConductor().execute();
         //Intent nextForm = new Intent(this, SeleccionRol.class);
         //startActivity(nextForm);
     }
@@ -69,4 +81,104 @@ public class MainActivity extends AppCompatActivity {
         password.setError(null);
         return flag;
     }
+
+    private class IngresoConductor extends AsyncTask<Void,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "SELECT * FROM Usuarios WHERE Email = '";
+                query += Helper.RemoverCaracteresSQLInjection(email.getText().toString());
+                query+="' AND Pass ='";
+                query += password.getText();
+                query += "' AND Rol ='CON'";
+
+           // query="Select * FROM Usuarios WHERE Email='"+Helper.RemoverCaracteresSQLInjection(email.getText().toString())+"' AND Pass='"+password.getText()+"' AND Rol='PAS'";
+
+                return st.executeQuery(query);
+
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                boolean exists = false;
+                while (resultados.next()) {
+                    exists = true;
+                }
+
+                if(exists) {
+                    Toast.makeText(MainActivity.this, "Existe Conductor", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+                new IngresoPasajero().execute();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class IngresoPasajero extends AsyncTask<Void,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "SELECT * FROM Usuarios WHERE Email = '";
+                query += Helper.RemoverCaracteresSQLInjection(email.getText().toString());
+                query+="' AND Pass = '";
+                query += password.getText();
+                query += "' AND Rol ='PAS'";
+                return st.executeQuery(query);
+
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                boolean exists = false;
+                while (resultados.next()) {
+                    exists = true;
+                }
+
+                if(exists) {
+                    Toast.makeText(MainActivity.this, "Existe pasajero", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 }
