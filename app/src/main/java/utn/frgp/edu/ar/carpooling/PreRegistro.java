@@ -3,6 +3,7 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -154,7 +155,10 @@ public class PreRegistro extends AppCompatActivity {
                     return;
                 }
 
-                tvError.setText("Correcto");
+                Intent nextForm = new Intent(contexto, Registro.class);
+                startActivity(nextForm);
+                finish();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
