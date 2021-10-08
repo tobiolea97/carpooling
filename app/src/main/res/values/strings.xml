@@ -1,3 +1,32 @@
 <resources>
-    <string name="app_name">Carpooling</string>
+    <string name="app_name">TP_Final</string>
+    <string name="usuario">Email</string>
+    <string name="ingreseUsuario">Ingrese su email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="ingreseConstraeña">Ingrese su contraseña</string>
+    <string name="login">Login</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="separador">¿Aún no tienes cuenta?</string>
+    <string name="registrate">¡Registrate, es gratis!</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="telefono">Teléfono</string>
+    <string name="nacimiento">Fecha de nacimiento</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="ingreseNombre">Ingrese su nombre</string>
+    <string name="ingreseApellido">Ingrese su apellido</string>
+    <string name="ingreseTelefono">Ingrese su telefono</string>
+    <string name="ingreseEmail">Ingrese su email</string>
+    <string name="repitaConstraeña">Ingrese nuevamente su contraseña</string>
+    <string name="ingresoPasajero">Conductor</string>
+    <string name="ingresoConductor">Pasajero</string>
+    <string name="ingreseNacimiento">Ingrese su fecha de nacimiento</string>
+    <string name="tituloSeleccionRol">¡Bienvenido Tobias!</string>
+    <string name="proximosViajes">Proximos viajes</string>
+    <string name="preguntaRol">¿Como deseas ingresar?</string>
+    <string name="dni">DNI</string>
+    <string name="ingreseDNI">Ingrese su DNI</string>
+    <string name="continuar">CONTINUAR</string>
+    <string name="rol">Rol</string>
 </resources>
