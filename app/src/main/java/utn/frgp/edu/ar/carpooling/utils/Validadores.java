@@ -5,7 +5,7 @@ import android.widget.EditText;
 public class Validadores {
 
     private static String regExpNoNumbers = "^([^0-9]*)$";
-    private static String regExpHasNonNumericChar = "[^0-9]";
+    private static String regExpHasNonNumericChar = "[\\+]{1}?[0-9\\s]+";
     private static String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
     private static String regExpDate = "[0-9]{1,2}-/[0-9]{1,2}-/[0-9]{4}";
 
@@ -67,26 +67,21 @@ public class Validadores {
             telefono.setError("Campo obligatorio");
             return false;
         }
-        if(telefono.getText().toString().matches(regExpHasNonNumericChar)) {
-            telefono.setError("Este campo solo admite números");
+        if(!telefono.getText().toString().matches(regExpHasNonNumericChar)) {
+            telefono.setError("Formato aceptado: +54 9 11 2345 6789");
             return false;
         }
-        if(telefono.getText().toString().length() >= 15) {
-            telefono.setError("Este campo admite un máximo de 15 caracteres");
+
+        if(telefono.getText().toString().indexOf("") > 0 ) {
+            telefono.setError("Formato aceptado: +54 9 11 2345 6789");
+            return false;
+        }
+
+        if(telefono.getText().toString().length() >= 20) {
+            telefono.setError("Este campo admite un máximo de 20 caracteres");
             return false;
         }
         telefono.setError(null);
-        return flag;
-    }
-
-    public static boolean validarDireccion(boolean flag, EditText direccion) {
-        if(direccion.getText().toString().equals(""))
-            return flag;
-        if(direccion.getText().toString().length() >= 30) {
-            direccion.setError("Este campo admite un máximo de 30 caracteres");
-            return false;
-        }
-        direccion.setError(null);
         return flag;
     }
 
@@ -100,6 +95,43 @@ public class Validadores {
             return false;
         }
         dni.setError(null);
+        return flag;
+    }
+
+    public static boolean validarNacimiento(boolean flag, EditText nacimiento) {
+
+        if(nacimiento.getText().toString().equals("")) {
+            nacimiento.setError("Campo obligatorio");
+            return false;
+        }
+        nacimiento.setError(null);
+        return flag;
+
+    }
+
+    public static boolean validarPassword(boolean flag, EditText password) {
+        if(password.getText().toString().equals("")) {
+            password.setError("Campo obligatorio");
+            return false;
+        }
+        if(password.getText().toString().length() < 8) {
+            password.setError("La contraseña debe tener al menos 8 caracteres");
+            return false;
+        }
+        password.setError(null);
+        return flag;
+    }
+
+    public static boolean validarReingresoPassword(boolean flag, EditText reingresoPassword, EditText password) {
+        if(reingresoPassword.getText().toString().equals("")) {
+            reingresoPassword.setError("Campo obligatorio");
+            return false;
+        }
+        if(!reingresoPassword.getText().toString().equals(password.getText().toString())) {
+            reingresoPassword.setError("Las contraseñas no coinciden");
+            return false;
+        }
+        reingresoPassword.setError(null);
         return flag;
     }
 

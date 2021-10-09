@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".HomePasajero"
+            android:exported="true" />
+        <activity
+            android:name=".HomeConductor"
+            android:exported="true" />
+        <activity
             android:name=".Registro"
             android:exported="true" />
         <activity
