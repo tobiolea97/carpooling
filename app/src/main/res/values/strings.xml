@@ -29,4 +29,5 @@
     <string name="ingreseDNI">Ingrese su DNI</string>
     <string name="continuar">CONTINUAR</string>
     <string name="rol">Rol</string>
+    <string name="tituloRegistro">Solo algunos datos más...</string>
 </resources>

@@ -42,13 +42,13 @@ public class PreRegistro extends AppCompatActivity {
         // Asignacion de variables
         contexto = this;
         spRol = (Spinner) findViewById(R.id.spPreRegistroRol);
-        btnContinuar = (Button) findViewById(R.id.btnPreRegistroContinuar);
+        btnContinuar = (Button) findViewById(R.id.btnRegistroContinuar);
         etEmail = (EditText) findViewById(R.id.etPreRegistroEmail);
         etDNI = (EditText) findViewById(R.id.etPreRegistroDni);
         tvError = (TextView) findViewById(R.id.tvPreRegistroError);
 
         etEmail.setText("tobiolea97@gmail.com");
-        etDNI.setText("40379479");
+        etDNI.setText("11222333");
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();
@@ -63,6 +63,7 @@ public class PreRegistro extends AppCompatActivity {
         btnContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tvError.setText("");
                 boolean isValidForm = true;
                 isValidForm = Validadores.validarEmail(isValidForm,etEmail);
                 isValidForm = Validadores.validarDNI(isValidForm,etDNI);
@@ -156,6 +157,13 @@ public class PreRegistro extends AppCompatActivity {
                 }
 
                 Intent nextForm = new Intent(contexto, Registro.class);
+
+                selectedRol = spRol.getSelectedItem().equals("Conductor") ? "CON" : "PAS";
+
+                nextForm.putExtra("email", etEmail.getText().toString());
+                nextForm.putExtra("rol", selectedRol);
+                nextForm.putExtra("dni", etDNI.getText().toString());
+
                 startActivity(nextForm);
                 finish();
 
@@ -164,5 +172,4 @@ public class PreRegistro extends AppCompatActivity {
             }
         }
     }
-
 }

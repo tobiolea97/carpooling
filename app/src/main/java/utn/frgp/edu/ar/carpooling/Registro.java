@@ -1,18 +1,38 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.content.SharedPreferences;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+
+import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Rol;
+import utn.frgp.edu.ar.carpooling.entities.Usuario;
+import utn.frgp.edu.ar.carpooling.utils.Validadores;
 
 public class Registro extends AppCompatActivity {
 
-    EditText nombre, apellido, telefono, email, nacimiento, password, reingresoPassword;
+    private EditText nombre, apellido, telefono, nacimiento, password, reingresoPassword, dni;
+    Context context;
+    private Button registrar;
     private String regExpNoNumbers = "^([^0-9]*)$";
     private String regExpHasNonNumericChar = "[^0-9]";
     private String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
@@ -23,35 +43,62 @@ public class Registro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
+        context = this;
         nombre = findViewById(R.id.etPreRegistroEmail);
         apellido = findViewById(R.id.etRegistroApellido);
         telefono = findViewById(R.id.etRegistroTelefono);
-        //email = findViewById(R.id.etRegistroEmail);
         nacimiento = findViewById(R.id.etRegistroNacimiento);
         password = findViewById(R.id.etRegistroPassword);
         reingresoPassword = findViewById(R.id.etRegistroRepetirPassword);
-
+        registrar = (Button) findViewById(R.id.btnRegistroContinuar);
         nacimiento.setFocusable(false);
         nacimiento.setFocusableInTouchMode(false);
         nacimiento.setInputType(InputType.TYPE_NULL);
-    }
 
-    public void onClickRegistrar(View view) {
+        nombre.setText("Tobias");
+        apellido.setText("Olea Martinez");
+        telefono.setText("+54 9 11 6920 3645");
+        nacimiento.setText("12/05/1997");
+        password.setText("40379479");
+        reingresoPassword.setText("40379479");
 
-        boolean isValid = true;
-        isValid = validarNombre(isValid);
-        isValid = validarApellido(isValid);
-        isValid = validarTelefono(isValid);
-        isValid = validarEmail(isValid);
-        isValid = validarNacimiento(isValid);
-        isValid = validarPassword(isValid);
-        isValid = validarReingresoPassword(isValid);
+        // Seteo de eventos
+        registrar.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
 
-        //if(!isValid) return;
+                boolean isValid = true;
+                isValid = Validadores.validarNombre(isValid,nombre);
+                isValid = Validadores.validarApellido(isValid,apellido);
+                isValid = Validadores.validarTelefono(isValid,telefono);
+                isValid = Validadores.validarNacimiento(isValid,nacimiento);
+                isValid = Validadores.validarPassword(isValid,password);
+                isValid = Validadores.validarReingresoPassword(isValid,reingresoPassword,password);
 
-        //Intent nextForm = new Intent(this, SeleccionRol.class);
-        //startActivity(nextForm);
-        //finish();
+                if (!isValid) return;
+
+                Rol rol = new Rol();
+                rol.setId(getIntent().getStringExtra("rol").toString());
+
+                Integer anio = Integer.parseInt(nacimiento.getText().toString().substring(6,10));
+                Integer mes = Integer.parseInt(nacimiento.getText().toString().substring(3,5));
+                Integer dia = Integer.parseInt(nacimiento.getText().toString().substring(0,2));
+
+                Usuario usuario = new Usuario(
+                        getIntent().getStringExtra("email"),
+                        rol,
+                        password.getText().toString(),
+                        nombre.getText().toString(),
+                        apellido.getText().toString(),
+                        LocalDate.of(anio,mes,dia),
+                        telefono.getText().toString(),
+                        getIntent().getStringExtra("dni").toString(),
+                        true
+                );
+                new InsertarUsuario(usuario).execute();
+            }
+        });
     }
 
     public void onClickFechaNacimiento(View view) {
@@ -73,112 +120,108 @@ public class Registro extends AppCompatActivity {
 
     }
 
-    // VALIDACIONES
-    private boolean validarNombre(boolean flag) {
+    private class InsertarUsuario extends AsyncTask<Void,Integer,Boolean> {
 
-        if(nombre.getText().toString().equals("")) {
-            nombre.setError("Campo obligatorio");
-            return false;
+        Usuario Usuario;
+
+        public InsertarUsuario(Usuario _usuario) {
+            Usuario = _usuario;
         }
-        if(!nombre.getText().toString().matches(regExpNoNumbers)) {
-            nombre.setError("Este campo no admite números");
-            return false;
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                query += "INSERT INTO Usuarios";
+                query += "(Email,";
+                query += "Rol,";
+                query += "Pass,";
+                query += "Nombre,";
+                query += "Apellido,";
+                query += "Nacimiento,";
+                query += "Telefono,";
+                query += "Dni,";
+                query += "EstadoRegistro)";
+                query += "VALUES";
+                query += "(";
+                query +=  "'" + Usuario.getEmail() + "',";
+                query +=  "'" + Usuario.getRol().getId() + "',";
+                query +=  "'" + Usuario.getPassword() + "',";
+                query +=  "'" + Usuario.getNombre() + "',";
+                query +=  "'" + Usuario.getApellido() + "',";
+                query +=  "'" + Usuario.getNacimiento().toString() + "',";
+                query +=  "'" + Usuario.getTelefono() + "',";
+                query +=  "'" + Usuario.getDni() + "',";
+                query +=  "1";
+                query += ")";
+
+                int resultado = st.executeUpdate(query);
+
+                if(resultado > 0) {
+                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("Email",  Usuario.getEmail().toString());
+                    editor.commit();
+
+                    sharedPreference = getSharedPreferences("Rol", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Rol",  Usuario.getRol().getId().toString());
+                    editor.commit();
+
+                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Nombre",  Usuario.getNombre().toString());
+                    editor.commit();
+
+                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Apellido",  Usuario.getNombre().toString());
+                    editor.commit();
+
+                    return true;
+                }
+                else {
+                    return false;
+                }
+
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+
+                return false;
+            }
         }
-        if(nombre.getText().toString().length() >= 20) {
-            nombre.setError("Este campo admite un maximo de 20 characteres");
-            return false;
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(context, "Registo completo ¡BIENVENIDO!.", Toast.LENGTH_SHORT).show();
+
+                Intent nextForm = new Intent();
+
+                if(Usuario.getRol().getId().equals("CON")){
+                    nextForm = new Intent(context, HomeConductor.class);
+                }
+                if(Usuario.getRol().getId().equals("PAS")) {
+                    nextForm = new Intent(context, HomePasajero.class);
+                }
+
+                startActivity(nextForm);
+                finish();
+
+            }else{
+                Toast.makeText(context, "No se pudo completar el registro.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
-        nombre.setError(null);
-        return flag;
     }
 
-    private boolean validarApellido(boolean flag) {
-
-        if(apellido.getText().toString().equals("")) {
-            apellido.setError("Campo obligatorio");
-            return false;
-        }
-        if(!apellido.getText().toString().matches(regExpNoNumbers)) {
-            apellido.setError("Este campo no admite números");
-            return false;
-        }
-        if(apellido.getText().toString().length() >= 20) {
-            apellido.setError("Este campo admite un maximo de 20 characteres");
-            return false;
-        }
-        apellido.setError(null);
-        return flag;
-    }
-
-    private boolean validarTelefono(boolean flag) {
-        if(telefono.getText().toString().equals("")) {
-            telefono.setError("Campo obligatorio");
-            return false;
-        }
-        if(telefono.getText().toString().matches(regExpHasNonNumericChar)) {
-            telefono.setError("Este campo solo admite números");
-            return false;
-        }
-        if(telefono.getText().toString().length() >= 20) {
-            telefono.setError("Este campo admite un máximo de 15 caracteres");
-            return false;
-        }
-        telefono.setError(null);
-        return flag;
-    }
-
-    private boolean validarEmail(boolean flag) {
-        if(email.getText().toString().equals("")) {
-            email.setError("Campo obligatorio");
-            return false;
-        }
-        if(!email.getText().toString().matches(regExpEmail)) {
-            email.setError("Fromato requerido: ejemplo@dominio.com");
-            return false;
-        }
-        if(email.getText().toString().length() >= 30) {
-            email.setError("Este campo admite un maximo de 30 characteres");
-            return false;
-        }
-        email.setError(null);
-        return flag;
-    }
-
-    private boolean validarNacimiento(boolean flag) {
-
-        if(nacimiento.getText().toString().equals("")) {
-            nacimiento.setError("Campo obligatorio");
-            return false;
-        }
-        nacimiento.setError(null);
-        return flag;
-
-    }
-
-    private boolean validarPassword(boolean flag) {
-        if(password.getText().toString().equals("")) {
-            password.setError("Campo obligatorio");
-            return false;
-        }
-        if(password.getText().toString().length() < 8) {
-            password.setError("La contraseña debe tener al menos 8 caracteres");
-            return false;
-        }
-        password.setError(null);
-        return flag;
-    }
-
-    private boolean validarReingresoPassword(boolean flag) {
-        if(reingresoPassword.getText().toString().equals("")) {
-            reingresoPassword.setError("Campo obligatorio");
-            return false;
-        }
-        if(!reingresoPassword.getText().toString().equals(password.getText().toString())) {
-            reingresoPassword.setError("Las contraseñas no coinciden");
-            return false;
-        }
-        reingresoPassword.setError(null);
-        return flag;
-    }
 
 }

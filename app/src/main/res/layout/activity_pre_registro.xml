@@ -98,7 +98,7 @@
 
 
             <Button
-                android:id="@+id/btnPreRegistroContinuar"
+                android:id="@+id/btnRegistroContinuar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="196dp"
