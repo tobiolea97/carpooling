@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
     TextView email, password;
+    private Button login;
+    int c=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         email = findViewById(R.id.etMainActivityEmail);
         password = findViewById(R.id.etMainActivityPassword);
-
+        login=findViewById(R.id.btnMainActivityLogin);
         /*Intent nextForm = new Intent(this, ConductorHome.class);
         startActivity(nextForm);
         finish();*/
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRegistrar(View view) {
         Intent nextForm = new Intent(this, PreRegistro.class);
+        c=1;
+        login.setEnabled(true);
         startActivity(nextForm);
     }
 
@@ -119,9 +124,24 @@ public class MainActivity extends AppCompatActivity {
 
                 if(exists) {
                     Toast.makeText(MainActivity.this, "Existe Conductor", Toast.LENGTH_SHORT).show();
-
+                    //INGRESO AL MENU CONDUCTOR
+                    c=1;
+                    login.setEnabled(true);
                     return;
+                }else{
+                    if(c==3){
+                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
+                        login.setEnabled(false);
+
+                    }
+                    else{
+                        c++;
+                        Toast.makeText(MainActivity.this, "Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                 }
+
                 new IngresoPasajero().execute();
             }
             catch (SQLException e) {
@@ -164,11 +184,20 @@ public class MainActivity extends AppCompatActivity {
 
                 if(exists) {
                     Toast.makeText(MainActivity.this, "Existe pasajero", Toast.LENGTH_SHORT).show();
-
+                    c=1;
+                    login.setEnabled(true);
                     return;
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
+                    if(c==3){
+                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
+                        login.setEnabled(false);
+                        return;
+                    }
+                    else{
+                        c++;
+                        Toast.makeText(MainActivity.this, "Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
