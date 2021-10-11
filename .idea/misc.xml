@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.1703125" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_home_pasajero.xml" value="0.14947916666666666" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_pre_registro.xml" value="0.17135416666666667" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_home_pasajero.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.38153846153846155" />

@@ -2,11 +2,15 @@ package utn.frgp.edu.ar.carpooling;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,8 +19,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Usuario;
 import utn.frgp.edu.ar.carpooling.utils.Helper;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,16 +30,29 @@ public class MainActivity extends AppCompatActivity {
     private String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
     TextView email, password;
     private Button login;
-    int c=1;
+    Context context;
+    private Spinner spRol;
+    int c=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context=this;
         email = findViewById(R.id.etMainActivityEmail);
         password = findViewById(R.id.etMainActivityPassword);
         login=findViewById(R.id.btnMainActivityLogin);
+        spRol = (Spinner) findViewById(R.id.spActivityMain);
+
+        // Carga de roles
+        ArrayList<String> roles = new ArrayList<String>();
+        roles.add("Conductor");
+        roles.add("Pasajero");
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roles);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRol.setAdapter(adapter);
         /*Intent nextForm = new Intent(this, ConductorHome.class);
         startActivity(nextForm);
         finish();*/
@@ -42,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRegistrar(View view) {
         Intent nextForm = new Intent(this, PreRegistro.class);
-        c=1;
+        c=0;
         login.setEnabled(true);
         startActivity(nextForm);
     }
@@ -55,7 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         if(!isValid) return;
 
-        new IngresoConductor().execute();
+        if(spRol.getSelectedItem().equals("Conductor")){
+            new IngresoConductor().execute();
+        }else{
+            new IngresoPasajero().execute();
+        }
+
         //Intent nextForm = new Intent(this, SeleccionRol.class);
         //startActivity(nextForm);
     }
@@ -96,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
 
-                String query = "";
-                query += "SELECT * FROM Usuarios WHERE Email = '";
+              String query = "";
+               query += "SELECT * FROM Usuarios WHERE Email = '";
                 query += Helper.RemoverCaracteresSQLInjection(email.getText().toString());
                 query+="' AND Pass ='";
                 query += password.getText();
@@ -118,16 +142,40 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 boolean exists = false;
+                Usuario usuario = new Usuario();
                 while (resultados.next()) {
                     exists = true;
+                    usuario.setNombre(resultados.getString("Nombre"));
+                    usuario.setApellido(resultados.getString("Apellido"));
+                    usuario.setEmail(resultados.getString("Email"));
+
                 }
 
                 if(exists) {
-                    Toast.makeText(MainActivity.this, "Existe Conductor", Toast.LENGTH_SHORT).show();
                     //INGRESO AL MENU CONDUCTOR
-                    c=1;
+                    c=0;
                     login.setEnabled(true);
-                    return;
+
+                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("Email", usuario.getEmail());
+                    editor.commit();
+
+
+
+                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Nombre",  usuario.getNombre());
+                    editor.commit();
+
+                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Apellido",  usuario.getApellido());
+                    editor.commit();
+
+                    Intent pagConductor= new Intent(context,HomeConductor.class);
+                    startActivity(pagConductor);
+                    finish();
                 }else{
                     if(c==3){
                         Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
@@ -137,12 +185,11 @@ public class MainActivity extends AppCompatActivity {
                     else{
                         c++;
                         Toast.makeText(MainActivity.this, "Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
-                        return;
+
                     }
 
                 }
 
-                new IngresoPasajero().execute();
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -178,21 +225,44 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 boolean exists = false;
+                Usuario usuario = new Usuario();
                 while (resultados.next()) {
                     exists = true;
+                    usuario.setNombre(resultados.getString("Nombre"));
+                    usuario.setApellido(resultados.getString("Apellido"));
+                    usuario.setEmail(resultados.getString("Email"));
                 }
 
                 if(exists) {
-                    Toast.makeText(MainActivity.this, "Existe pasajero", Toast.LENGTH_SHORT).show();
-                    c=1;
+
+                    c=0;
                     login.setEnabled(true);
-                    return;
+                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("Email", usuario.getEmail());
+                    editor.commit();
+
+
+
+                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Nombre",  usuario.getNombre());
+                    editor.commit();
+
+                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
+                    editor = sharedPreference.edit();
+                    editor.putString("Apellido",  usuario.getApellido());
+                    editor.commit();
+
+                    Intent pagPasajero= new Intent(context,HomePasajero.class);
+                    startActivity(pagPasajero);
+                    finish();
+
                 }
                 else {
                     if(c==3){
                         Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
                         login.setEnabled(false);
-                        return;
                     }
                     else{
                         c++;
