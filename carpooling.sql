@@ -1,5 +1,3 @@
-USE sql10441832;
-
 DROP TABLE IF EXISTS Calificaciones;
 DROP TABLE IF EXISTS PasajerosPorViaje;
 DROP TABLE IF EXISTS Solicitudes;
@@ -141,7 +139,7 @@ CREATE TABLE PasajerosPorViaje (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE Calificaciones (
-  Id int NOT NULL,
+  Id int NOT NULL AUTO_INCREMENT,
   UsuarioEmail varchar(30) NOT NULL,
   UsuarioRol varchar(3) NOT NULL,
   CalificadorEmail varchar(30) NOT NULL,
@@ -195,3 +193,17 @@ INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1012,103,'C
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1013,103,'Parana',1);
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1014,103,'Diamante',1);
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1015,103,'Gualeguaychu',1);
+
+INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
+VALUES('tobi@mail.com',102,1008,103,1013,'2021-10-11 00:00','2021-10-11 05:00',4,1,1);
+
+INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
+VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,5,1);
+INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
+VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,4,1);
+INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
+VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,3,1);
+INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
+VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,5,1);
+INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
+VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,4,1);
