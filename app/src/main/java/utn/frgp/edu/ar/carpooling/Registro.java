@@ -164,24 +164,21 @@ public class Registro extends AppCompatActivity {
                 int resultado = st.executeUpdate(query);
 
                 if(resultado > 0) {
-                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
-                    editor.putString("Email",  Usuario.getEmail().toString());
+                    editor.putString("Email", Usuario.getEmail());
                     editor.commit();
 
-                    sharedPreference = getSharedPreferences("Rol", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
-                    editor.putString("Rol",  Usuario.getRol().getId().toString());
+                    editor.putString("Nombre",  Usuario.getNombre());
                     editor.commit();
 
-                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
-                    editor.putString("Nombre",  Usuario.getNombre().toString());
+                    editor.putString("Apellido",  Usuario.getApellido());
                     editor.commit();
 
-                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
-                    editor.putString("Apellido",  Usuario.getNombre().toString());
+                    editor.putString("Rol",  Usuario.getRol().getId());
                     editor.commit();
 
                     return true;

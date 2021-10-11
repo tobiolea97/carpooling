@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
 import utn.frgp.edu.ar.carpooling.utils.Helper;
 
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         password = findViewById(R.id.etMainActivityPassword);
         login=findViewById(R.id.btnMainActivityLogin);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
+
+        email.setText("tobi@mail.com");
+        password.setText("40379479");
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();
@@ -148,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     usuario.setNombre(resultados.getString("Nombre"));
                     usuario.setApellido(resultados.getString("Apellido"));
                     usuario.setEmail(resultados.getString("Email"));
-
+                    usuario.setRol(new Rol(spRol.getSelectedItem().toString().equals("Conductor") ? "CON" : "PAS"));
                 }
 
                 if(exists) {
@@ -156,26 +160,27 @@ public class MainActivity extends AppCompatActivity {
                     c=0;
                     login.setEnabled(true);
 
-                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", usuario.getEmail());
                     editor.commit();
 
-
-
-                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
                     editor.putString("Nombre",  usuario.getNombre());
                     editor.commit();
 
-                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
                     editor.putString("Apellido",  usuario.getApellido());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
                     Intent pagConductor= new Intent(context,HomeConductor.class);
                     startActivity(pagConductor);
                     finish();
+
                 }else{
                     if(c==3){
                         Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
@@ -231,27 +236,29 @@ public class MainActivity extends AppCompatActivity {
                     usuario.setNombre(resultados.getString("Nombre"));
                     usuario.setApellido(resultados.getString("Apellido"));
                     usuario.setEmail(resultados.getString("Email"));
+                    usuario.setRol(new Rol(spRol.getSelectedItem().toString().equals("Conductor") ? "CON" : "PAS"));
                 }
 
                 if(exists) {
 
                     c=0;
                     login.setEnabled(true);
-                    SharedPreferences sharedPreference = getSharedPreferences("Email", Context.MODE_PRIVATE);
+
+                    SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", usuario.getEmail());
                     editor.commit();
 
-
-
-                    sharedPreference = getSharedPreferences("Nombre", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
                     editor.putString("Nombre",  usuario.getNombre());
                     editor.commit();
 
-                    sharedPreference = getSharedPreferences("Apellido", Context.MODE_PRIVATE);
                     editor = sharedPreference.edit();
                     editor.putString("Apellido",  usuario.getApellido());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
                     Intent pagPasajero= new Intent(context,HomePasajero.class);
