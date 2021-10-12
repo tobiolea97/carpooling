@@ -8,6 +8,10 @@ public class Rol {
     public Rol() {
     }
 
+    public Rol(String id) {
+        Id = id;
+    }
+
     public Rol(String id, String nombre, boolean estadoRegistro) {
         Id = id;
         Nombre = nombre;
