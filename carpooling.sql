@@ -80,7 +80,7 @@ CREATE TABLE Viajes (
   ProvinciaDestinoId int NOT NULL,
   CiudadDestinoId int NOT NULL,
   FechaHoraInicio datetime NOT NULL,
-  FechaHoraFinalizacion datetime NOT NULL,
+  FechaHoraFinalizacion datetime,
   CantidadPasajeros int NOT NULL,
   EstadoViaje varchar(3) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
