@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.sql.Connection;
@@ -24,6 +25,7 @@ public class HomeConductor extends AppCompatActivity {
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     Context context;
     ImageView st1, st2, st3, st4, st5;
+    RatingBar ratingBarconductor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class HomeConductor extends AppCompatActivity {
         setContentView(R.layout.activity_home_conductor);
 
         context = this;
+        ratingBarconductor=findViewById(R.id.ratingBar);
         st1 = (ImageView) findViewById(R.id.ivHomeConductorStar1);
         st2 = (ImageView) findViewById(R.id.ivHomeConductorStar2);
         st3 = (ImageView) findViewById(R.id.ivHomeConductorStar3);
@@ -48,6 +51,13 @@ public class HomeConductor extends AppCompatActivity {
         rolUsuario = spSesion.getString("Rol","No hay datos");
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
+        //Sirve para que puedas obtener el rating
+      /*  ratingBarconductor.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float puntuacion, boolean b) {
+                Toast.makeText(context, "La puntuacion es:"+puntuacion, Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
         new CargarCalificaciones().execute();
         new ContarCalificaciones().execute();
@@ -87,6 +97,10 @@ public class HomeConductor extends AppCompatActivity {
 
                 if(promedio == 0 ) return;
                 Helper.MostrarEstrellas(st1,st2,st3,st4,st5,promedio);
+                //Le agrego el promedio al rating para que pueda mostrarlo
+                ratingBarconductor.setRating(promedio);
+                //funciona pero cuando lo deshabilito la puntuacion son todas las mitad de las estrellas
+                //ratingBarconductor.setEnabled(false);
 
             }
             catch (SQLException e) {
