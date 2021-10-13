@@ -176,12 +176,6 @@ INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1005,101,'M
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1006,101,'San Pedro',1);
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1007,101,'Tandil',1);
 
-INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`Telefono`,`Dni`,`EstadoRegistro`)
-VALUES ("tobi@mail.com","CON","40379479","Tobias","Olea",'1997-05-12 00:00','+54 9 11 6920 3645','40379479',true);
-
-INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`Telefono`,`Dni`,`EstadoRegistro`)
-VALUES ("joni@mail.com","PAS","40379479","Jonathan","Costa",'1996-05-12 00:00','+54 9 11 6920 3645','40379479',true);
-
 INSERT INTO `Provincias` (Id,Nombre,EstadoRegistro) VALUES(102,'Entre Rios',1);
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1008,102,'Concordia',1);
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1009,102,'Parana',1);
@@ -189,10 +183,16 @@ INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1010,102,'D
 INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1011,102,'Gualeguaychu',1);
 
 INSERT INTO `Provincias` (Id,Nombre,EstadoRegistro) VALUES(103,'Cordoba',1);
-INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1012,103,'Concordia',1);
-INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1013,103,'Parana',1);
-INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1014,103,'Diamante',1);
-INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1015,103,'Gualeguaychu',1);
+INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1012,103,'Cordoba',1);
+INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1013,103,'Cosquin',1);
+INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1014,103,'Belgrano',1);
+INSERT INTO `Ciudades` (Id,ProvinciaId,Nombre,EstadoRegistro) VALUES(1015,103,'Traslasierra',1);
+
+INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`Telefono`,`Dni`,`EstadoRegistro`)
+VALUES ("tobi@mail.com","CON","40379479","Tobias","Olea",'1997-05-12 00:00','+54 9 11 6920 3645','40379479',true);
+
+INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`Telefono`,`Dni`,`EstadoRegistro`)
+VALUES ("joni@mail.com","PAS","40379479","Jonathan","Costa",'1996-05-12 00:00','+54 9 11 6920 3645','40379479',true);
 
 INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
 VALUES('tobi@mail.com',102,1008,103,1013,'2021-10-11 00:00','2021-10-11 05:00',4,1,1);
