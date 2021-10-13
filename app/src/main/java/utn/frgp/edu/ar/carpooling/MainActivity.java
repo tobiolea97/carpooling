@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         if(!email.getText().toString().matches(regExpEmail)) {
-            email.setError("Fromato requerido: ejemplo@dominio.com");
+            email.setError("Formato requerido: ejemplo@dominio.com");
             return false;
         }
         if(email.getText().toString().length() >= 30) {
@@ -177,8 +177,12 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
-                    Intent pagConductor= new Intent(context,HomeConductor.class);
+                    /*Intent pagConductor= new Intent(context,HomeConductor.class);
+                    startActivity(pagConductor);*/
+
+                    Intent pagConductor= new Intent(context,CrearViaje.class);
                     startActivity(pagConductor);
+
                     finish();
 
                 }else{

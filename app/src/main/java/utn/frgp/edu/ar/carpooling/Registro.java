@@ -91,7 +91,8 @@ public class Registro extends AppCompatActivity {
                         password.getText().toString(),
                         nombre.getText().toString(),
                         apellido.getText().toString(),
-                        LocalDate.of(anio,mes,dia),
+                        LocalDate.parse("1996-11-15"),
+                        //LocalDate.of(anio,mes,dia)
                         telefono.getText().toString(),
                         getIntent().getStringExtra("dni").toString(),
                         true

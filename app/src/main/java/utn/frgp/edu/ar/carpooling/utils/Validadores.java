@@ -51,7 +51,7 @@ public class Validadores {
             return false;
         }
         if(!mail.getText().toString().matches(regExpEmail)) {
-            mail.setError("Fromato requerido: ejemplo@dominio.com");
+            mail.setError("Formato requerido: ejemplo@dominio.com");
             return false;
         }
         if(mail.getText().toString().length() >= 30) {
