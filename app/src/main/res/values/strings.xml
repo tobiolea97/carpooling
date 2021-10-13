@@ -30,4 +30,16 @@
     <string name="continuar">CONTINUAR</string>
     <string name="rol">Rol</string>
     <string name="tituloRegistro">Solo algunos datos más...</string>
+
+    <!-- PANTALLA CREAR VIAJE -->
+    <string name="TituloNuevoViaje">Nuevo Viaje</string>
+    <string name="ProvinciaOrigen">Provincia Origen</string>
+    <string name="CiudadOrigen">Ciudad Origen</string>
+    <string name="ProvinciaDestino">Provincia Destino</string>
+    <string name="CiudadDestino">Ciudad Destino</string>
+    <string name="Fecha">Fecha</string>
+    <string name="Hora">Hora</string>
+    <string name="CantidadPasajeros">Cantidad de Pasajeros</string>
+    <string name="CrearViaje">Crear Viaje</string>
+
 </resources>
