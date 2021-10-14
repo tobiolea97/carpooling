@@ -200,6 +200,7 @@ public class HomeConductor extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    itemsGrilla.add(item);
                 }
 
                 String[] from = {"origen", "destino", "fecha", "hora"};
@@ -208,7 +209,7 @@ public class HomeConductor extends AppCompatActivity {
                 grillaViajes.setAdapter(simpleAdapter);
 
             }
-            catch (SQLException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }

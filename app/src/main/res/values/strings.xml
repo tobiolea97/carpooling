@@ -41,5 +41,7 @@
     <string name="Hora">Hora</string>
     <string name="CantidadPasajeros">Cantidad de Pasajeros</string>
     <string name="CrearViaje">Crear Viaje</string>
+    <string name="BuscarViajes">Buscar Viajes</string>
+    <string name="MisViajes">Mis Viajes</string>
 
 </resources>
