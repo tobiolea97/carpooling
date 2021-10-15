@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
-                    Intent pagConductor= new Intent(context,HomeConductor.class);
+                    Intent pagConductor= new Intent(context,Home.class);
                     //Intent pagConductor= new Intent(context,CrearViaje.class);
                     startActivity(pagConductor);
 
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
-                    Intent pagPasajero= new Intent(context,HomeConductor.class);
+                    Intent pagPasajero= new Intent(context,Home.class);
                     startActivity(pagPasajero);
                     //finish();
 

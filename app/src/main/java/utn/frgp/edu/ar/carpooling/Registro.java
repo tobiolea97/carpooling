@@ -204,10 +204,10 @@ public class Registro extends AppCompatActivity {
                 Intent nextForm = new Intent();
 
                 if(Usuario.getRol().getId().equals("CON")){
-                    nextForm = new Intent(context, HomeConductor.class);
+                    nextForm = new Intent(context, Home.class);
                 }
                 if(Usuario.getRol().getId().equals("PAS")) {
-                    nextForm = new Intent(context, HomePasajero.class);
+                    nextForm = new Intent(context, Home.class);
                 }
 
                 startActivity(nextForm);
