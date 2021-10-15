@@ -177,13 +177,11 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
-                    Intent pagConductor= new Intent(context,HomeConductor.class);
+                    Intent pagConductor= new Intent(context,Home.class);
+                    //Intent pagConductor= new Intent(context,CrearViaje.class);
                     startActivity(pagConductor);
 
-                    /*Intent pagConductor= new Intent(context,CrearViaje.class);
-                    startActivity(pagConductor);*/
-
-                    finish();
+                    //finish();
 
                 }else{
                     if(c==3){
@@ -265,9 +263,9 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("Rol",  usuario.getRol().getId());
                     editor.commit();
 
-                    Intent pagPasajero= new Intent(context,HomePasajero.class);
+                    Intent pagPasajero= new Intent(context,Home.class);
                     startActivity(pagPasajero);
-                    finish();
+                    //finish();
 
                 }
                 else {

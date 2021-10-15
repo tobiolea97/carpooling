@@ -25,7 +25,7 @@ import java.util.Map;
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.utils.Helper;
 
-public class HomeConductor extends AppCompatActivity {
+public class Home extends AppCompatActivity {
 
     TextView Info, cantidadCalificaciones;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
@@ -37,17 +37,17 @@ public class HomeConductor extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_conductor);
+        setContentView(R.layout.activity_home);
 
-        /*context = this;
-        st1 = (ImageView) findViewById(R.id.ivHomeConductorStar1);
-        st2 = (ImageView) findViewById(R.id.ivHomeConductorStar2);
-        st3 = (ImageView) findViewById(R.id.ivHomeConductorStar3);
-        st4 = (ImageView) findViewById(R.id.ivHomeConductorStar4);
-        st5 = (ImageView) findViewById(R.id.ivHomeConductorStar5);
-        grillaViajes = (GridView) findViewById(R.id.gvHomeConductorProximosVIajes);
-        cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeConductorCalificaciones);
-        cantidadCalificaciones.setText("");*/
+        context = this;
+        st1 = (ImageView) findViewById(R.id.ivHomeStar1);
+        st2 = (ImageView) findViewById(R.id.ivHomeStar2);
+        st3 = (ImageView) findViewById(R.id.ivHomeStar3);
+        st4 = (ImageView) findViewById(R.id.ivHomeStar4);
+        st5 = (ImageView) findViewById(R.id.ivHomeStar5);
+        grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
+        cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeCalificaciones);
+        cantidadCalificaciones.setText("");
 
         Info = findViewById(R.id.tvPreRegistroTitulo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
@@ -59,12 +59,12 @@ public class HomeConductor extends AppCompatActivity {
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
 
-        new CargarCalificaciones().execute();
-        new ContarCalificaciones().execute();
-        new CargarProximosViajes().execute();
+        new Home.CargarCalificaciones().execute();
+        new Home.ContarCalificaciones().execute();
+        new Home.CargarProximosViajes().execute();
     }
 
-    private class CargarCalificaciones extends AsyncTask<Void,Integer,ResultSet> {
+    private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
