@@ -167,6 +167,7 @@ public class HomeConductor extends AppCompatActivity {
                 query += "          pr2.Nombre ProvinciaDestino,";
                 query += "          ci2.Nombre CiudadDestino";
                 query += " FROM Viajes vj";
+                query += rolUsuario.equals("PAS") ? " INNER JOIN PasajerosPorViaje ppv ON ppv.ViajeId = vj.Id" : "";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
                 query += " LEFT JOIN Provincias pr2";
@@ -175,7 +176,8 @@ public class HomeConductor extends AppCompatActivity {
                 query += " 	ON ci1.Id = vj.CiudadOrigenId";
                 query += " LEFT JOIN Ciudades ci2";
                 query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND";
+                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : "";
+                query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " ORDER BY FechaHoraInicio ASC";
                 query += " LIMIT 3";
@@ -198,7 +200,7 @@ public class HomeConductor extends AppCompatActivity {
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
-                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7));
+                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     itemsGrilla.add(item);
                 }

@@ -124,7 +124,7 @@ public class CrearViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        //nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
 
         new AltaNuevoViaje().execute();
 
@@ -362,8 +362,8 @@ public class CrearViaje extends AppCompatActivity {
                 query +=  "'" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
                 query +=  "'" + nuevoViaje.getCiudadDestino().getIdCiudad() + "',";
-                query +=  "'2021-10-11 00:00:00',";
-                //query +=  "'" + nuevoViaje.getFechaHoraInicio() + "',"; VOLVER HABILITAR, AMI NO ME FUNCIONA. JONNA
+                //query +=  "'2021-10-11 00:00:00',";
+                query +=  "'" + nuevoViaje.getFechaHoraInicio() + "',"; //VOLVER HABILITAR, AMI NO ME FUNCIONA. JONNA
                 query +=  "'" + nuevoViaje.getCantPasajeros() + "',";
                 query +=  "'" + nuevoViaje.getEstadoViaje() + "'";
                 query += ")";
