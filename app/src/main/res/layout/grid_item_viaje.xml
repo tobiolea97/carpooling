@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        app:cardBackgroundColor="@color/custom5">
+        app:cardBackgroundColor="@color/gris">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:text="Concepcion del Uruguay, Entre Rios"
-                android:textColor="@color/custom1"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvGridItemViajeOrigen" />
@@ -39,7 +39,7 @@
                 android:layout_marginTop="9dp"
                 android:layout_weight="1"
                 android:text="Don Torcuato, Buenos Aires"
-                android:textColor="@color/custom1"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvGridItemViajeOrigenFecha" />
@@ -51,7 +51,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="7dp"
                 android:text="12/05"
-                android:textColor="@color/custom2"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="7dp"
                 android:text="10:30"
-                android:textColor="@color/custom2"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 app:layout_constraintStart_toEndOf="@+id/tvGridItemViajeOrigenFecha"
                 app:layout_constraintTop_toTopOf="parent" />
