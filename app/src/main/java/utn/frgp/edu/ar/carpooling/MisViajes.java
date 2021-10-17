@@ -60,7 +60,7 @@ public class MisViajes extends AppCompatActivity {
 
 
                 Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
-                
+
             }
         });
         new CargarProximosViajes().execute(generateQuery(new HashMap<String, String>()));

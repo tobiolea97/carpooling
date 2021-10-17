@@ -159,6 +159,7 @@ public class Home extends AppCompatActivity {
 
                 String query = "";
                 query += " SELECT 	vj.FechaHoraInicio,";
+                query += "  	vj.Id,";
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
@@ -195,6 +196,7 @@ public class Home extends AppCompatActivity {
 
                 while (resultados.next()) {
                     Map<String, String> item = new HashMap<String, String>();
+                    item.put("NroViaje", resultados.getString("Id"));
                     item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
@@ -202,8 +204,8 @@ public class Home extends AppCompatActivity {
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(context, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
 
