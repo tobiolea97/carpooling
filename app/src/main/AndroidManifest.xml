@@ -25,6 +25,9 @@
             android:name=".HomeConductor"
             android:exported="true" />
         <activity
+            android:name=".MisViajes"
+            android:exported="true" />
+        <activity
             android:name=".Registro"
             android:exported="true" />
         <activity
