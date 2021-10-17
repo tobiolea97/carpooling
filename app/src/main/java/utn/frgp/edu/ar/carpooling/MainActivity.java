@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import utn.frgp.edu.ar.carpooling.CrearViaje;
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
@@ -179,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                     editor.commit();
 
                     Intent pagConductor= new Intent(context,Home.class);
-                    //Intent pagConductor= new Intent(context,CrearViaje.class);
                     startActivity(pagConductor);
 
                     //finish();

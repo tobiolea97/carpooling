@@ -15,7 +15,7 @@
         android:gravity="center"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.577"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toEndOf="@+id/txtViewCantPasajeros"
         app:layout_constraintTop_toBottomOf="@+id/edTextHora" />
 
@@ -23,7 +23,7 @@
         android:id="@+id/txtViewFechayHora2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
+        android:layout_marginStart="84dp"
         android:layout_marginTop="28dp"
         android:text="@string/Hora"
         android:textSize="16sp"
@@ -129,7 +129,7 @@
         android:id="@+id/txtViewFechayHora"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
+        android:layout_marginStart="104dp"
         android:layout_marginTop="28dp"
         android:text="@string/Fecha"
         android:textSize="16sp"
@@ -180,14 +180,16 @@
 
     <EditText
         android:id="@+id/edTextHora"
-        android:layout_width="106dp"
-        android:layout_height="47dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="44dp"
         android:ems="10"
+        android:gravity="center"
         android:inputType="time"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.285"
+        app:layout_constraintHorizontal_bias="0.381"
         app:layout_constraintStart_toEndOf="@+id/edTextFecha"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
@@ -195,13 +197,15 @@
         android:id="@+id/edTextFecha"
         android:layout_width="125dp"
         android:layout_height="48dp"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="56dp"
         android:editable="false"
         android:ems="10"
         android:enabled="true"
+        android:gravity="center"
         android:inputType="date"
         android:onClick="onClickFechaViaje"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
