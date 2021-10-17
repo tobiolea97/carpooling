@@ -3,24 +3,15 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.utils.Helper;
@@ -62,6 +53,12 @@ public class Home extends AppCompatActivity {
         new Home.CargarCalificaciones().execute();
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
+    }
+
+    public void onClickMisViajes (View view) {
+        Intent pagMisViajes= new Intent(context, MisViajes.class);
+        startActivity(pagMisViajes);
+        finish();
     }
 
     private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
