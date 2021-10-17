@@ -34,11 +34,30 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     private Spinner spRol;
     int c=0;
+    private View Info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            Info = findViewById(R.id.tvPreRegistroTitulo);
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            String emailUsuario = spSesion.getString("Email","");
+
+            if(!emailUsuario.equals("")) {
+                Intent nextForm = new Intent(this, Home.class);
+                startActivity(nextForm);
+                finish();
+            }
+
+        }
+        catch(Exception e) {
+
+        }
+
         context=this;
         email = findViewById(R.id.etMainActivityEmail);
         password = findViewById(R.id.etMainActivityPassword);
@@ -57,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRol.setAdapter(adapter);
-        /*Intent nextForm = new Intent(this, ConductorHome.class);
-        startActivity(nextForm);
-        finish();*/
+
+
+
 
     }
 
@@ -180,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent pagConductor= new Intent(context,Home.class);
                     startActivity(pagConductor);
 
-                    //finish();
+                    finish();
 
                 }else{
                     if(c==3){
@@ -264,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent pagPasajero= new Intent(context,Home.class);
                     startActivity(pagPasajero);
-                    //finish();
+                    finish();
 
                 }
                 else {
