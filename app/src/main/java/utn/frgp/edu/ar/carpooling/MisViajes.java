@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +65,11 @@ public class MisViajes extends AppCompatActivity {
             }
         });
         new CargarProximosViajes().execute(generateQuery(new HashMap<String, String>()));
+    }
+
+    public void ClickAgregarNuevoViaje(View view){
+        Intent i = new Intent(this,NuevoViaje.class);
+        startActivity(i);
     }
 
     public void crearFiltrarClickListener (View view) {
