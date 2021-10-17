@@ -77,15 +77,15 @@ public class MainActivity extends AppCompatActivity {
         isValid = validarPassword(isValid);
 
         if(!isValid) return;
-
+        /*
         if(spRol.getSelectedItem().equals("Conductor")){
             new IngresoConductor().execute();
         }else{
             new IngresoPasajero().execute();
-        }
+        }*/
 
-        //Intent nextForm = new Intent(this, SeleccionRol.class);
-        //startActivity(nextForm);
+        Intent nextForm = new Intent(this, NuevoViaje.class);
+        startActivity(nextForm);
     }
 
     // Validaciones
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                     editor.commit();
 
                     Intent pagConductor= new Intent(context,Home.class);
-                    //Intent pagConductor= new Intent(context,CrearViaje.class);
                     startActivity(pagConductor);
 
                     //finish();

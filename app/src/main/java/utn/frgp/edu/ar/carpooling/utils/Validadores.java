@@ -2,6 +2,8 @@ package utn.frgp.edu.ar.carpooling.utils;
 
 import android.widget.EditText;
 
+import java.util.regex.Pattern;
+
 public class Validadores {
 
     private static String regExpNoNumbers = "^([^0-9]*)$";
@@ -133,6 +135,48 @@ public class Validadores {
         }
         reingresoPassword.setError(null);
         return flag;
+    }
+
+    public static boolean validarHoraViaje(boolean flag, EditText horaViaje) {
+
+        if(horaViaje.getText().toString().equals("")) {
+            horaViaje.setError("Campo obligatorio");
+            return false;
+        }
+
+        if(!horaViaje.getText().toString().contains(":")){
+            horaViaje.setError("Formato invalido. Requerido = 'hh:mm'");
+            return false;
+        }
+
+        if(horaViaje.getText().toString().length()<5 || horaViaje.getText().toString().length()>5){
+            horaViaje.setError("Formato invalido. Requerido = 'hh:mm'");
+            return false;
+        }
+
+        String v =String.valueOf(horaViaje.getText().toString().charAt(2));
+        if(!String.valueOf(horaViaje.getText().toString().charAt(2) ).equals(":")){
+            horaViaje.setError("Formato invalido. Requerido = 'hh:mm'");
+            return false;
+        }
+
+        String separadorHora = Pattern.quote(":");
+        int hora = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[0]);
+        int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
+
+        if(hora > 24 || hora < 0){
+            horaViaje.setError("Hora invalida");
+            return false;
+        }
+
+        if(minuto > 59 || minuto < 0){
+            horaViaje.setError("Minutos invalidos");
+            return false;
+        }
+
+        horaViaje.setError(null);
+        return flag;
+
     }
 
 }
