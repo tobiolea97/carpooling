@@ -135,4 +135,26 @@ public class Validadores {
         return flag;
     }
 
+    public static boolean validarHoraViaje(boolean flag, EditText horaViaje) {
+
+        if(horaViaje.getText().toString().equals("")) {
+            horaViaje.setError("Campo obligatorio");
+            return false;
+        }
+
+        if(!horaViaje.getText().toString().contains(":")){
+            horaViaje.setError("Formato invalido. Requerido = 'hh:mm'");
+            return false;
+        }
+
+        if(horaViaje.getText().toString().length()<5 || horaViaje.getText().toString().length()>5){
+            horaViaje.setError("Formato invalido. Requerido = 'hh:mm'");
+            return false;
+        }
+
+        horaViaje.setError(null);
+        return flag;
+
+    }
+
 }

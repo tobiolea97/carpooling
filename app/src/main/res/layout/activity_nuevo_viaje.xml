@@ -8,20 +8,22 @@
 
     <Spinner
         android:id="@+id/spCantPasajeros"
-        android:layout_width="131dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="44dp"
+        android:layout_width="126dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="52dp"
         android:gravity="center"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.577"
+        app:layout_constraintStart_toEndOf="@+id/txtViewCantPasajeros"
         app:layout_constraintTop_toBottomOf="@+id/edTextHora" />
 
     <TextView
         android:id="@+id/txtViewFechayHora2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="136dp"
+        android:layout_marginStart="96dp"
         android:layout_marginTop="28dp"
         android:text="@string/Hora"
         android:textSize="16sp"
@@ -127,7 +129,7 @@
         android:id="@+id/txtViewFechayHora"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="112dp"
         android:layout_marginTop="28dp"
         android:text="@string/Fecha"
         android:textSize="16sp"
@@ -185,7 +187,7 @@
         android:ems="10"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.643"
+        app:layout_constraintHorizontal_bias="0.285"
         app:layout_constraintStart_toEndOf="@+id/edTextFecha"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
@@ -193,13 +195,14 @@
         android:id="@+id/edTextFecha"
         android:layout_width="125dp"
         android:layout_height="48dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="56dp"
         android:editable="false"
         android:ems="10"
         android:enabled="true"
         android:inputType="date"
         android:onClick="onClickFechaViaje"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        tools:layout_editor_absoluteX="50dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

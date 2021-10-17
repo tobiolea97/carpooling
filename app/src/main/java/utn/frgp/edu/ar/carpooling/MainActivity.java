@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import utn.frgp.edu.ar.carpooling.CrearViaje;
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
@@ -77,15 +78,15 @@ public class MainActivity extends AppCompatActivity {
         isValid = validarPassword(isValid);
 
         if(!isValid) return;
-
+        /*
         if(spRol.getSelectedItem().equals("Conductor")){
             new IngresoConductor().execute();
         }else{
             new IngresoPasajero().execute();
-        }
+        }*/
 
-        //Intent nextForm = new Intent(this, SeleccionRol.class);
-        //startActivity(nextForm);
+        Intent nextForm = new Intent(this, NuevoViaje.class);
+        startActivity(nextForm);
     }
 
     // Validaciones
