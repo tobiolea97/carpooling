@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -42,7 +44,25 @@ public class MisViajes extends AppCompatActivity {
         grillaViajes = (GridView) findViewById(R.id.gvMisViajes);
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String Texto="";
+                Texto=adapterView.getItemAtPosition(position).toString();
 
+
+                String[] parts = Texto.split("NroViaje=");
+                String part2 = parts[1]; // 654321
+
+                //Para obtener el id del viaje
+                String[] partspt2 = part2.split(",");
+                String part3 = partspt2[0]; // 123
+
+
+                Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+                
+            }
+        });
         new CargarProximosViajes().execute(generateQuery(new HashMap<String, String>()));
     }
 
@@ -68,6 +88,7 @@ public class MisViajes extends AppCompatActivity {
     private String generateQuery (HashMap<String, String> filtros) {
         String query = "";
         query += " SELECT 	vj.FechaHoraInicio,";
+        query += "  	vj.Id,";
         query += " 		    pr1.Nombre ProvinciaOrigen,";
         query += "          ci1.Nombre CiudadOrigen,";
         query += "          pr2.Nombre ProvinciaDestino,";
@@ -131,6 +152,7 @@ public class MisViajes extends AppCompatActivity {
 
                 while (resultados.next()) {
                     Map<String, String> item = new HashMap<String, String>();
+                    item.put("NroViaje", resultados.getString("Id"));
                     item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
@@ -138,8 +160,8 @@ public class MisViajes extends AppCompatActivity {
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
 
