@@ -114,9 +114,15 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevoViaje.setEstadoViaje("En Espera");
 
+
+        if(!Validadores.validarNacimiento(true,fechaViaje)){
+            return;
+        }
+
         if(!Validadores.validarHoraViaje(true,horaViaje)){
             return;
         }
+
 
         String separadorFecha = Pattern.quote("/");
         String separadorHora = Pattern.quote(":");
@@ -133,7 +139,7 @@ public class NuevoViaje extends AppCompatActivity {
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
         if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
-            Toast.makeText(contexto, "El lugar origen y destino no puede ser los mismo!.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_SHORT).show();
             return;
         }
 
