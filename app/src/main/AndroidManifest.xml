@@ -13,16 +13,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".NuevoViaje"
+            android:exported="true" />
+        <activity
             android:name=".Home"
             android:exported="true" />
         <activity
-            android:name=".CrearViaje"
+            android:name=".Dominio.CrearViaje"
             android:exported="true" />
         <activity
             android:name=".HomePasajero"
             android:exported="true" />
         <activity
             android:name=".HomeConductor"
+            android:exported="true" />
+        <activity
+            android:name=".MisViajes"
             android:exported="true" />
         <activity
             android:name=".Registro"

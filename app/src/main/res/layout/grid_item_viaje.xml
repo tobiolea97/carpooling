@@ -68,6 +68,17 @@
                 app:layout_constraintStart_toEndOf="@+id/tvGridItemViajeOrigenFecha"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/tvGridItemViajeNroViaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.829"
+                app:layout_constraintStart_toEndOf="@+id/tvGridItemViajeOrigen"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

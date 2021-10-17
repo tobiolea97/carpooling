@@ -3,10 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.264" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.21875" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/filtrar_viajes.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes_dialog.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/fullstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/halfstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_crear_viaje.xml" value="0.25" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.18" />
+        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_nuevo_viaje.xml" value="0.33" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_pre_registro.xml" value="0.13802083333333334" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_registro.xml" value="0.21" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/fragment_crear_viaje.xml" value="0.1" />
