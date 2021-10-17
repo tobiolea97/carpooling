@@ -141,8 +141,9 @@
                     android:layout_marginRight="16dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/gris"
-                    android:textColor="@color/white"
-                    android:text="@string/MisViajes" />
+                    android:onClick="onClickMisViajes"
+                    android:text="@string/MisViajes"
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/button4"
