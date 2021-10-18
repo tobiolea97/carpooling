@@ -268,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", usuario.getEmail());
                     editor.commit();
+                    
 
                     editor = sharedPreference.edit();
                     editor.putString("Nombre",  usuario.getNombre());
