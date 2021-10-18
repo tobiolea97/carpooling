@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +25,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -31,8 +33,11 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Ciudad;
 import utn.frgp.edu.ar.carpooling.entities.Provincia;
 import utn.frgp.edu.ar.carpooling.entities.Viaje;
+import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
+import utn.frgp.edu.ar.carpooling.utils.EnumsErrores;
+import utn.frgp.edu.ar.carpooling.utils.Validadores;
 
-public class CrearViaje extends AppCompatActivity {
+public class NuevoViaje extends AppCompatActivity {
 
     private EditText fechaViaje;
     private EditText  horaViaje;
@@ -61,11 +66,10 @@ public class CrearViaje extends AppCompatActivity {
 
     private Context contexto;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_viaje);
+        setContentView(R.layout.activity_nuevo_viaje);
 
         fechaViaje = (EditText) findViewById(R.id.edTextFecha);
         horaViaje = (EditText) findViewById(R.id.edTextHora);
@@ -96,7 +100,46 @@ public class CrearViaje extends AppCompatActivity {
 
         fechaViaje.requestFocus();
         new CargarSpinnersProvincias().execute();
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.inicio) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+
+            finish();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -114,6 +157,16 @@ public class CrearViaje extends AppCompatActivity {
         nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevoViaje.setEstadoViaje("En Espera");
 
+
+        if(!Validadores.validarNacimiento(true,fechaViaje)){
+            return;
+        }
+
+        if(!Validadores.validarHoraViaje(true,horaViaje)){
+            return;
+        }
+
+
         String separadorFecha = Pattern.quote("/");
         String separadorHora = Pattern.quote(":");
 
@@ -124,7 +177,20 @@ public class CrearViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        //nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+
+        viajeNegImpl vNegImpl = new viajeNegImpl();
+
+        if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
+            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //VOLVER A HABILITAR, AMI NO ME ANDA!! JONA
+        /*if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
+            Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
+            return;
+        }*/
 
         new AltaNuevoViaje().execute();
 
@@ -133,7 +199,7 @@ public class CrearViaje extends AppCompatActivity {
 
     public void onClickFechaViaje(View view) {
 
-        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+        DatePickerViajeFragment newFragment = DatePickerViajeFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
@@ -150,7 +216,7 @@ public class CrearViaje extends AppCompatActivity {
 
     }
 
-    private class CargarSpinnersCiudadesOrigen extends AsyncTask<Void,Integer, ResultSet>  {
+    private class CargarSpinnersCiudadesOrigen extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
