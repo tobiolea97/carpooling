@@ -53,7 +53,14 @@ public class MisViajes extends AppCompatActivity {
                 String[] partspt2 = part2.split(",");
                 String part3 = partspt2[0]; // 123
 
-                Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+
+
+
+                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+                pagVerViaje.putExtra("NroViaje",part3);
+                startActivity(pagVerViaje);
+                finish();
             }
         });
         LayoutInflater inflater = this.getLayoutInflater();
