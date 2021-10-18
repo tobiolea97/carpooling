@@ -24,7 +24,7 @@ public class Home extends AppCompatActivity {
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
     GridView grillaViajes;
-
+    Button MisViajes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +39,7 @@ public class Home extends AppCompatActivity {
         grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
         cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeCalificaciones);
         cantidadCalificaciones.setText("");
-
+        MisViajes=findViewById(R.id.button3);
         Info = findViewById(R.id.tvPreRegistroTitulo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
@@ -47,6 +47,12 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+/*
+        if(rolUsuario.equals("CON")){
+            MisViajes.setVisibility(View.INVISIBLE);
+
+
+        }*/
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
 
