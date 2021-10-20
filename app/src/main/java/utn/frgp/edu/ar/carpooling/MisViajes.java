@@ -25,6 +25,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroProvDestino;
     Spinner spFiltroCiudOrigen;
     Spinner spFiltroCiudDestino;
+    Spinner spFiltroEstado;
     GridView grillaViajes;
     String emailUsuario, rolUsuario;
     Context contexto;
@@ -69,7 +70,11 @@ public class MisViajes extends AppCompatActivity {
         spFiltroProvDestino = dialogFragmentView.findViewById(R.id.spFiltroProvDestino);
         spFiltroCiudOrigen = dialogFragmentView.findViewById(R.id.spFiltroCiudOrigen);
         spFiltroCiudDestino = dialogFragmentView.findViewById(R.id.spFiltroCiudDestino);
-        crearFiltroDialog(); // CREO EL DIALOG PERO NO LO ABRO. ASI NO SE CREA UN NUEVO DIALOG CADA VEZ Q ABRIMOS EL FILTRO
+        spFiltroEstado = dialogFragmentView.findViewById(R.id.spFiltroEstado);
+
+        crearFiltroDialog(); // CREO EL DIALOG PERO NO LO ABRO. ASI NO CREAMOS UN DIALOG DE CERO CADA VEZ QUE ABRIMOS EL FILTRO
+        cargarSpinnerEstado();
+
         new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
         new CargarFiltroProvinciaSpinners().execute();
         new CargarFiltroCiudadSpinners().execute();
@@ -131,6 +136,7 @@ public class MisViajes extends AppCompatActivity {
                         filtros.put("provinciaDestino", spFiltroProvDestino.getSelectedItem().toString());
                         filtros.put("ciudadOrigen", spFiltroCiudOrigen.getSelectedItem().toString());
                         filtros.put("ciudadDestino", spFiltroCiudDestino.getSelectedItem().toString());
+                        filtros.put("estado", spFiltroEstado.getSelectedItem().toString());
                         new CargarViajesFiltrados().execute(generateQuery(filtros));
                     }
                 })
@@ -138,6 +144,12 @@ public class MisViajes extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {}
                 });
         filtroDialog = builder.create();
+    }
+
+    private void cargarSpinnerEstado () {
+        Spinner spFiltroEstado = dialogFragmentView.findViewById(R.id.spFiltroEstado);
+        String[] datos = new String[] {"--NINGUNO--", "1", "En Espera"};
+        spFiltroEstado.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, datos));
     }
 
     private class CargarFiltroCiudadSpinners extends AsyncTask<String,Integer, ResultSet> {
@@ -151,6 +163,7 @@ public class MisViajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 List<String> ciudades = new ArrayList<String>();
+                ciudades.add("--NINGUNA--");
 
                 while (resultados.next()) { ciudades.add(resultados.getString("Nombre")); }
 
@@ -176,6 +189,7 @@ public class MisViajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 List<String> provincias = new ArrayList<String>();
+                provincias.add("--NINGUNA--");
 
                 while (resultados.next()) { provincias.add(resultados.getString("Nombre")); }
 
@@ -244,19 +258,19 @@ public class MisViajes extends AppCompatActivity {
         query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : " WHERE vj.ConductorEmail = '" + emailUsuario + "'";
 
         if (!filtros.isEmpty()) {
-            if (filtros.get("provinciaOrigen") != null) {
+            if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {
                 query += " AND pr1.Nombre = '" + filtros.get("provinciaOrigen") + "'";
             }
-            if (filtros.get("provinciaDestino") != null) {
+            if (!filtros.get("provinciaDestino").equals("--NINGUNA--")) {
                 query += " AND pr2.Nombre = '" + filtros.get("provinciaDestino") + "'";
             }
-            if (filtros.get("ciudadOrigen") != null) {
+            if (!filtros.get("ciudadOrigen").equals("--NINGUNA--")) {
                 query += " AND ci1.Nombre = '" + filtros.get("ciudadOrigen") + "'";
             }
-            if (filtros.get("ciudadDestino") != null) {
+            if (!filtros.get("ciudadDestino").equals("--NINGUNA--")) {
                 query += " AND ci2.Nombre = '" + filtros.get("ciudadDestino") + "'";
             }
-            if (filtros.get("estado") != null) {
+            if (!filtros.get("estado").equals("--NINGUNO--")) {
                 query += " AND vi.Estado = '" + filtros.get("estado") + "'";
             }
         }
