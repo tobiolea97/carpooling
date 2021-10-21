@@ -26,7 +26,7 @@ public class Home extends AppCompatActivity {
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
     GridView grillaViajes;
-    Button MisViajes;
+    Button MisViajes,BuscarSolicitudes,MisSolicitudes,BuscarViajes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setTitle("");
@@ -43,6 +43,9 @@ public class Home extends AppCompatActivity {
         cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeCalificaciones);
         cantidadCalificaciones.setText("");
         MisViajes=findViewById(R.id.button3);
+        BuscarSolicitudes=findViewById(R.id.btnBuscarSolicitudes);
+        MisSolicitudes=findViewById(R.id.btnMisSolicitudes);
+        BuscarViajes= findViewById(R.id.button4);
         Info = findViewById(R.id.tvPreRegistroTitulo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
@@ -50,12 +53,15 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-/*
+
         if(rolUsuario.equals("CON")){
+            MisSolicitudes.setVisibility(View.INVISIBLE);
+            BuscarViajes.setVisibility(View.INVISIBLE);
+        }
+        else{
             MisViajes.setVisibility(View.INVISIBLE);
-
-
-        }*/
+            BuscarSolicitudes.setVisibility(View.INVISIBLE);
+        }
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
 
