@@ -3,9 +3,11 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -42,8 +44,28 @@ public class Ver_Viajes extends AppCompatActivity {
         grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
         Pasajeros=findViewById(R.id.LVPasajeros);
         TituloPasajeros=findViewById(R.id.textView10);
+
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
+
+        Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
+                    String Numero = "";
+                    String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
+                    String part2 = parts[1];
+                    Numero = part2;
+                    Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
+                    pagVerPasajero.putExtra("NroViaje",NroViaje);
+                    pagVerPasajero.putExtra("NumeroTelefono",Numero);
+
+                    startActivity(pagVerPasajero);
+                    finish();
+                }
+            }
+        });
+
 
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
