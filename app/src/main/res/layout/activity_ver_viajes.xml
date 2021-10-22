@@ -113,7 +113,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/GrVerviaje" />
 
             <TextView
-                android:id="@+id/TxtTitulo"
+                android:id="@+id/TxtTituloo"
                 android:layout_width="242dp"
                 android:layout_height="27dp"
                 android:layout_marginStart="4dp"
@@ -139,7 +139,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.285"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/TxtTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/TxtTituloo"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="TouchTargetSizeCheck" />
 
