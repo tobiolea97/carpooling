@@ -3,10 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.176" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.264" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.24320652173913043" />
         <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.2" />
-        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.264" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_ver_pasajero.xml" value="0.152" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_ver_viaje_finalizado.xml" value="0.20471014492753623" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.2" />
         <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.2" />
+        <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/list_item_viajes.xml" value="0.2296195652173913" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.21875" />

@@ -58,10 +58,17 @@ public class MisViajes extends AppCompatActivity {
 
 
 
-                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+               Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
                 startActivity(pagVerViaje);
                 finish();
+
+
+                //Para viaje finalizado
+               /* Intent pagVerViajeFinalizado= new Intent(contexto,VerVIajeFinalizado.class);
+                pagVerViajeFinalizado.putExtra("NroViaje",part3);
+                startActivity(pagVerViajeFinalizado);
+                finish();*/
             }
         });
         LayoutInflater inflater = this.getLayoutInflater();

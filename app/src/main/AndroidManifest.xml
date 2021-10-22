@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".VerVIajeFinalizado"
+            android:exported="true" />
+        <activity
+            android:name=".VerPasajero"
+            android:exported="true" />
+        <activity
             android:name=".Ver_Viajes"
             android:exported="true" />
         <activity

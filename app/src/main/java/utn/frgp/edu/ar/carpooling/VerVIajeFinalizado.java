@@ -3,11 +3,8 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -26,55 +23,35 @@ import java.util.Map;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 
-public class Ver_Viajes extends AppCompatActivity {
+public class VerVIajeFinalizado extends AppCompatActivity {
     Context contexto;
-    GridView grillaverViaje;
+    GridView grillaverViajeFinalizado;
     String NroViaje;
-    TextView TituloPasajeros;
     ListView Pasajeros;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ver_viajes);
+        setContentView(R.layout.activity_ver_viaje_finalizado);
         contexto = this;
         NroViaje=getIntent().getStringExtra("NroViaje");
-        grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
-        Pasajeros=findViewById(R.id.LVPasajeros);
-        TituloPasajeros=findViewById(R.id.textView10);
-
-        new CargarViajeSeleccionado().execute();
+        grillaverViajeFinalizado= (GridView) findViewById(R.id.GrVerViajeFinalizado);
+        Pasajeros=findViewById(R.id.LvVerViajeFInalizado);
+        new CargarViajeFinalizado().execute();
         new CargarPasajeros().execute();
-
-        Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
-                    String Numero = "";
-                    String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                    String part2 = parts[1];
-                    Numero = part2;
-                    Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
-                    pagVerPasajero.putExtra("NroViaje",NroViaje);
-                    pagVerPasajero.putExtra("NumeroTelefono",Numero);
-
-                    startActivity(pagVerPasajero);
-                    finish();
-                }
-            }
-        });
-
-
     }
-    private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
+    private class CargarViajeFinalizado extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
             try {
+
+                ///CAMBIAR LA BASE DE DATOS POR EL WHERE ESTADOVIAJE=FINALIZADO
+
+
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-               String query = "";
+                String query = "";
                 query += " SELECT 	vj.FechaHoraInicio,";
                 query += "  	vj.Id,";
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
@@ -122,7 +99,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
-                grillaverViaje.setAdapter(simpleAdapter);
+                grillaverViajeFinalizado.setAdapter(simpleAdapter);
 
             }
             catch (Exception e) {
@@ -130,20 +107,19 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
     }
-
     private class CargarPasajeros extends AsyncTask<Void,Integer,ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
             try {
+                //NOSE SI TAMBIEN CAMBIAR EL PV.ESTADOREGISTRO FRANN
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
-                query += " 		    usu.Telefono,";
-                query += " 		    vj.CantidadPasajeros";
+                query += " 		    usu.Telefono";
                 query += " FROM Viajes vj";
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON pv.ViajeId=vj.Id";
@@ -166,86 +142,23 @@ public class Ver_Viajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 ArrayList<String> pasajeros= new ArrayList<String>();
-                int PasajerosABordo=0;
-                String CantidadAsientos="";
+
                 while (resultados.next()) {
-                    PasajerosABordo++;
-                  pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
-                }
 
-                int cantidadasientos=Integer.parseInt(CantidadAsientos);
-
-                switch(cantidadasientos){
-
-                    case 4:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-
-                        }
-                        if(PasajerosABordo==2){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==3){
-                            pasajeros.add("Libre");
-                        }
-
-                        break;
-                    case 3:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==2){
-                            pasajeros.add("Libre");
-                        }
-
-                    break;
-                    case 2:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                        }
-
-                    break;
-                    case 1:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                        }
-                     break;
+                    pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
 
                 }
 
-                ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
-               Pasajeros.setAdapter(adapter);
-               if(PasajerosABordo==0){
-                   TituloPasajeros.setText("Pasajeros");
-               }else {
-                   TituloPasajeros.setText("Pasajeros" + PasajerosABordo + "/" + CantidadAsientos);
-               }
+
+                ArrayAdapter<String> adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
+                Pasajeros.setAdapter(adapter);
+
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
 
 }
