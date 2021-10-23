@@ -54,12 +54,14 @@ public class MisViajes extends AppCompatActivity {
                 String[] partspt2 = part2.split(",");
                 String part3 = partspt2[0]; // 123
 
-                //Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+
 
 
 
                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
+                pagVerViaje.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerViaje);
                 finish();
 
