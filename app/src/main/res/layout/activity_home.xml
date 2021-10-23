@@ -125,8 +125,9 @@
             </GridView>
 
             <LinearLayout
-                android:layout_width="407dp"
-                android:layout_height="99dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/LinearLayoutBtnConductor"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
@@ -134,33 +135,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/gvHomeProximosVIajes">
 
                 <Button
-                    android:id="@+id/btnMisSolicitudes"
-                    android:layout_width="205dp"
-                    android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:text="Mis Solicitudes" />
-
-                <Button
-                    android:id="@+id/btnBuscarSolicitudes"
+                    android:id="@+id/btnHomeRedireccionarAViajes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Buscar Solicitudes" />
-
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="161dp"
-                    android:layout_height="59dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/gris"
+                    android:backgroundTint="@color/custom6"
                     android:onClick="onClickMisViajes"
                     android:text="@string/MisViajes"
                     android:textColor="@color/white" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/btnHomeRedireccionarABusqueda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
