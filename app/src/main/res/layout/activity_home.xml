@@ -154,6 +154,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/gris"
+                    android:onClick="onClickBuscar"
                     android:text="@string/BuscarViajes"
                     android:textColor="@color/white" />
 

@@ -111,6 +111,11 @@ public class Home extends AppCompatActivity {
         startActivity(pagMisViajes);
     }
 
+    public void onClickBuscar (View view) {
+        Intent intent= new Intent(context, Buscar.class);
+        startActivity(intent);
+    }
+
     private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
