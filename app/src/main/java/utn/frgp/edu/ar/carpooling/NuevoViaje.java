@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
@@ -98,6 +100,9 @@ public class NuevoViaje extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCantPasajeros.setAdapter(adapter);
 
+        fechaViaje.setFocusable(false);
+        fechaViaje.setFocusableInTouchMode(false);
+        fechaViaje.setInputType(InputType.TYPE_NULL);
         fechaViaje.requestFocus();
         new CargarSpinnersProvincias().execute();
     }
@@ -143,7 +148,7 @@ public class NuevoViaje extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onClickCrearViaje(View view){
+    public void onClickCrearViaje(View view) throws ExecutionException, InterruptedException {
 
         nuevoViaje = new Viaje();
 
@@ -182,7 +187,7 @@ public class NuevoViaje extends AppCompatActivity {
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
         if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
-            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -192,7 +197,15 @@ public class NuevoViaje extends AppCompatActivity {
             return;
         }*/
 
-        new AltaNuevoViaje().execute();
+        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
+        if(retorno){
+            new AltaNuevoViaje().execute();
+        }
+        else{
+            Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs!.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
 
 
     }
