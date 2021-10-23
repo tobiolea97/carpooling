@@ -26,10 +26,10 @@ public class Home extends AppCompatActivity {
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
     GridView grillaViajes;
-    Button MisViajes,BuscarSolicitudes,MisSolicitudes,BuscarViajes;
+    Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("Inicio");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -42,10 +42,8 @@ public class Home extends AppCompatActivity {
         grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
         cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeCalificaciones);
         cantidadCalificaciones.setText("");
-        MisViajes=findViewById(R.id.button3);
-        BuscarSolicitudes=findViewById(R.id.btnBuscarSolicitudes);
-        MisSolicitudes=findViewById(R.id.btnMisSolicitudes);
-        BuscarViajes= findViewById(R.id.button4);
+        btnRedireccionarAMisViajes=findViewById(R.id.btnHomeRedireccionarAViajes);
+        btnRedireccionarABusqueda=findViewById(R.id.btnHomeRedireccionarABusqueda);
         Info = findViewById(R.id.tvPreRegistroTitulo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
@@ -55,12 +53,12 @@ public class Home extends AppCompatActivity {
         rolUsuario = spSesion.getString("Rol","No hay datos");
 
         if(rolUsuario.equals("CON")){
-            MisSolicitudes.setVisibility(View.INVISIBLE);
-            BuscarViajes.setVisibility(View.INVISIBLE);
+            btnRedireccionarAMisViajes.setText("Mis viajes");
+            btnRedireccionarABusqueda.setText("Buscar solicitudes");
         }
         else{
-            MisViajes.setVisibility(View.INVISIBLE);
-            BuscarSolicitudes.setVisibility(View.INVISIBLE);
+            btnRedireccionarAMisViajes.setText("Mis solicitudes");
+            btnRedireccionarABusqueda.setText("Buscar viajes");
         }
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
