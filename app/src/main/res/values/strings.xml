@@ -43,6 +43,7 @@
     <string name="CrearViaje">Crear Viaje</string>
     <string name="BuscarViajes">Buscar Viajes</string>
     <string name="MisViajes">Mis Viajes</string>
+    <string name="Buscar">Buscar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
