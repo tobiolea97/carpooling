@@ -16,6 +16,8 @@ import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
+import com.google.android.material.chip.Chip;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -32,16 +34,17 @@ import utn.frgp.edu.ar.carpooling.entities.Provincia;
 
 public class Buscar extends AppCompatActivity {
 
-    AlertDialog filtroDialog;
-    View dialogFragmentView;
+    AlertDialog filtroDialog, filtroDialog2;
+    View dialogFragmentView, dialogFragmentView1;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     GridView grillaViajes;
     Context context;
-    Spinner spFiltroProvincia, spFiltroCiudades;
+    Spinner spFiltroProvinciaOrigen, spFiltroCiudadesOrigen, spFiltroProvinciaDestino, spFiltroCiudadesDestino;
     ArrayList<String> listaCiudadesOrigen;
     List<Ciudad> itemsCiudadesOrigen;
     Provincia provOrigSelecc;
     List<Provincia> itemsProvincias;
+    Chip chOrigen,chDestino, chFecha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,19 @@ public class Buscar extends AppCompatActivity {
 
         LayoutInflater inflater = this.getLayoutInflater();
         dialogFragmentView = inflater.inflate(R.layout.fragment_filtro_provincia_ciudad, null);
-        spFiltroProvincia = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias);
-        spFiltroCiudades = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadCiudades);
+        spFiltroProvinciaOrigen = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias);
+        spFiltroCiudadesOrigen = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadCiudades);
 
-        spFiltroProvincia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        LayoutInflater inflater2 = this.getLayoutInflater();
+        dialogFragmentView1 = inflater2.inflate(R.layout.fragment_filtro_provincia_ciudad, null);
+        spFiltroProvinciaDestino = dialogFragmentView1.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias);
+        spFiltroProvinciaDestino = dialogFragmentView1.findViewById(R.id.spFragmentFiltroProvinciaCiudadCiudades);
+
+        chOrigen = (Chip) findViewById(R.id.chBuscarOrigen);
+        chDestino = (Chip) findViewById(R.id.chBuscarDestino);
+        chFecha = (Chip) findViewById(R.id.chBuscarFecha);
+
+        spFiltroProvinciaOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
@@ -79,9 +91,25 @@ public class Buscar extends AppCompatActivity {
 
             }
         });
+        spFiltroProvinciaDestino.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
 
-        crearFiltroDialog ();
+                if(position == 0) return;
 
+                provOrigSelecc = itemsProvincias.get(position - 1);
+                //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
+                new CargarSpinnersCiudadesDestino().execute();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        crearFiltroDialog();
 
         new CargarProximosViajes().execute();
         new CargarFiltroProvinciaSpinners().execute();
@@ -160,17 +188,34 @@ public class Buscar extends AppCompatActivity {
         filtroDialog.show();
     }
 
+    public void onClickFiltrarDestino (View view) {
+        filtroDialog2.show();
+    }
+
     private void crearFiltroDialog () {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogFragmentView)
                 .setPositiveButton(R.string.Aplicar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        chOrigen.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
                     }
                 })
                 .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {}
                 });
         filtroDialog = builder.create();
+
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+        builder2.setView(dialogFragmentView)
+                .setPositiveButton(R.string.Aplicar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        chDestino.setText("Hasta " + spFiltroCiudadesDestino.getSelectedItem() + ", " + spFiltroProvinciaDestino.getSelectedItem().toString());
+                    }
+                })
+                .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
+        filtroDialog2 = builder2.create();
     }
 
     private class CargarFiltroProvinciaSpinners extends AsyncTask<String,Integer, ResultSet> {
@@ -194,9 +239,8 @@ public class Buscar extends AppCompatActivity {
 
                 ArrayAdapter<String> adapterProvincias = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, provincias);
                 adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spFiltroProvincia.setAdapter(adapterProvincias);
-
-
+                spFiltroProvinciaOrigen.setAdapter(adapterProvincias);
+                spFiltroProvinciaDestino.setAdapter(adapterProvincias);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -262,7 +306,61 @@ public class Buscar extends AppCompatActivity {
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spFiltroCiudades.setAdapter(adapter);
+                spFiltroCiudadesOrigen.setAdapter(adapter);
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargarSpinnersCiudadesDestino extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                //SI EL OBJETO DE PROV SELECCIONADA FUE CARGADO, SIGNIFICA QUE FUE SELECCIONADO DEL SPINNER.
+                if(provOrigSelecc != null){
+                    query = "SELECT * FROM Ciudades WHERE ProvinciaId=" + provOrigSelecc.getIdProvincia();
+                }
+                else{
+                    query = "SELECT * FROM Ciudades";
+                }
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                listaCiudadesOrigen = new ArrayList<String>();
+                itemsCiudadesOrigen = new ArrayList<Ciudad>();
+
+                while (resultados.next()) {
+                    Ciudad ciudad = new Ciudad(resultados.getInt("Id"),resultados.getInt("ProvinciaId"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro"));
+                    listaCiudadesOrigen.add(ciudad.getNombre());
+                    //CARGO LA LISTA GLOBAL PARA DESPUES PODES BUSCAR EL ELEMENTO SELECCIONADO
+                    itemsCiudadesOrigen.add(ciudad);
+
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFiltroCiudadesOrigen.setAdapter(adapter);
 
             }
             catch (SQLException e) {
