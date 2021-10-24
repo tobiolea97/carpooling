@@ -31,6 +31,7 @@ public class Ver_Viajes extends AppCompatActivity {
     Context contexto;
     GridView grillaverViaje;
     String NroViaje;
+    String EstadoViaje;
     TextView TituloPasajeros;
     ListView Pasajeros;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
@@ -50,6 +51,7 @@ public class Ver_Viajes extends AppCompatActivity {
 
 
         NroViaje=getIntent().getStringExtra("NroViaje");
+        EstadoViaje=getIntent().getStringExtra("EstadoViaje");
         grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
         Pasajeros=findViewById(R.id.LVPasajeros);
         TituloPasajeros=findViewById(R.id.textView10);

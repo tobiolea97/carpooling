@@ -57,12 +57,14 @@ public class MisViajes extends AppCompatActivity {
                 String[] partspt2 = part2.split(",");
                 String part3 = partspt2[0]; // 123
 
-                //Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+
 
 
 
                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
+                pagVerViaje.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerViaje);
 
 
@@ -232,11 +234,12 @@ public class MisViajes extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado",resultados.getString("EstadoViaje"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
             }
@@ -253,7 +256,8 @@ public class MisViajes extends AppCompatActivity {
         query += " 		    pr1.Nombre ProvinciaOrigen,";
         query += "          ci1.Nombre CiudadOrigen,";
         query += "          pr2.Nombre ProvinciaDestino,";
-        query += "          ci2.Nombre CiudadDestino";
+        query += "          ci2.Nombre CiudadDestino,";
+        query += "          vj.EstadoViaje";
         query += " FROM Viajes vj";
         query += rolUsuario.equals("PAS") ? " INNER JOIN PasajerosPorViaje ppv ON ppv.ViajeId = vj.Id" : "";
         query += " LEFT JOIN Provincias pr1";
