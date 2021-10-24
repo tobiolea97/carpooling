@@ -30,6 +30,7 @@ public class Ver_Viajes extends AppCompatActivity {
     Context contexto;
     GridView grillaverViaje;
     String NroViaje;
+    String EstadoViaje;
     TextView TituloPasajeros;
     ListView Pasajeros;
 
@@ -39,6 +40,7 @@ public class Ver_Viajes extends AppCompatActivity {
         setContentView(R.layout.activity_ver_viajes);
         contexto = this;
         NroViaje=getIntent().getStringExtra("NroViaje");
+        EstadoViaje=getIntent().getStringExtra("EstadoViaje");
         grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
         Pasajeros=findViewById(R.id.LVPasajeros);
         TituloPasajeros=findViewById(R.id.textView10);
