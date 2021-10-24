@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button login;
     Context context;
     private Spinner spRol;
-    int c=0;
+    int c=1;
     private View Info;
 
     @Override
@@ -208,8 +208,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     else{
+                        Toast.makeText(MainActivity.this, "Datos Incorrectos Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
                         c++;
-                        Toast.makeText(MainActivity.this, "Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
+
 
                     }
 
@@ -288,12 +289,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     if(c==3){
-                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos cierre la aplicacion para volver intentar", Toast.LENGTH_SHORT).show();
                         login.setEnabled(false);
                     }
                     else{
+                        Toast.makeText(MainActivity.this, " Datos Incorrectos Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
                         c++;
-                        Toast.makeText(MainActivity.this, "Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
                     }
 
                 }

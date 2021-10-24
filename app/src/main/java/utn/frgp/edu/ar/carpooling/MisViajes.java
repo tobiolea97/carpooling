@@ -61,7 +61,6 @@ public class MisViajes extends AppCompatActivity {
                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
                 startActivity(pagVerViaje);
-                finish();
 
 
                 //Para viaje finalizado

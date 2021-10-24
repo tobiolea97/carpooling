@@ -59,6 +59,7 @@ public class Home extends AppCompatActivity {
         else{
             btnRedireccionarAMisViajes.setText("Mis solicitudes");
             btnRedireccionarABusqueda.setText("Buscar viajes");
+
         }
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);

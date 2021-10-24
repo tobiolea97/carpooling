@@ -59,7 +59,6 @@ public class Ver_Viajes extends AppCompatActivity {
                     pagVerPasajero.putExtra("NumeroTelefono",Numero);
 
                     startActivity(pagVerPasajero);
-                    finish();
                 }
             }
         });
