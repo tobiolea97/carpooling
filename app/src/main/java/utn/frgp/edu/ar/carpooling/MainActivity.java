@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         try {
             Info = findViewById(R.id.tvPreRegistroTitulo);
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);

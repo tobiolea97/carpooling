@@ -46,6 +46,7 @@ public class NuevoViaje extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
     //LOS LIST SON PARA PODER BUSCAR EL OBJETO CORRESPONDIENTE AL ITEM SELECCIONADO EN EL SPINNER
@@ -83,6 +84,13 @@ public class NuevoViaje extends AppCompatActivity {
         spCiudadesDestino= (Spinner) findViewById(R.id.spCiudadDestino);
 
         contexto = this;
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
 
         provDestSelecc = null;
         provOrigSelecc = null;

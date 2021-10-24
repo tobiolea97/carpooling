@@ -29,10 +29,9 @@ public class Home extends AppCompatActivity {
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getSupportActionBar().setTitle("Inicio");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         context = this;
         st1 = (ImageView) findViewById(R.id.ivHomeStar1);
         st2 = (ImageView) findViewById(R.id.ivHomeStar2);
@@ -51,7 +50,7 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
             btnRedireccionarABusqueda.setText("Buscar solicitudes");

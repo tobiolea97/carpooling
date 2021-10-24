@@ -3,6 +3,7 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
     String NroViaje,Numero;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
     GridView grillaVerPasajero;
@@ -35,6 +37,15 @@ public class VerPasajero extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_pasajero);
         contexto = this;
+
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre","No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
+
         NroViaje=getIntent().getStringExtra("NroViaje");
         Numero=getIntent().getStringExtra("NumeroTelefono");
         Nombre=findViewById(R.id.TxtVpNombre);

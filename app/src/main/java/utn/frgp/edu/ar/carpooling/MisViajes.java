@@ -27,7 +27,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroCiudDestino;
     Spinner spFiltroEstado;
     GridView grillaViajes;
-    String emailUsuario, rolUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
     Context contexto;
 
     @Override
@@ -39,8 +39,11 @@ public class MisViajes extends AppCompatActivity {
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         contexto = this;
         grillaViajes = (GridView) findViewById(R.id.gvMisViajes);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

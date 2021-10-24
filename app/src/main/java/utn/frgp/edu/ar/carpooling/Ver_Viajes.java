@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -32,12 +33,22 @@ public class Ver_Viajes extends AppCompatActivity {
     String NroViaje;
     TextView TituloPasajeros;
     ListView Pasajeros;
-
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_viajes);
         contexto = this;
+
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre","No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
+
+
         NroViaje=getIntent().getStringExtra("NroViaje");
         grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
         Pasajeros=findViewById(R.id.LVPasajeros);
