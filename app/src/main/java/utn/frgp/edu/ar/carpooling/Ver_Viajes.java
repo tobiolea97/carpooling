@@ -14,6 +14,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,7 +34,7 @@ public class Ver_Viajes extends AppCompatActivity {
     String NroViaje;
     String EstadoViaje;
     TextView TituloPasajeros;
-    ListView Pasajeros;
+    ListView Pasajeros,Solicitudes;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +55,12 @@ public class Ver_Viajes extends AppCompatActivity {
         EstadoViaje=getIntent().getStringExtra("EstadoViaje");
         grillaverViaje= (GridView) findViewById(R.id.GrVerviaje);
         Pasajeros=findViewById(R.id.LVPasajeros);
+        Solicitudes=findViewById(R.id.LvSolicitudes);
         TituloPasajeros=findViewById(R.id.textView10);
 
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
+        new CargarSolicitudes().execute();
 
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -256,6 +259,149 @@ public class Ver_Viajes extends AppCompatActivity {
             }
             catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+
+    private class CargarSolicitudes extends AsyncTask<Void,Integer,ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT 	usu.Nombre,";
+                query += "  	    usu.Apellido,";
+                query += " 		    usu.Telefono";
+                query += " FROM Solicitudes sol";
+                query += " Inner join Usuarios usu";
+                query += " ON usu.Email=sol.PasajeroEmail";
+                query += " 	Where	sol.IdViaje='" + NroViaje + "'";
+                query += " 	And	 sol.EstadoRegistro=1";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                ArrayList<String> Solicitudess= new ArrayList<String>();
+
+                while (resultados.next()) {
+                    Solicitudess.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
+
+                }
+
+
+
+                ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Solicitudess);
+                Solicitudes.setAdapter(adapter);
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+//Botones imagen Buttons
+
+    public void CancelarViaje(View view){
+
+        new CancelarViaje().execute();
+
+    }
+    private class CancelarViaje extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	Viajes vj";
+                query += "  	    SET";
+                query += " 		    EstadoViaje='Cancelado'";
+                query += " 	Where	vj.Id='" + NroViaje + "'";
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El  viaje a sido Cancelado!.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo cancelar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public void FinalizarViaje(View view){
+
+        new FinalizarViaje().execute();
+
+    }
+    private class FinalizarViaje extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	Viajes vj";
+                query += "  	    SET";
+                query += " 		    EstadoViaje='Finalizado'";
+                query += " 	Where	vj.Id='" + NroViaje + "'";
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El  viaje a sido Finalizado!.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo finalizar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
