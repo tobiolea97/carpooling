@@ -73,6 +73,8 @@ public class Home extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
 
+
+
         return true;
     }
 
@@ -80,6 +82,11 @@ public class Home extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
         if(id == R.id.misViajes) {
             finish();
             Intent intent = new Intent(this, MisViajes.class);
@@ -104,6 +111,25 @@ public class Home extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     public void onClickMisViajes (View view) {

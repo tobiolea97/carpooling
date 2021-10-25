@@ -127,7 +127,7 @@ public class NuevoViaje extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.inicio) {
+        if(id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
@@ -153,6 +153,22 @@ public class NuevoViaje extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
