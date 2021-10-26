@@ -84,6 +84,20 @@ public class Ver_Viajes extends AppCompatActivity {
         });
 
 
+
+        Solicitudes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String Email="";
+
+                Email=IdSolicitudes.get(i);
+
+                System.out.println(Email+" solicitudes");
+            }
+        });
+
+
+
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
 
@@ -282,7 +296,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
-                query += " 		    usu.Telefono";
+                query += " 		    usu.Telefono,";
+                query += " 		    usu.Email";
                 query += " FROM Solicitudes sol";
                 query += " Inner join Usuarios usu";
                 query += " ON usu.Email=sol.PasajeroEmail";
@@ -302,10 +317,10 @@ public class Ver_Viajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 ArrayList<String> Solicitudess= new ArrayList<String>();
-
+                IdSolicitudes=new ArrayList<>();
                 while (resultados.next()) {
                     Solicitudess.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
-
+                    IdSolicitudes.add(resultados.getString("Email"));
                 }
 
 
