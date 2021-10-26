@@ -35,6 +35,10 @@ public class Ver_Viajes extends AppCompatActivity {
     String EstadoViaje;
     TextView TituloPasajeros;
     ListView Pasajeros,Solicitudes;
+
+    ArrayList<String> EmailPasajeros;
+    ArrayList<String> IdSolicitudes;
+
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +70,13 @@ public class Ver_Viajes extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
-                    String Numero = "";
+                    String Email = "";
                     String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                    String part2 = parts[1];
-                    Numero = part2;
+                    Email=EmailPasajeros.get(i);
+
                     Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
                     pagVerPasajero.putExtra("NroViaje",NroViaje);
-                    pagVerPasajero.putExtra("NumeroTelefono",Numero);
+                    pagVerPasajero.putExtra("Email",Email);
 
                     startActivity(pagVerPasajero);
                 }
@@ -158,6 +162,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
+                query += " 		    usu.Email,";
                 query += " 		    vj.CantidadPasajeros";
                 query += " FROM Viajes vj";
                 query += " Inner join PasajerosPorViaje pv";
@@ -181,11 +186,13 @@ public class Ver_Viajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 ArrayList<String> pasajeros= new ArrayList<String>();
+                EmailPasajeros= new ArrayList<>();
                 int PasajerosABordo=0;
                 String CantidadAsientos="";
                 while (resultados.next()) {
                     PasajerosABordo++;
                   pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
+                    EmailPasajeros.add(resultados.getString("Email"));
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 

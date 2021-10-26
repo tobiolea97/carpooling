@@ -27,7 +27,7 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
-    String NroViaje,Numero;
+    String NroViaje,Email;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
@@ -47,7 +47,7 @@ public class VerPasajero extends AppCompatActivity {
 
 
         NroViaje=getIntent().getStringExtra("NroViaje");
-        Numero=getIntent().getStringExtra("NumeroTelefono");
+        Email=getIntent().getStringExtra("Email");
         Nombre=findViewById(R.id.TxtVpNombre);
         Telefono=findViewById(R.id.TxtVpNumero);
         Rating=findViewById(R.id.RBVpPasajero);
@@ -73,7 +73,7 @@ public class VerPasajero extends AppCompatActivity {
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono";
                 query += " FROM Usuarios usu";
-                query += " 	Where	usu.Telefono='" + Numero + "'";
+                query += " 	Where	usu.Email='" + Email + "'";
                 return st.executeQuery(query);
 
             } catch (ClassNotFoundException | SQLException e) {
@@ -116,7 +116,7 @@ public class VerPasajero extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Telefono='" + Numero + "'";
+                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + Email + "'";
 
 
                 return st.executeQuery(query);
@@ -161,7 +161,7 @@ public class VerPasajero extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Telefono='" + Numero + "'";
+                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + Email + "'";
 
 
                 return st.executeQuery(query);
