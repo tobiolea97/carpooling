@@ -27,7 +27,7 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
-    String NroViaje,Email;
+    String NroViaje,Email,EstadoViaje;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
@@ -48,16 +48,29 @@ public class VerPasajero extends AppCompatActivity {
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         Email=getIntent().getStringExtra("Email");
+        EstadoViaje = getIntent().getStringExtra("EstadoViaje");
         Nombre=findViewById(R.id.TxtVpNombre);
         Telefono=findViewById(R.id.TxtVpNumero);
         Rating=findViewById(R.id.RBVpPasajero);
         CantidadCalificaciones=findViewById(R.id.TxtVPViajocon);
         grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
+
+
+        Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
+
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                String hola;
+            }
+        });
         new CargarDatos().execute();
         new CargarCalificaciones().execute();
         new ContarCalificaciones().execute();
         new CargarViajeSeleccionado().execute();
 
+        if(EstadoViaje.equals("Finalizado")){
+            Rating.setIsIndicator(true);
+        }
     }
 
     private class CargarDatos extends AsyncTask<Void,Integer, ResultSet> {

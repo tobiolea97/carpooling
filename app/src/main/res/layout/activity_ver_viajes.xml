@@ -127,7 +127,7 @@
             <ListView
                 android:id="@+id/LVPasajeros"
                 android:layout_width="407dp"
-                android:layout_height="272dp"
+                android:layout_height="133dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="44dp"
                 app:layout_constraintStart_toStartOf="parent"

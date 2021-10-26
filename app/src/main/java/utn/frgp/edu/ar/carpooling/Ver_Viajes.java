@@ -64,7 +64,16 @@ public class Ver_Viajes extends AppCompatActivity {
 
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
-        new CargarSolicitudes().execute();
+
+        if(EstadoViaje.equals("Finalizado")){
+            Solicitudes.setVisibility(View.INVISIBLE);
+            TextView txtSolicitudes = findViewById(R.id.TxtSolicitudes);
+            txtSolicitudes.setVisibility(View.INVISIBLE);
+        }
+        else{
+            new CargarSolicitudes().execute();
+        }
+
 
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,7 +86,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
                     pagVerPasajero.putExtra("NroViaje",NroViaje);
                     pagVerPasajero.putExtra("Email",Email);
-
+                    pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
                     startActivity(pagVerPasajero);
                 }
             }
