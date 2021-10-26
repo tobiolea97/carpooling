@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Buscar">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutBuscar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btnBuscarOrigen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/amarillo1"
+            android:onClick="onClickFiltrarOrigen"
+            android:text="Origen/Destino"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnBuscarFecha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/amarillo1"
+            android:text="Fecha"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutFiltrosAplicados2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="1dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutBuscar">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFiltrosAplicados"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutBuscar">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chBuscarOrigen"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="0dp"
+                android:padding="1sp"
+                android:text="Desde cualquier origen"
+                android:textSize="12dp"
+                app:textEndPadding="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chBuscarFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:padding="1sp"
+                android:text="Cualquier fecha"
+                android:textSize="12dp"
+                app:textEndPadding="1dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFiltrosAplicados3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:padding="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutBuscar">
+
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chBuscarDestino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:padding="1sp"
+                android:text="Hacia cualquier destino"
+                android:textSize="12dp"
+                app:textEndPadding="1dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/gvHomeProximosVIajes"
+        android:layout_width="0dp"
+        android:layout_height="500dp"
+        android:layout_margin="10sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:numColumns="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutFiltrosAplicados2">
+
+    </GridView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,6 +48,7 @@ public class NuevoViaje extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
     //LOS LIST SON PARA PODER BUSCAR EL OBJETO CORRESPONDIENTE AL ITEM SELECCIONADO EN EL SPINNER
@@ -85,6 +86,13 @@ public class NuevoViaje extends AppCompatActivity {
         spCiudadesDestino= (Spinner) findViewById(R.id.spCiudadDestino);
 
         contexto = this;
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
 
         provDestSelecc = null;
         provOrigSelecc = null;
@@ -119,7 +127,7 @@ public class NuevoViaje extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.inicio) {
+        if(id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
@@ -145,6 +153,22 @@ public class NuevoViaje extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

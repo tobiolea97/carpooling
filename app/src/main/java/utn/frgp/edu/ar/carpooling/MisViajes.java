@@ -27,7 +27,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroCiudDestino;
     Spinner spFiltroEstado;
     GridView grillaViajes;
-    String emailUsuario, rolUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
     Context contexto;
 
     @Override
@@ -39,8 +39,11 @@ public class MisViajes extends AppCompatActivity {
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         contexto = this;
         grillaViajes = (GridView) findViewById(R.id.gvMisViajes);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -63,7 +66,6 @@ public class MisViajes extends AppCompatActivity {
                 pagVerViaje.putExtra("NroViaje",part3);
                 pagVerViaje.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerViaje);
-                finish();
 
 
                 //Para viaje finalizado
@@ -99,7 +101,7 @@ public class MisViajes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.inicio) {
+        if(id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
@@ -124,6 +126,22 @@ public class MisViajes extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     public void ClickAgregarNuevoViaje(View view){

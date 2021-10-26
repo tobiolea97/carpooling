@@ -3,6 +3,7 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -26,7 +27,8 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 public class VerVIajeFinalizado extends AppCompatActivity {
     Context contexto;
     GridView grillaverViajeFinalizado;
-    String NroViaje;
+    String NroViaje,nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+
     ListView Pasajeros;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,15 @@ public class VerVIajeFinalizado extends AppCompatActivity {
         NroViaje=getIntent().getStringExtra("NroViaje");
         grillaverViajeFinalizado= (GridView) findViewById(R.id.GrVerViajeFinalizado);
         Pasajeros=findViewById(R.id.LvVerViajeFInalizado);
+
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre","No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
+
         new CargarViajeFinalizado().execute();
         new CargarPasajeros().execute();
     }

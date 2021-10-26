@@ -26,13 +26,12 @@ public class Home extends AppCompatActivity {
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
     GridView grillaViajes;
-    Button MisViajes,BuscarSolicitudes,MisSolicitudes,BuscarViajes;
+    Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getSupportActionBar().setTitle("");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         context = this;
         st1 = (ImageView) findViewById(R.id.ivHomeStar1);
         st2 = (ImageView) findViewById(R.id.ivHomeStar2);
@@ -42,10 +41,8 @@ public class Home extends AppCompatActivity {
         grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
         cantidadCalificaciones = (TextView)findViewById(R.id.ivHomeCalificaciones);
         cantidadCalificaciones.setText("");
-        MisViajes=findViewById(R.id.button3);
-        BuscarSolicitudes=findViewById(R.id.btnBuscarSolicitudes);
-        MisSolicitudes=findViewById(R.id.btnMisSolicitudes);
-        BuscarViajes= findViewById(R.id.button4);
+        btnRedireccionarAMisViajes=findViewById(R.id.btnHomeRedireccionarAViajes);
+        btnRedireccionarABusqueda=findViewById(R.id.btnHomeRedireccionarABusqueda);
         Info = findViewById(R.id.tvPreRegistroTitulo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
@@ -53,14 +50,15 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         if(rolUsuario.equals("CON")){
-            MisSolicitudes.setVisibility(View.INVISIBLE);
-            BuscarViajes.setVisibility(View.INVISIBLE);
+            btnRedireccionarAMisViajes.setText("Mis viajes");
+            btnRedireccionarABusqueda.setText("Buscar solicitudes");
         }
         else{
-            MisViajes.setVisibility(View.INVISIBLE);
-            BuscarSolicitudes.setVisibility(View.INVISIBLE);
+            btnRedireccionarAMisViajes.setText("Mis solicitudes");
+            btnRedireccionarABusqueda.setText("Buscar viajes");
+
         }
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
@@ -75,6 +73,8 @@ public class Home extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
 
+
+
         return true;
     }
 
@@ -82,6 +82,11 @@ public class Home extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
         if(id == R.id.misViajes) {
             finish();
             Intent intent = new Intent(this, MisViajes.class);
@@ -108,9 +113,33 @@ public class Home extends AppCompatActivity {
         return super.onOptionsItemSelected(opcionMenu);
     }
 
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
+    }
+
     public void onClickMisViajes (View view) {
         Intent pagMisViajes= new Intent(context, MisViajes.class);
         startActivity(pagMisViajes);
+    }
+
+    public void onClickBuscar (View view) {
+        Intent intent= new Intent(context, Buscar.class);
+        startActivity(intent);
     }
 
     private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
@@ -230,7 +259,7 @@ public class Home extends AppCompatActivity {
                 query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : "";
                 query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
-                query += " ORDER BY FechaHoraInicio ASC";
+                query += " ORDER BY FechaHoraInicio DESC";
                 query += " LIMIT 3";
 
                 return st.executeQuery(query);
