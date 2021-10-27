@@ -1,16 +1,19 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -21,6 +24,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,16 +43,19 @@ public class Ver_Viajes extends AppCompatActivity {
     String EstadoViaje;
     TextView TituloPasajeros;
     ListView Pasajeros,Solicitudes;
-
     ArrayList<String> EmailPasajeros;
     ArrayList<String> IdSolicitudes;
-
+    ImageButton cancelar,finalizar,editar;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    TextView tituloCancelar,tituloFinalizar,tituloEditar;
+    String localDateviaje;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_viajes);
         contexto = this;
+
+
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
@@ -61,6 +72,13 @@ public class Ver_Viajes extends AppCompatActivity {
         Pasajeros=findViewById(R.id.LVPasajeros);
         Solicitudes=findViewById(R.id.LvSolicitudes);
         TituloPasajeros=findViewById(R.id.textView10);
+        cancelar=findViewById(R.id.imageButton4);
+        finalizar=findViewById(R.id.imageButton5);
+        editar=findViewById(R.id.imageButton3);
+        tituloCancelar=findViewById(R.id.textView12);
+        tituloFinalizar=findViewById(R.id.textView13);
+        tituloEditar=findViewById(R.id.textView9);
+
 
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
@@ -69,6 +87,12 @@ public class Ver_Viajes extends AppCompatActivity {
             Solicitudes.setVisibility(View.INVISIBLE);
             TextView txtSolicitudes = findViewById(R.id.TxtSolicitudes);
             txtSolicitudes.setVisibility(View.INVISIBLE);
+            cancelar.setVisibility(View.INVISIBLE);
+            finalizar.setVisibility(View.INVISIBLE);
+            editar.setVisibility(View.INVISIBLE);
+            tituloCancelar.setVisibility(View.INVISIBLE);
+            tituloFinalizar.setVisibility(View.INVISIBLE);
+            tituloEditar.setVisibility(View.INVISIBLE);
         }
         else{
             new CargarSolicitudes().execute();
@@ -122,7 +146,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino";
+                query += "          ci2.Nombre CiudadDestino,";
+                query += "          vj.FechaHoraFinalizacion";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -159,6 +184,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     itemsGrilla.add(item);
+                    localDateviaje=resultados.getString("FechaHoraFinalizacion");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
@@ -195,6 +221,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " 	Where	pv.ViajeId='" + NroViaje + "'";
                 query += " 	And	 pv.EstadoRegistro=1";
                 query += " 	And	 usu.Rol='PAS'";
+                query += " 	And	 pv.EstadoPasajero='Aceptado'";
 
                 return st.executeQuery(query);
 
@@ -307,11 +334,11 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
                 query += " 		    usu.Email";
-                query += " FROM Solicitudes sol";
-                query += " Inner join Usuarios usu";
-                query += " ON usu.Email=sol.PasajeroEmail";
-                query += " 	Where	sol.IdViaje='" + NroViaje + "'";
-                query += " 	And	 sol.EstadoRegistro=1";
+                query += " FROM Usuarios usu";
+                query += " Inner join PasajerosPorViaje pv";
+                query += " ON usu.Email=pv.UsuarioEmail";
+                query += " 	Where	pv.ViajeId='" + NroViaje + "'";
+                query += " 	And	 pv.EstadoPasajero='Pendiente'";
 
                 return st.executeQuery(query);
 
@@ -392,9 +419,34 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void FinalizarViaje(View view){
 
-        new FinalizarViaje().execute();
+        LocalDateTime localDatee= LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        //OffsetDateTime odt = OffsetDateTime.parse ( localDateviaje , DateTimeFormatter.ofPattern ( "yyyy-MM-dd HH:mm:ss" ) ) ;
+        //LocalDateTime dateTime = LocalDateTime.parse(localDateviaje, formatter);
+        //no me anda nose por que, probe con offdsetdatetime pero tampoco me tira el error "java.time.format.DateTimeParseException: Text '2021-10-11 05:00:00.0' could not be parsed, unparsed text found at index 19" Fran!!
+       // LocalDateTime Viajefinalizado = formatter.format(localDateviaje);
+        //System.out.println(odt+"    el del viaje");
+        System.out.println(localDatee+"    el de hoy");
+
+
+
+
+
+//int comparacion = horario.compareTo((localDateviaje));
+/*
+if(comparacion>0){
+
+    System.out.println("es mayor la fecha de hoy");
+}
+else{
+    System.out.println("es mayor la fecha de finalizacion");
+}*/
+
+       // new FinalizarViaje().execute();
 
     }
     private class FinalizarViaje extends AsyncTask<Void,Integer,Boolean> {
