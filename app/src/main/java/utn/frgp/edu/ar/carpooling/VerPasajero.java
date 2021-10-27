@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -56,13 +57,18 @@ public class VerPasajero extends AppCompatActivity {
         grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
 
 
-        Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
-
+        Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                String hola;
+                float nroEstrellas=0;
+
+
+                Toast.makeText(contexto,"Califico con: " + rating + " estrellas.",Toast.LENGTH_LONG).show();
+
             }
         });
+
+
         new CargarDatos().execute();
         new CargarCalificaciones().execute();
         new ContarCalificaciones().execute();
