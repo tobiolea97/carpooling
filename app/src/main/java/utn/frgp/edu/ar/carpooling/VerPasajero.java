@@ -3,10 +3,13 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
@@ -33,6 +36,7 @@ public class VerPasajero extends AppCompatActivity {
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
     GridView grillaVerPasajero;
+    Button botoncancelar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,18 @@ public class VerPasajero extends AppCompatActivity {
         Rating=findViewById(R.id.RBVpPasajero);
         CantidadCalificaciones=findViewById(R.id.TxtVPViajocon);
         grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
+        botoncancelar=findViewById(R.id.BtnVpCancelar);
+
+        botoncancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CancelarPasajero().execute();
+                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+                pagVerViaje.putExtra("NroViaje",NroViaje);
+                pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
+                startActivity(pagVerViaje);
+            }
+        });
 
 
         Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -274,6 +290,46 @@ public class VerPasajero extends AppCompatActivity {
         }
     }
 
+
+    private class CancelarPasajero extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	PasajerosPorViaje vj";
+                query += "  	    SET";
+                query += " 		    EstadoPasajero='Cancelado'";
+                query += " 	Where	vj.ViajeId='" + NroViaje + "'";
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El  Pasajero a sido destituido de este viaje!.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo destituir el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 
 }
