@@ -10,29 +10,17 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 
@@ -55,16 +43,12 @@ public class Ver_Viajes extends AppCompatActivity {
         setContentView(R.layout.activity_ver_viajes);
         contexto = this;
 
-
-
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
-
-
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         EstadoViaje=getIntent().getStringExtra("EstadoViaje");
@@ -79,7 +63,6 @@ public class Ver_Viajes extends AppCompatActivity {
         tituloFinalizar=findViewById(R.id.textView13);
         tituloEditar=findViewById(R.id.textView9);
 
-
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
 
@@ -93,11 +76,9 @@ public class Ver_Viajes extends AppCompatActivity {
             tituloCancelar.setVisibility(View.INVISIBLE);
             tituloFinalizar.setVisibility(View.INVISIBLE);
             tituloEditar.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             new CargarSolicitudes().execute();
         }
-
 
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -116,21 +97,14 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         });
 
-
-
         Solicitudes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String Email="";
-
                 Email=IdSolicitudes.get(i);
-
                 System.out.println(Email+" solicitudes");
             }
         });
-
-
-
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
 
@@ -160,9 +134,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " 	Where	vj.Id='" + NroViaje + "'";
                 query += " ORDER BY FechaHoraInicio ASC";
 
-
                 return st.executeQuery(query);
-
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -176,7 +148,6 @@ public class Ver_Viajes extends AppCompatActivity {
                 List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
 
                 while (resultados.next()) {
-
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));
                     item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
@@ -200,7 +171,6 @@ public class Ver_Viajes extends AppCompatActivity {
     }
 
     private class CargarPasajeros extends AsyncTask<Void,Integer,ResultSet> {
-
         @Override
         protected ResultSet doInBackground(Void... voids) {
             try {
@@ -241,78 +211,21 @@ public class Ver_Viajes extends AppCompatActivity {
                 String CantidadAsientos="";
                 while (resultados.next()) {
                     PasajerosABordo++;
-                  pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
+                    pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
                     EmailPasajeros.add(resultados.getString("Email"));
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
-                int cantidadasientos=Integer.parseInt(CantidadAsientos);
-
-                switch(cantidadasientos){
-
-                    case 4:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-
-                        }
-                        if(PasajerosABordo==2){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==3){
-                            pasajeros.add("Libre");
-                        }
-
-                        break;
-                    case 3:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==2){
-                            pasajeros.add("Libre");
-                        }
-
-                    break;
-                    case 2:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                            pasajeros.add("Libre");
-                        }
-                        if(PasajerosABordo==1){
-                            pasajeros.add("Libre");
-                        }
-
-                    break;
-                    case 1:
-                        if(PasajerosABordo==0){
-                            pasajeros.add("Libre");
-                        }
-                     break;
-
-                }
+                ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(CantidadAsientos), PasajerosABordo);
+                if (asientosLibres.size() > 0) pasajeros.addAll(asientosLibres);
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
-               Pasajeros.setAdapter(adapter);
-               if(PasajerosABordo==0){
-                   TituloPasajeros.setText("Pasajeros");
-               }else {
-                   TituloPasajeros.setText("Pasajeros" + PasajerosABordo + "/" + CantidadAsientos);
-               }
+                Pasajeros.setAdapter(adapter);
+                if (PasajerosABordo==0) {
+                    TituloPasajeros.setText("Pasajeros");
+                } else {
+                    TituloPasajeros.setText("Pasajeros" + PasajerosABordo + "/" + CantidadAsientos);
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -320,6 +233,14 @@ public class Ver_Viajes extends AppCompatActivity {
         }
     }
 
+    private ArrayList<String> agregarAsientosLibres(int cantAsientos, int asientosOcupados) {
+        int asientosLibres = cantAsientos - asientosOcupados;
+        ArrayList<String> arrAsientosLibres = new ArrayList<String>();
+        for (int i = 0; i < asientosLibres; i++) {
+            arrAsientosLibres.add("Libre");
+        }
+        return arrAsientosLibres;
+    }
 
     private class CargarSolicitudes extends AsyncTask<Void,Integer,ResultSet> {
 
@@ -359,11 +280,8 @@ public class Ver_Viajes extends AppCompatActivity {
                     IdSolicitudes.add(resultados.getString("Email"));
                 }
 
-
-
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Solicitudess);
                 Solicitudes.setAdapter(adapter);
-
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -371,15 +289,10 @@ public class Ver_Viajes extends AppCompatActivity {
         }
     }
 
-
-
-//Botones imagen Buttons
-
     public void CancelarViaje(View view){
-
         new CancelarViaje().execute();
-
     }
+
     private class CancelarViaje extends AsyncTask<Void,Integer,Boolean> {
 
         @Override
@@ -394,9 +307,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " 		    EstadoViaje='Cancelado'";
                 query += " 	Where	vj.Id='" + NroViaje + "'";
 
-
                 int resultado = st.executeUpdate(query);
-
 
                 if(resultado>0){
                     return true;
@@ -420,37 +331,18 @@ public class Ver_Viajes extends AppCompatActivity {
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void FinalizarViaje(View view){
+    public void FinalizarViaje(View view) throws ParseException {
+        String fechaInicio = ((TextView)findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString();
+        String horaInicio = ((TextView)findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString();
+        fechaInicio = fechaInicio.replace("/21", "/2021");
+        LocalDateTime hoy= LocalDateTime.now();
+        LocalDateTime inicioViaje = LocalDateTime.parse(fechaInicio + " " + horaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
-        LocalDateTime localDatee= LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        //OffsetDateTime odt = OffsetDateTime.parse ( localDateviaje , DateTimeFormatter.ofPattern ( "yyyy-MM-dd HH:mm:ss" ) ) ;
-        //LocalDateTime dateTime = LocalDateTime.parse(localDateviaje, formatter);
-        //no me anda nose por que, probe con offdsetdatetime pero tampoco me tira el error "java.time.format.DateTimeParseException: Text '2021-10-11 05:00:00.0' could not be parsed, unparsed text found at index 19" Fran!!
-       // LocalDateTime Viajefinalizado = formatter.format(localDateviaje);
-        //System.out.println(odt+"    el del viaje");
-        System.out.println(localDatee+"    el de hoy");
-
-
-
-
-
-//int comparacion = horario.compareTo((localDateviaje));
-/*
-if(comparacion>0){
-
-    System.out.println("es mayor la fecha de hoy");
-}
-else{
-    System.out.println("es mayor la fecha de finalizacion");
-}*/
-
-       // new FinalizarViaje().execute();
-
+        if (hoy.compareTo(inicioViaje) > 0) new FinalizarViaje().execute();
+        else Toast.makeText(contexto, "El viaje no puede finalizarse antes de comenzar", Toast.LENGTH_SHORT).show();
     }
-    private class FinalizarViaje extends AsyncTask<Void,Integer,Boolean> {
 
+    private class FinalizarViaje extends AsyncTask<Void,Integer,Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
@@ -463,15 +355,9 @@ else{
                 query += " 		    EstadoViaje='Finalizado'";
                 query += " 	Where	vj.Id='" + NroViaje + "'";
 
-
                 int resultado = st.executeUpdate(query);
 
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -482,7 +368,7 @@ else{
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El  viaje a sido Finalizado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El viaje a sido Finalizado!", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo finalizar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
