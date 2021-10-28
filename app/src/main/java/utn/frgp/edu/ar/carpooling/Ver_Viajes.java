@@ -102,7 +102,11 @@ public class Ver_Viajes extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String Email="";
                 Email=IdSolicitudes.get(i);
-                System.out.println(Email+" solicitudes");
+
+                Intent pagResponderSoli= new Intent(contexto,ResponderSolicitud.class);
+                pagResponderSoli.putExtra("NroViaje",NroViaje);
+                pagResponderSoli.putExtra("Email",Email);
+                startActivity(pagResponderSoli);
             }
         });
     }

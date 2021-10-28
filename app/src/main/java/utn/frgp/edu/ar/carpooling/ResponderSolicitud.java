@@ -4,11 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RatingBar;
@@ -27,60 +25,48 @@ import java.util.List;
 import java.util.Map;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
-import utn.frgp.edu.ar.carpooling.utils.Helper;
 
-public class VerPasajero extends AppCompatActivity {
+public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
-    String NroViaje,Email,EstadoViaje;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
-    TextView Nombre,Telefono,CantidadCalificaciones;
+    TextView Nombre,viajocon;
+    String Email,NroViaje;
     RatingBar Rating;
-    GridView grillaVerPasajero;
-    Button botoncancelar;
+    Button botoncancelar,botonaceptar;
+    GridView grillaVerViaje;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ver_pasajero);
+        setContentView(R.layout.activity_responder_solicitud);
         contexto = this;
-
-        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nombreUsuario = spSesion.getString("Nombre","No hay datos");
-        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
-        emailUsuario = spSesion.getString("Email","No hay datos");
-        rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
-
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         Email=getIntent().getStringExtra("Email");
-        EstadoViaje = getIntent().getStringExtra("EstadoViaje");
-        Nombre=findViewById(R.id.TxtVpNombre);
-        Telefono=findViewById(R.id.TxtVpNumero);
-        Rating=findViewById(R.id.RBVpPasajero);
-        CantidadCalificaciones=findViewById(R.id.TxtVPViajocon);
-        grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
-        botoncancelar=findViewById(R.id.BtnVpCancelar);
+        Nombre=findViewById(R.id.TxtNombreRespSol);
+        Rating=findViewById(R.id.ratingBarResponderSoli);
+        viajocon=findViewById(R.id.TxtViajoRespSol);
+        grillaVerViaje=(GridView) findViewById(R.id.GrResponderSoli);
+        botoncancelar=findViewById(R.id.btnResponderSoliRechazar);
+        botonaceptar=findViewById(R.id.btnRespSoliAceptar);
 
         botoncancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new CancelarPasajero().execute();
-                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-                pagVerViaje.putExtra("NroViaje",NroViaje);
-                pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
-                startActivity(pagVerViaje);
+                new RechazarPasajero().execute();
+               // Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+                //pagVerViaje.putExtra("NroViaje",NroViaje);
+                //pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
+               // startActivity(pagVerViaje);
             }
         });
 
-
-        Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        botonaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                float nroEstrellas=0;
-
-
-                Toast.makeText(contexto,"Califico con: " + rating + " estrellas.",Toast.LENGTH_LONG).show();
-
+            public void onClick(View view) {
+                new AceptarPasajero().execute();
+                // Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+                //pagVerViaje.putExtra("NroViaje",NroViaje);
+                //pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
+                // startActivity(pagVerViaje);
             }
         });
 
@@ -89,12 +75,7 @@ public class VerPasajero extends AppCompatActivity {
         new CargarCalificaciones().execute();
         new ContarCalificaciones().execute();
         new CargarViajeSeleccionado().execute();
-
-        if(EstadoViaje.equals("Finalizado")){
-            Rating.setIsIndicator(true);
-        }
     }
-
     private class CargarDatos extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
@@ -124,9 +105,9 @@ public class VerPasajero extends AppCompatActivity {
 
 
                 while (resultados.next()) {
-   Nombre.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
+                    Nombre.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
 
-   Telefono.setText(resultados.getString("Telefono"));
+
 
                 }
 
@@ -140,7 +121,6 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
     }
-
     private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
@@ -185,7 +165,6 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
     }
-
     private class ContarCalificaciones extends AsyncTask<Void,Integer,ResultSet> {
 
         @Override
@@ -216,7 +195,7 @@ public class VerPasajero extends AppCompatActivity {
                     cantidad = resultados.getInt("cantidad");
                 }
 
-                CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
+                viajocon.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
 
             }
             catch (SQLException e) {
@@ -224,7 +203,6 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
     }
-
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
 
         @Override
@@ -281,7 +259,7 @@ public class VerPasajero extends AppCompatActivity {
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
-                grillaVerPasajero.setAdapter(simpleAdapter);
+                grillaVerViaje.setAdapter(simpleAdapter);
 
             }
             catch (Exception e) {
@@ -291,7 +269,7 @@ public class VerPasajero extends AppCompatActivity {
     }
 
 
-    private class CancelarPasajero extends AsyncTask<Void,Integer,Boolean> {
+    private class RechazarPasajero extends AsyncTask<Void,Integer,Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -302,7 +280,7 @@ public class VerPasajero extends AppCompatActivity {
                 String query = "";
                 query += " UPDATE 	PasajerosPorViaje vj";
                 query += "  	    SET";
-                query += " 		    EstadoPasajero='Cancelado'";
+                query += " 		    EstadoPasajero='Rechazado'";
                 query += " 	Where	vj.UsuarioEmail='" + Email + "' and vj.ViajeId='" + NroViaje + "'";
 
 
@@ -324,12 +302,50 @@ public class VerPasajero extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El  Pasajero a sido destituido de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La solicitud fue rechazada correctamente.", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(contexto, "No se pudo destituir el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo rechazar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    private class AceptarPasajero extends AsyncTask<Void,Integer,Boolean> {
 
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	PasajerosPorViaje vj";
+                query += "  	    SET";
+                query += " 		    EstadoPasajero='Aceptado'";
+                query += " 	Where	vj.UsuarioEmail='" + Email + "' and vj.ViajeId='" + NroViaje + "'";
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo Aceptar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
