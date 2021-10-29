@@ -35,6 +35,7 @@ public class Ver_Viajes extends AppCompatActivity {
     ArrayList<String> IdSolicitudes;
     ImageButton cancelar,finalizar,editar;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String CantidadAsientos;
     TextView tituloCancelar,tituloFinalizar,tituloEditar;
     String localDateviaje;
     @Override
@@ -109,6 +110,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 startActivity(pagResponderSoli);
             }
         });
+
+
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
 
@@ -125,7 +128,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
                 query += "          ci2.Nombre CiudadDestino,";
-                query += "          vj.FechaHoraFinalizacion";
+                query += "          vj.FechaHoraFinalizacion,";
+                query += "          vj.CantidadPasajeros";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -160,6 +164,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
+                    CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
@@ -185,8 +190,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
-                query += " 		    usu.Email,";
-                query += " 		    vj.CantidadPasajeros";
+                query += " 		    usu.Email";
                 query += " FROM Viajes vj";
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON pv.ViajeId=vj.Id";
@@ -212,12 +216,11 @@ public class Ver_Viajes extends AppCompatActivity {
                 ArrayList<String> pasajeros= new ArrayList<String>();
                 EmailPasajeros= new ArrayList<>();
                 int PasajerosABordo=0;
-                String CantidadAsientos="";
                 while (resultados.next()) {
                     PasajerosABordo++;
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
                     EmailPasajeros.add(resultados.getString("Email"));
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
+
                 }
 
                 ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(CantidadAsientos), PasajerosABordo);
@@ -226,7 +229,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
                 Pasajeros.setAdapter(adapter);
                 if (PasajerosABordo==0) {
-                    TituloPasajeros.setText("Pasajeros");
+                    TituloPasajeros.setText("Pasajeros " + PasajerosABordo + "/" + CantidadAsientos);
                 } else {
                     TituloPasajeros.setText("Pasajeros" + PasajerosABordo + "/" + CantidadAsientos);
                 }

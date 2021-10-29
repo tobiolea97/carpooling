@@ -29,7 +29,7 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
     TextView Nombre,viajocon;
-    String Email,NroViaje;
+    String Email,NroViaje,Asientos,Pasajeros;
     RatingBar Rating;
     Button botoncancelar,botonaceptar;
     GridView grillaVerViaje;
@@ -62,7 +62,9 @@ public class ResponderSolicitud extends AppCompatActivity {
         botonaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AceptarPasajero().execute();
+                new CargarAsientosDisponibles().execute();
+
+
                 // Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 //pagVerViaje.putExtra("NroViaje",NroViaje);
                 //pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
@@ -75,6 +77,7 @@ public class ResponderSolicitud extends AppCompatActivity {
         new CargarCalificaciones().execute();
         new ContarCalificaciones().execute();
         new CargarViajeSeleccionado().execute();
+
     }
     private class CargarDatos extends AsyncTask<Void,Integer, ResultSet> {
 
@@ -345,6 +348,64 @@ public class ResponderSolicitud extends AppCompatActivity {
                 Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo Aceptar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class CargarAsientosDisponibles extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT 	vj.CantidadPasajeros,";
+                query += "  	  Count(pv.UsuarioEmail) as Pasajeros";
+                query += " FROM Viajes vj";
+                query += " Inner join PasajerosPorViaje pv";
+                query += " ON pv.ViajeId=vj.Id";
+                query += " 	Where	pv.EstadoPasajero='Aceptado' and vj.Id='" + NroViaje + "'";
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+
+
+                while (resultados.next()) {
+
+                    Asientos=resultados.getString("CantidadPasajeros");
+                    Pasajeros=resultados.getString("Pasajeros");
+
+
+
+                }
+int resultado=(Integer.parseInt(Asientos)-Integer.parseInt(Pasajeros))-1;
+
+              if(resultado>=0&&resultado<=Integer.parseInt(Asientos)){
+                  new AceptarPasajero().execute();
+
+              }
+              else{
+                  Toast.makeText(contexto, "No se pudo Aceptar la solicitud  ya que la cantidad de asiento .", Toast.LENGTH_SHORT).show();
+
+              }
+
+
+
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
