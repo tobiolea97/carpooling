@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
@@ -66,6 +67,28 @@ public class viajeNegImpl implements viajeNeg {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public LocalDate ObtenerFechaFinalizacionViaje(int NroViaje) throws ExecutionException, InterruptedException {
+        Date fechaFinalizacion = null;
+        objOrigViaje = new Viaje();
+        objOrigViaje.setIdViaje(NroViaje);
+
+        //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
+        ResultSet resultado = new ObtenerFechaFinalizacion().execute().get();
+
+        try {
+            while (resultado.next()) {
+                fechaFinalizacion = resultado.getDate("FechaHoraFinalizacion");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return LocalDate.of(fechaFinalizacion.getYear(),fechaFinalizacion.getMonth(),fechaFinalizacion.getDay());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private class buscarViajeEnRangoTiempo extends AsyncTask<Void,Integer, ResultSet>{
 
         @Override
@@ -88,6 +111,28 @@ public class viajeNegImpl implements viajeNeg {
 
                 //QUERY PARA PODER PROBAR
                 query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '2021-10-27 11:00:00' AND '2021-10-27 15:15:00') AND ConductorEmail = 'tobi@mail.com'" ;
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private class ObtenerFechaFinalizacion extends AsyncTask<Void,Integer, ResultSet>{
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                query = "SELECT * FROM Viajes WHERE Id = " + objOrigViaje.getIdViaje() ;
 
                 return st.executeQuery(query);
 
