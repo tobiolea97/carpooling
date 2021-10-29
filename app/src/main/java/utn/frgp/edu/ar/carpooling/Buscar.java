@@ -3,6 +3,7 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -12,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 
@@ -65,11 +68,8 @@ public class Buscar extends AppCompatActivity {
         dialogFragmentView = inflater.inflate(R.layout.fragment_filtro_provincia_ciudad, null);
         spFiltroProvinciaOrigen = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias);
         spFiltroCiudadesOrigen = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadCiudades);
-
-        LayoutInflater inflater2 = this.getLayoutInflater();
-        dialogFragmentView1 = inflater2.inflate(R.layout.fragment_filtro_provincia_ciudad, null);
-        spFiltroProvinciaDestino = dialogFragmentView1.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias);
-        spFiltroProvinciaDestino = dialogFragmentView1.findViewById(R.id.spFragmentFiltroProvinciaCiudadCiudades);
+        spFiltroProvinciaDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias3);
+        spFiltroCiudadesDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias4);
 
         chOrigen = (Chip) findViewById(R.id.chBuscarOrigen);
         chDestino = (Chip) findViewById(R.id.chBuscarDestino);
@@ -92,6 +92,7 @@ public class Buscar extends AppCompatActivity {
 
             }
         });
+
         spFiltroProvinciaDestino.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -183,6 +184,24 @@ public class Buscar extends AppCompatActivity {
         }
     }
 
+    public void onClickFecha(View view) {
+
+        DatePickerViajeFragment newFragment = DatePickerViajeFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                String selectedDate =
+                        (day < 10 ? "0" + day :  day) + "/" +
+                                (month + 1 < 10 ? "0" + (month+1) : (month+1)) +"/" +
+                                year;
+                chFecha.setText("Despues del " + selectedDate);
+            }
+        });
+
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+
+    }
+
 
     // Dialogo de busuqeda de pronvicia
     public void onClickFiltrarOrigen (View view) {
@@ -198,7 +217,16 @@ public class Buscar extends AppCompatActivity {
         builder.setView(dialogFragmentView)
                 .setPositiveButton(R.string.Aplicar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        chOrigen.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
+                        //Toast.makeText(context,"Texto: " + (spFiltroProvinciaOrigen.getSelectedItem() == null ? "null" : "not null"),Toast.LENGTH_LONG);
+
+                        Object item = spFiltroProvinciaOrigen.getSelectedItem();
+
+                        if(!spFiltroProvinciaOrigen.getSelectedItem().equals(" "))
+                            chOrigen.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem().toString() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
+                        else chOrigen.setText("Desde cualquier origen");
+                        if(!spFiltroProvinciaDestino.getSelectedItem().equals(" "))
+                            chDestino.setText("Hacia " + spFiltroCiudadesDestino.getSelectedItem().toString() + ", " + spFiltroProvinciaDestino.getSelectedItem().toString());
+                        else chDestino.setText("Hacia cualquier destino");
                     }
                 })
                 .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
@@ -220,6 +248,36 @@ public class Buscar extends AppCompatActivity {
     }
 
     private class CargarFiltroProvinciaSpinners extends AsyncTask<String,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(String... strings) {
+            return ejecutarQuery("SELECT * FROM Provincias");
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                List<String> provincias = new ArrayList<String>();
+                itemsProvincias = new ArrayList<Provincia>();
+                provincias.add(" ");
+
+                while (resultados.next()) {
+                    provincias.add(resultados.getString("Nombre"));
+                    itemsProvincias.add(new Provincia(resultados.getInt("Id"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro")));
+                }
+
+                ArrayAdapter<String> adapterProvincias = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, provincias);
+                adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFiltroProvinciaOrigen.setAdapter(adapterProvincias);
+                spFiltroProvinciaDestino.setAdapter(adapterProvincias);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargarFiltroProvinciaDestinoSpinners extends AsyncTask<String,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(String... strings) {
             return ejecutarQuery("SELECT * FROM Provincias");
@@ -361,7 +419,7 @@ public class Buscar extends AppCompatActivity {
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spFiltroCiudadesOrigen.setAdapter(adapter);
+                spFiltroCiudadesDestino.setAdapter(adapter);
 
             }
             catch (SQLException e) {
