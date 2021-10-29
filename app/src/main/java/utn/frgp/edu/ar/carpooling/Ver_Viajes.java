@@ -86,12 +86,15 @@ public class Ver_Viajes extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
                     String Email = "";
+                    String Rol = "";
                     String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                    Email=EmailPasajeros.get(i);
+                    Email=EmailPasajeros.get(i).split("-")[0];
+                    Rol = EmailPasajeros.get(i).split("-")[1];
 
                     Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
                     pagVerPasajero.putExtra("NroViaje",NroViaje);
-                    pagVerPasajero.putExtra("Email",Email);
+                    pagVerPasajero.putExtra("EmailVerUsuario",Email);
+                    pagVerPasajero.putExtra("RolVerUsuario",Rol);
                     pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
                     startActivity(pagVerPasajero);
                 }
@@ -190,7 +193,9 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
-                query += " 		    usu.Email";
+                query += " 		    usu.Email,";
+                query += " 		    usu.Rol,";
+                query += " 		    vj.CantidadPasajeros";
                 query += " FROM Viajes vj";
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON pv.ViajeId=vj.Id";
@@ -219,8 +224,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 while (resultados.next()) {
                     PasajerosABordo++;
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
-                    EmailPasajeros.add(resultados.getString("Email"));
-
+                    EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
+                    CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(CantidadAsientos), PasajerosABordo);
