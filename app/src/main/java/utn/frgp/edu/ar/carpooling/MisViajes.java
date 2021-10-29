@@ -27,7 +27,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroCiudDestino;
     Spinner spFiltroEstado;
     GridView grillaViajes;
-    String emailUsuario, rolUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
     Context contexto;
 
     @Override
@@ -39,8 +39,11 @@ public class MisViajes extends AppCompatActivity {
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         contexto = this;
         grillaViajes = (GridView) findViewById(R.id.gvMisViajes);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -54,14 +57,22 @@ public class MisViajes extends AppCompatActivity {
                 String[] partspt2 = part2.split(",");
                 String part3 = partspt2[0]; // 123
 
-                //Toast.makeText(contexto, "asd2  "+part3, Toast.LENGTH_SHORT).show();
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
 
 
-                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+
+               Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
+                pagVerViaje.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerViaje);
-                finish();
+
+
+                //Para viaje finalizado
+               /* Intent pagVerViajeFinalizado= new Intent(contexto,VerVIajeFinalizado.class);
+                pagVerViajeFinalizado.putExtra("NroViaje",part3);
+                startActivity(pagVerViajeFinalizado);
+                finish();*/
             }
         });
         LayoutInflater inflater = this.getLayoutInflater();
@@ -90,7 +101,7 @@ public class MisViajes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.inicio) {
+        if(id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
@@ -115,6 +126,22 @@ public class MisViajes extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     public void ClickAgregarNuevoViaje(View view){
@@ -223,11 +250,12 @@ public class MisViajes extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado",resultados.getString("EstadoViaje"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
             }
@@ -244,7 +272,8 @@ public class MisViajes extends AppCompatActivity {
         query += " 		    pr1.Nombre ProvinciaOrigen,";
         query += "          ci1.Nombre CiudadOrigen,";
         query += "          pr2.Nombre ProvinciaDestino,";
-        query += "          ci2.Nombre CiudadDestino";
+        query += "          ci2.Nombre CiudadDestino,";
+        query += "          vj.EstadoViaje";
         query += " FROM Viajes vj";
         query += rolUsuario.equals("PAS") ? " INNER JOIN PasajerosPorViaje ppv ON ppv.ViajeId = vj.Id" : "";
         query += " LEFT JOIN Provincias pr1";

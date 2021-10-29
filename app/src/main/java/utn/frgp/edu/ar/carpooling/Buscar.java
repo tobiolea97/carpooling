@@ -57,6 +57,7 @@ public class Buscar extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
         context = this;
 

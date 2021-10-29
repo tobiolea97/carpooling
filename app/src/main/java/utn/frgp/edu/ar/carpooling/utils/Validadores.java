@@ -120,6 +120,10 @@ public class Validadores {
             password.setError("La contraseña debe tener al menos 8 caracteres");
             return false;
         }
+        if(password.getText().toString().length() >= 20) {
+            password.setError("Este campo admite un maximo de 20 characteres");
+            return false;
+        }
         password.setError(null);
         return flag;
     }

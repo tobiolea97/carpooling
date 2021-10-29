@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
@@ -46,6 +48,7 @@ public class NuevoViaje extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
     //LOS LIST SON PARA PODER BUSCAR EL OBJETO CORRESPONDIENTE AL ITEM SELECCIONADO EN EL SPINNER
@@ -83,6 +86,13 @@ public class NuevoViaje extends AppCompatActivity {
         spCiudadesDestino= (Spinner) findViewById(R.id.spCiudadDestino);
 
         contexto = this;
+        SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
+        apellidoUsuario = spSesion.getString("Apellido","No hay datos");
+        emailUsuario = spSesion.getString("Email","No hay datos");
+        rolUsuario = spSesion.getString("Rol","No hay datos");
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+
 
         provDestSelecc = null;
         provOrigSelecc = null;
@@ -98,6 +108,9 @@ public class NuevoViaje extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCantPasajeros.setAdapter(adapter);
 
+        fechaViaje.setFocusable(false);
+        fechaViaje.setFocusableInTouchMode(false);
+        fechaViaje.setInputType(InputType.TYPE_NULL);
         fechaViaje.requestFocus();
         new CargarSpinnersProvincias().execute();
     }
@@ -114,7 +127,7 @@ public class NuevoViaje extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.inicio) {
+        if(id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
@@ -141,9 +154,25 @@ public class NuevoViaje extends AppCompatActivity {
 
         return super.onOptionsItemSelected(opcionMenu);
     }
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onClickCrearViaje(View view){
+    public void onClickCrearViaje(View view) throws ExecutionException, InterruptedException {
 
         nuevoViaje = new Viaje();
 
@@ -182,7 +211,7 @@ public class NuevoViaje extends AppCompatActivity {
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
         if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
-            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -192,7 +221,15 @@ public class NuevoViaje extends AppCompatActivity {
             return;
         }*/
 
-        new AltaNuevoViaje().execute();
+        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
+        if(retorno){
+            new AltaNuevoViaje().execute();
+        }
+        else{
+            Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs!.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
 
 
     }

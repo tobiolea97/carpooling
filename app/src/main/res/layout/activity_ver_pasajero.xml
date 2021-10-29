@@ -58,8 +58,8 @@
 
             <RatingBar
                 android:id="@+id/RBVpPasajero"
-                android:layout_width="240dp"
-                android:layout_height="47dp"
+                android:layout_width="245dp"
+                android:layout_height="46dp"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="32dp"
                 app:layout_constraintStart_toStartOf="parent"

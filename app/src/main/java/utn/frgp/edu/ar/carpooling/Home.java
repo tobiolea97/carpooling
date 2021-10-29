@@ -29,10 +29,9 @@ public class Home extends AppCompatActivity {
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getSupportActionBar().setTitle("Inicio");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         context = this;
         st1 = (ImageView) findViewById(R.id.ivHomeStar1);
         st2 = (ImageView) findViewById(R.id.ivHomeStar2);
@@ -51,7 +50,7 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
             btnRedireccionarABusqueda.setText("Buscar solicitudes");
@@ -59,6 +58,7 @@ public class Home extends AppCompatActivity {
         else{
             btnRedireccionarAMisViajes.setText("Mis solicitudes");
             btnRedireccionarABusqueda.setText("Buscar viajes");
+
         }
 
         Info.setText(nombreUsuario + " " + apellidoUsuario);
@@ -73,6 +73,8 @@ public class Home extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
 
+
+
         return true;
     }
 
@@ -80,6 +82,11 @@ public class Home extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
         if(id == R.id.misViajes) {
             finish();
             Intent intent = new Intent(this, MisViajes.class);
@@ -104,6 +111,25 @@ public class Home extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem misviajes = menu.findItem(R.id.misViajes);
+        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+
+        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
+
+        
+
+        if(!rolUsuario.equals("CON")){
+            misviajes.setVisible(false);
+            CrearViaje.setVisible(false);
+        }
+
+
+
+        return true;
     }
 
     public void onClickMisViajes (View view) {
@@ -218,7 +244,8 @@ public class Home extends AppCompatActivity {
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino";
+                query += "          ci2.Nombre CiudadDestino,";
+                query += "          vj.EstadoViaje";
                 query += " FROM Viajes vj";
                 query += rolUsuario.equals("PAS") ? " INNER JOIN PasajerosPorViaje ppv ON ppv.ViajeId = vj.Id" : "";
                 query += " LEFT JOIN Provincias pr1";
@@ -232,7 +259,7 @@ public class Home extends AppCompatActivity {
                 query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : "";
                 query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
-                query += " ORDER BY FechaHoraInicio ASC";
+                query += " ORDER BY FechaHoraInicio DESC";
                 query += " LIMIT 3";
 
                 return st.executeQuery(query);
@@ -256,11 +283,12 @@ public class Home extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado", resultados.getString("EstadoViaje"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(context, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
 

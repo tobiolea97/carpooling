@@ -42,7 +42,7 @@ public class Registro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-
+        getSupportActionBar().setTitle("Carpooling");
         context = this;
         nombre = findViewById(R.id.etPreRegistroEmail);
         apellido = findViewById(R.id.etRegistroApellido);
