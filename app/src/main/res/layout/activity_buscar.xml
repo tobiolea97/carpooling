@@ -48,76 +48,60 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/clock" />
 
-            <LinearLayout
-                android:id="@+id/linearLayoutFiltrosAplicados2"
+            <ImageButton
+                android:id="@+id/imageButton6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded"
+                android:backgroundTint="#D7DCDD"
+                android:onClick="onClickBuscar"
+                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_search" />
+
+            <ImageButton
+                android:id="@+id/imageButton8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="176dp"
+                android:layout_marginTop="28dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded"
+                android:backgroundTint="#D7DCDD"
+                android:onClick="onClickFecha"
+                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_revert" />
+
+            <TextView
+                android:id="@+id/textView19"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginEnd="1dp"
-                android:orientation="vertical"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:gravity="center|left"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageButton">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutFiltrosAplicados"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutBuscar">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chBuscarOrigen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="0dp"
-                        android:backgroundTint="#FFD4E2"
-                        android:padding="1sp"
-                        android:text="Desde cualquier origen"
-                        android:textSize="12dp"
-                        app:textEndPadding="1dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chBuscarFecha"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:backgroundTint="#FFD4E2"
-                        android:padding="1sp"
-                        android:text="Cualquier fecha"
-                        android:textSize="12dp"
-                        app:textEndPadding="1dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayoutFiltrosAplicados3"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:padding="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutBuscar">
-
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chBuscarDestino"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:backgroundTint="#FFD4E2"
-                        android:padding="1sp"
-                        android:text="Hacia cualquier destino"
-                        android:textSize="12dp"
-                        app:textEndPadding="1dp" />
-
-                </LinearLayout>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:gravity="center|start|left|center_vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
             <GridView
                 android:id="@+id/gvHomeProximosVIajes"
@@ -125,17 +109,36 @@
                 android:layout_height="500dp"
                 android:layout_margin="10sp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="11dp"
                 android:layout_marginEnd="8dp"
                 android:gravity="center"
                 android:nestedScrollingEnabled="true"
                 android:numColumns="1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.51"
+                app:layout_constraintHorizontal_bias="0.333"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutFiltrosAplicados2">
+                app:layout_constraintTop_toBottomOf="@+id/textView25"></GridView>
 
-            </GridView>
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="46dp"
+                android:layout_marginEnd="19dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

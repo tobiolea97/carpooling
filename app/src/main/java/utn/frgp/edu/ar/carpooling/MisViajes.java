@@ -29,6 +29,7 @@ public class MisViajes extends AppCompatActivity {
     GridView grillaViajes;
     String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
     Context contexto;
+    String filterDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
