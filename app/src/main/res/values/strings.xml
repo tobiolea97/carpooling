@@ -49,6 +49,8 @@
 
     <!--  PANTALLA MIS VIAJES  -->
     <string name="Cancelar">Cancelar</string>
+    <string name="DesasignarPasajero">Desasignar pasajero</string>
+    <string name="Volver">Volver</string>
     <string name="Aplicar">Aplicar</string>
 
 </resources>

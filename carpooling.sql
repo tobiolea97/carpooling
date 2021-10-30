@@ -145,7 +145,7 @@ CREATE TABLE Calificaciones (
   CalificadorEmail varchar(30) NOT NULL,
   CalificadorRol varchar(3) NOT NULL,
   ViajeId int NOT NULL,
-  Calificacion smallint NOT NULL,
+  Calificacion float(3) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
   PRIMARY KEY (Id),
