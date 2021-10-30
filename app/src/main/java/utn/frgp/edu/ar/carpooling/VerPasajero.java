@@ -34,8 +34,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
 import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 
 public class VerPasajero extends AppCompatActivity {
@@ -141,8 +143,8 @@ public class VerPasajero extends AppCompatActivity {
 
         if(EstadoViaje.equals("Finalizado")){
 
-            botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
-            /*viajeNegImpl vNegImpl = new viajeNegImpl();
+           // botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
+            viajeNegImpl vNegImpl = new viajeNegImpl();
             LocalDate fechaFinalizacionViaje =  LocalDate.of(2020,10,01);
             try {
                 fechaFinalizacionViaje  = vNegImpl.ObtenerFechaFinalizacionViaje(Integer.parseInt(NroViaje));
@@ -158,16 +160,28 @@ public class VerPasajero extends AppCompatActivity {
 
             if(numberOFDays >= 1){
                 Rating.setIsIndicator(true);
-            }*/
+            }
         }
     }
 
-    public void ClickDesAsignarPasajero(View view){
-        new CancelarPasajero().execute();
-        Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-        pagVerViaje.putExtra("NroViaje",NroViaje);
-        pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
-        startActivity(pagVerViaje);
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void ClickDesAsignarPasajero(View view) throws ExecutionException, InterruptedException {
+
+        NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+        Notificaciones Noti = new Notificaciones();
+        Noti.setUsuarioEmail(EmailVerUsuario);
+        Noti.setUsuarioRolId(RolVerUsuario);
+        Noti.setMensaje("Mensaje");
+        Noti.setEstado(true);
+        NotiNeg.AñadirNotificacion(Noti);
+
+      //  new CancelarPasajero().execute();
+        //Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+        //pagVerViaje.putExtra("NroViaje",NroViaje);
+        //pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
+        //startActivity(pagVerViaje);
+
+
     }
 
     public void ClickVolver(View view){
