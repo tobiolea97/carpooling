@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
@@ -42,6 +43,7 @@ public class Buscar extends AppCompatActivity {
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     GridView grillaViajes;
     Context context;
+    TextView filtroRecorrido, filtroRecorridoDestino, filtroFecha;
     Spinner spFiltroProvinciaOrigen, spFiltroCiudadesOrigen, spFiltroProvinciaDestino, spFiltroCiudadesDestino;
     ArrayList<String> listaCiudadesOrigen;
     List<Ciudad> itemsCiudadesOrigen;
@@ -71,9 +73,9 @@ public class Buscar extends AppCompatActivity {
         spFiltroProvinciaDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias3);
         spFiltroCiudadesDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias4);
 
-        chOrigen = (Chip) findViewById(R.id.chBuscarOrigen);
-        chDestino = (Chip) findViewById(R.id.chBuscarDestino);
-        chFecha = (Chip) findViewById(R.id.chBuscarFecha);
+        filtroRecorrido = (TextView) findViewById(R.id.textView19);
+        filtroRecorridoDestino = (TextView) findViewById(R.id.textView20);
+        filtroFecha = (TextView) findViewById(R.id.textView25);
 
         spFiltroProvinciaOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -194,7 +196,7 @@ public class Buscar extends AppCompatActivity {
                         (day < 10 ? "0" + day :  day) + "/" +
                                 (month + 1 < 10 ? "0" + (month+1) : (month+1)) +"/" +
                                 year;
-                chFecha.setText("Despues del " + selectedDate);
+                filtroFecha.setText("Despues del " + selectedDate);
             }
         });
 
@@ -202,14 +204,14 @@ public class Buscar extends AppCompatActivity {
 
     }
 
+    public void onClickBuscar(View view) {
+        
+    }
+
 
     // Dialogo de busuqeda de pronvicia
     public void onClickFiltrarOrigen (View view) {
         filtroDialog.show();
-    }
-
-    public void onClickFiltrarDestino (View view) {
-        filtroDialog2.show();
     }
 
     private void crearFiltroDialog () {
@@ -222,11 +224,11 @@ public class Buscar extends AppCompatActivity {
                         Object item = spFiltroProvinciaOrigen.getSelectedItem();
 
                         if(!spFiltroProvinciaOrigen.getSelectedItem().equals(" "))
-                            chOrigen.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem().toString() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
-                        else chOrigen.setText("Desde cualquier origen");
+                            filtroRecorrido.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem().toString() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
+                        else filtroRecorrido.setText(" ");
                         if(!spFiltroProvinciaDestino.getSelectedItem().equals(" "))
-                            chDestino.setText("Hacia " + spFiltroCiudadesDestino.getSelectedItem().toString() + ", " + spFiltroProvinciaDestino.getSelectedItem().toString());
-                        else chDestino.setText("Hacia cualquier destino");
+                            filtroRecorridoDestino.setText("Hacia " + spFiltroCiudadesDestino.getSelectedItem().toString() + ", " + spFiltroProvinciaDestino.getSelectedItem().toString());
+                        else filtroRecorridoDestino.setText(" ");
                     }
                 })
                 .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
@@ -248,36 +250,6 @@ public class Buscar extends AppCompatActivity {
     }
 
     private class CargarFiltroProvinciaSpinners extends AsyncTask<String,Integer, ResultSet> {
-        @Override
-        protected ResultSet doInBackground(String... strings) {
-            return ejecutarQuery("SELECT * FROM Provincias");
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                List<String> provincias = new ArrayList<String>();
-                itemsProvincias = new ArrayList<Provincia>();
-                provincias.add(" ");
-
-                while (resultados.next()) {
-                    provincias.add(resultados.getString("Nombre"));
-                    itemsProvincias.add(new Provincia(resultados.getInt("Id"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro")));
-                }
-
-                ArrayAdapter<String> adapterProvincias = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, provincias);
-                adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spFiltroProvinciaOrigen.setAdapter(adapterProvincias);
-                spFiltroProvinciaDestino.setAdapter(adapterProvincias);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class CargarFiltroProvinciaDestinoSpinners extends AsyncTask<String,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(String... strings) {
             return ejecutarQuery("SELECT * FROM Provincias");
@@ -427,4 +399,6 @@ public class Buscar extends AppCompatActivity {
             }
         }
     }
+
+
 }
