@@ -143,7 +143,7 @@ public class VerPasajero extends AppCompatActivity {
 
         if(EstadoViaje.equals("Finalizado")){
 
-           // botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
+            botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
             viajeNegImpl vNegImpl = new viajeNegImpl();
             LocalDate fechaFinalizacionViaje =  LocalDate.of(2020,10,01);
             try {
@@ -167,19 +167,12 @@ public class VerPasajero extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void ClickDesAsignarPasajero(View view) throws ExecutionException, InterruptedException {
 
-        NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
-        Notificaciones Noti = new Notificaciones();
-        Noti.setUsuarioEmail(EmailVerUsuario);
-        Noti.setUsuarioRolId(RolVerUsuario);
-        Noti.setMensaje("Mensaje");
-        Noti.setEstado(true);
-        NotiNeg.AñadirNotificacion(Noti);
 
-      //  new CancelarPasajero().execute();
-        //Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-        //pagVerViaje.putExtra("NroViaje",NroViaje);
-        //pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
-        //startActivity(pagVerViaje);
+        new CancelarPasajero().execute();
+        Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+        pagVerViaje.putExtra("NroViaje",NroViaje);
+        pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
+        startActivity(pagVerViaje);
 
 
     }
@@ -421,10 +414,25 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioEmail(EmailVerUsuario);
+                Noti.setUsuarioRolId(RolVerUsuario);
+                Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(contexto, "El  Pasajero a sido destituido de este viaje!.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo destituir el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();

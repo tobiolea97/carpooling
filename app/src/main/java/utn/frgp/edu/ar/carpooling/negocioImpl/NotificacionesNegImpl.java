@@ -21,7 +21,7 @@ Notificaciones noti = new Notificaciones();
 
     public Boolean AñadirNotificacion(Notificaciones not) throws ExecutionException, InterruptedException {
 
-noti=not;
+        noti=not;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
         Boolean resultado =  new NotificacionesNegImpl.InsertarNotificacion().execute().get();
 
@@ -39,7 +39,6 @@ noti=not;
                 Statement st = con.createStatement();
 
                 String query = "";
-
                 query += "INSERT INTO Notificaciones";
                 query += "(UsuarioEmail,";
                 query += "UsuarioRol,";
@@ -51,7 +50,7 @@ noti=not;
                 query +=  "'" + noti.getUsuarioEmail() + "',";
                 query +=  "'" + noti.getUsuarioRolId()+ "',";
                 query +=  "'" + noti.getMensaje()+ "',";
-                query +=  "'Pendiente',";
+                query +=  "'" + noti.getEstadoNotificacion()+ "',";
                 query +=  "'" + noti.getEstado() + "'";
                 query += ")";
 

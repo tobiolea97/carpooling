@@ -7,17 +7,27 @@ public class Notificaciones {
     private String UsuarioEmail;
     private String UsuarioRolId;
     private String Mensaje;
-    private boolean estado;
+    private String EstadoNotificacion;
+    private int estado;
 
     public Notificaciones() {
     }
 
-    public Notificaciones(int id, String usuarioEmail, String usuarioRolId, String mensaje, boolean estado) {
+    public Notificaciones(int id, String usuarioEmail, String usuarioRolId, String mensaje, String estadoNotificacion, int estado) {
         this.id = id;
         UsuarioEmail = usuarioEmail;
         UsuarioRolId = usuarioRolId;
         Mensaje = mensaje;
+        EstadoNotificacion = estadoNotificacion;
         this.estado = estado;
+    }
+
+    public String getEstadoNotificacion() {
+        return EstadoNotificacion;
+    }
+
+    public void setEstadoNotificacion(String estadoNotificacion) {
+        EstadoNotificacion = estadoNotificacion;
     }
 
     public int getId() {
@@ -36,7 +46,7 @@ public class Notificaciones {
         return Mensaje;
     }
 
-    public boolean getEstado() {
+    public int getEstado() {
         return estado;
     }
 
@@ -56,7 +66,7 @@ public class Notificaciones {
         Mensaje = mensaje;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
     }
 }
