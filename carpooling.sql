@@ -209,7 +209,7 @@ VALUES ('matias@alvarado.com', 100, 1000, 103, 1012, '2021-11-01 20:15',1,'Pendi
 INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
 VALUES ('matias@alvarado.com', 100, 1000, 102, 1010, '2021-11-02 20:20',1,'Pendiente',1);
 INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
-VALUES ('matias@alvarado.com', 102, 1010, 103, 1012, '2021-12-12 20:20',1,'Pendiente',1);
+VALUES ('matias@alvarado.com', 102, 1010, 103, 1012, '2022-12-12 20:20',1,'Pendiente',1);
 INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
 VALUES ('matias@alvarado.com', 102, 1010, 103, 1015, '2021-11-02 20:20',1,'Pendiente',1);
 

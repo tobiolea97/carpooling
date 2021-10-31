@@ -260,7 +260,7 @@ public class Home extends AppCompatActivity {
                 query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " AND FechaHoraInicio > now()";
-                query += " ORDER BY FechaHoraInicio DESC";
+                query += " ORDER BY FechaHoraInicio ASC";
                 query += " LIMIT 3";
 
                 return st.executeQuery(query);
