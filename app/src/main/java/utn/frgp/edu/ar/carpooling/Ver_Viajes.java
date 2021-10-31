@@ -21,8 +21,11 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class Ver_Viajes extends AppCompatActivity {
     Context contexto;
@@ -332,10 +335,34 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+
+                for (String Email: EmailPasajeros) {
+                    String[] parts = Email.split("-");
+                    String emailpasajero = parts[0];
+                    String RolPasajero = parts[1];
+                    NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                    Notificaciones Noti = new Notificaciones();
+                    Noti.setUsuarioEmail(emailpasajero);
+                    Noti.setUsuarioRolId(RolPasajero);
+                    Noti.setMensaje(" El nro de viaje "+NroViaje+" fue cancelado");
+                    Noti.setEstadoNotificacion("P");
+                    Noti.setEstado(1);
+                    try {
+                        NotiNeg.AñadirNotificacion(Noti);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
                 Toast.makeText(contexto, "El  viaje a sido Cancelado!.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo cancelar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
