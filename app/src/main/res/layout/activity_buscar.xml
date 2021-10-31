@@ -52,29 +52,29 @@
                 android:id="@+id/imageButton6"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="104dp"
+                android:layout_marginStart="28dp"
                 android:layout_marginTop="28dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded"
-                android:backgroundTint="#D7DCDD"
+                android:backgroundTint="#FFEB3B"
                 android:onClick="onClickBuscar"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintStart_toEndOf="@+id/imageButton2"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_search" />
+                app:srcCompat="@drawable/search" />
 
             <ImageButton
                 android:id="@+id/imageButton8"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="176dp"
+                android:layout_marginStart="28dp"
                 android:layout_marginTop="28dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded"
-                android:backgroundTint="#D7DCDD"
-                android:onClick="onClickFecha"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                android:backgroundTint="#FFEB3B"
+                android:onClick="onClickLimpiarFiltros"
+                app:layout_constraintStart_toEndOf="@+id/imageButton6"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_revert" />
+                app:srcCompat="@drawable/trash" />
 
             <TextView
                 android:id="@+id/textView19"
@@ -85,6 +85,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:gravity="center|left"
+                android:text="Desde cualquier origen"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageButton" />
@@ -98,6 +99,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:gravity="center|start|left|center_vertical"
+                android:text="Hacia cualquier destino"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -126,6 +128,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
+                android:text="Cualquier fecha"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView20" />
