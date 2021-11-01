@@ -93,7 +93,10 @@ public class MisViajes extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
 
-                if(position == 0) return;
+                if(position == 0) {
+                    ResetSpinnerCiudadesOrigen();
+                    return;
+                }
 
                 provOrigSelecc = itemsProvincias.get(position - 1);
                 //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
@@ -111,7 +114,10 @@ public class MisViajes extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
 
-                if(position == 0) return;
+                if(position == 0) {
+                    ResetSpinnerCiudadesDestino();
+                    return;
+                }
 
                 provDestSelecc = itemsProvincias.get(position - 1);
                 //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
@@ -126,6 +132,8 @@ public class MisViajes extends AppCompatActivity {
 
         crearFiltroDialog(); // CREO EL DIALOG PERO NO LO ABRO. ASI NO CREAMOS UN DIALOG DE CERO CADA VEZ QUE ABRIMOS EL FILTRO
         cargarSpinnerEstado();
+        ResetSpinnerCiudadesOrigen();
+        ResetSpinnerCiudadesDestino();
 
         new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
         new CargarFiltroProvinciaSpinners().execute();
@@ -475,5 +483,19 @@ public class MisViajes extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void ResetSpinnerCiudadesOrigen() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("--NINGUNA--");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudOrigen.setAdapter(adapter);
+    }
+
+    public void ResetSpinnerCiudadesDestino() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("--NINGUNA--");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudDestino.setAdapter(adapter);
     }
 }
