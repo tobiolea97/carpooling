@@ -38,10 +38,10 @@ public class viajeNegImpl implements viajeNeg {
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA! JONNA
-        /*if(v.getFechaHoraInicio().compareTo(LocalDateTime.now())<0){
+        if(v.getFechaHoraInicio().compareTo(LocalDateTime.now())<0){
             valor = EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal();
         }
-        */
+        
         return valor;
     }
 
@@ -101,16 +101,16 @@ public class viajeNegImpl implements viajeNeg {
                 String query = "";
 
                 //HABILITENLO SI NO MORIMOS TODOS!!!!!   YO NO LO PUEDO PROBAR. JONNA
-                /*LocalDateTime fechaInicio,fechaFin;
+                LocalDateTime fechaInicio,fechaFin;
                 fechaInicio = objOrigViaje.getFechaHoraInicio().plusHours(-3);
-                fechaFin = objOrigViaje.getFechaHoraInicio().plusHours(+3);*/
+                fechaFin = objOrigViaje.getFechaHoraInicio().plusHours(+3);
 
                 //QUERY QUE HAY QUE HABILITAR!! YO NO LA PUEDO PROBAR. JONNA
-                //query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND ConductorEmail = '" + objOrigViaje.getEmailConductor() + "'" ;
+                query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND ConductorEmail = '" + objOrigViaje.getEmailConductor() + "'" ;
 
 
                 //QUERY PARA PODER PROBAR
-                query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '2021-10-27 11:00:00' AND '2021-10-27 15:15:00') AND ConductorEmail = 'tobi@mail.com'" ;
+                //query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '2021-10-27 11:00:00' AND '2021-10-27 15:15:00') AND ConductorEmail = 'tobi@mail.com'" ;
 
                 return st.executeQuery(query);
 

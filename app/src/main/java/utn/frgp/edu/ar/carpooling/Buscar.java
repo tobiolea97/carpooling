@@ -119,9 +119,9 @@ public class Buscar extends AppCompatActivity {
         spFiltroProvinciaDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias3);
         spFiltroCiudadesDestino = dialogFragmentView.findViewById(R.id.spFragmentFiltroProvinciaCiudadProvincias4);
 
-        filtroRecorrido = (TextView) findViewById(R.id.textView19);
-        filtroRecorridoDestino = (TextView) findViewById(R.id.textView20);
-        filtroFecha = (TextView) findViewById(R.id.textView25);
+        //filtroRecorrido = (TextView) findViewById(R.id.textView19);
+        //filtroRecorridoDestino = (TextView) findViewById(R.id.textView20);
+        //filtroFecha = (TextView) findViewById(R.id.textView25);
         filtroFechaQuery = (TextView) findViewById(R.id.textView22);
         filtroFechaQuery.setText(" ");
 
@@ -131,7 +131,10 @@ public class Buscar extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
 
-                if(position == 0) return;
+                if(position == 0) {
+                    ResetSpinnerCiudadesOrigen();
+                    return;
+                }
 
                 provOrigSelecc = itemsProvincias.get(position - 1);
                 //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
@@ -149,7 +152,10 @@ public class Buscar extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
 
-                if(position == 0) return;
+                if(position == 0) {
+                    ResetSpinnerCiudadesDestino();
+                    return;
+                }
 
                 provOrigSelecc = itemsProvincias.get(position - 1);
                 //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
@@ -178,8 +184,9 @@ public class Buscar extends AppCompatActivity {
                         (day < 10 ? "0" + day :  day) + "/" +
                                 (month + 1 < 10 ? "0" + (month+1) : (month+1)) +"/" +
                                 year;
-                filtroFecha.setText("Despues del " + selectedDate);
+                //filtroFecha.setText("Despues del " + selectedDate);
                 filtroFechaQuery.setText(year + "-" + (month + 1) + "-" + day);
+                onClickBuscar();
             }
         });
 
@@ -187,7 +194,7 @@ public class Buscar extends AppCompatActivity {
 
     }
 
-    public void onClickBuscar(View view) {
+    public void onClickBuscar(View... view) {
 
         String filtro = "";
         boolean flag = true; // el uso de este flag ya no tiene sentido, pero lo dejo por las dudas
@@ -258,12 +265,14 @@ public class Buscar extends AppCompatActivity {
 
                         Object item = spFiltroProvinciaOrigen.getSelectedItem();
 
-                        if(!spFiltroProvinciaOrigen.getSelectedItem().equals(" "))
+                        onClickBuscar();
+
+                        /*if(!spFiltroProvinciaOrigen.getSelectedItem().equals(" "))
                             filtroRecorrido.setText("Desde " + spFiltroCiudadesOrigen.getSelectedItem().toString() + ", " + spFiltroProvinciaOrigen.getSelectedItem().toString());
                         else filtroRecorrido.setText("Desde cualquier origen");
                         if(!spFiltroProvinciaDestino.getSelectedItem().equals(" "))
                             filtroRecorridoDestino.setText("Hacia " + spFiltroCiudadesDestino.getSelectedItem().toString() + ", " + spFiltroProvinciaDestino.getSelectedItem().toString());
-                        else filtroRecorridoDestino.setText("Hacia cualquier destino");
+                        else filtroRecorridoDestino.setText("Hacia cualquier destino");*/
                     }
                 })
                 .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
@@ -351,6 +360,8 @@ public class Buscar extends AppCompatActivity {
                 listaCiudadesOrigen = new ArrayList<String>();
                 itemsCiudadesOrigen = new ArrayList<Ciudad>();
 
+                listaCiudadesOrigen.add(" ");
+
                 while (resultados.next()) {
                     Ciudad ciudad = new Ciudad(resultados.getInt("Id"),resultados.getInt("ProvinciaId"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro"));
                     listaCiudadesOrigen.add(ciudad.getNombre());
@@ -405,13 +416,15 @@ public class Buscar extends AppCompatActivity {
                 listaCiudadesOrigen = new ArrayList<String>();
                 itemsCiudadesOrigen = new ArrayList<Ciudad>();
 
+                listaCiudadesOrigen.add(" ");
+
                 while (resultados.next()) {
                     Ciudad ciudad = new Ciudad(resultados.getInt("Id"),resultados.getInt("ProvinciaId"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro"));
                     listaCiudadesOrigen.add(ciudad.getNombre());
                     //CARGO LA LISTA GLOBAL PARA DESPUES PODES BUSCAR EL ELEMENTO SELECCIONADO
                     itemsCiudadesOrigen.add(ciudad);
-
                 }
+
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spFiltroCiudadesDestino.setAdapter(adapter);
@@ -490,6 +503,20 @@ public class Buscar extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void ResetSpinnerCiudadesOrigen() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(" ");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudadesOrigen.setAdapter(adapter);
+    }
+
+    public void ResetSpinnerCiudadesDestino() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(" ");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudadesDestino.setAdapter(adapter);
     }
 
 }

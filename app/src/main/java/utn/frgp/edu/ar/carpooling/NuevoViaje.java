@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -206,7 +207,7 @@ public class NuevoViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        //nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
@@ -216,10 +217,10 @@ public class NuevoViaje extends AppCompatActivity {
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA!! JONA
-        /*if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
+        if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
             Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
             return;
-        }*/
+        }
 
         boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
         if(retorno){

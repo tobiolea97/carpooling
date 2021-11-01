@@ -23,34 +23,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
         <TextView
-            android:id="@+id/textView17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="20dp"
-            android:text="Ciudad:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <Spinner
-            android:id="@+id/spFragmentFiltroProvinciaCiudadCiudades2"
-            android:layout_width="252dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/spFragmentFiltroProvinciaCiudadProvincias" />
-
-        <Spinner
-            android:id="@+id/spFragmentFiltroProvinciaCiudadProvincias2"
-            android:layout_width="252dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-        <TextView
             android:id="@+id/tvFiltroProvinciaCiudadTitulo"
             android:layout_width="0dp"
             android:layout_height="47dp"
@@ -67,36 +39,36 @@
             android:id="@+id/spFragmentFiltroProvinciaCiudadProvincias"
             android:layout_width="252dp"
             android:layout_height="25dp"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <Spinner
             android:id="@+id/spFragmentFiltroProvinciaCiudadProvincias3"
             android:layout_width="252dp"
             android:layout_height="25dp"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="52dp"
-            app:layout_constraintStart_toEndOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/spFragmentFiltroProvinciaCiudadCiudades2" />
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="62dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spFragmentFiltroProvinciaCiudadCiudades" />
 
         <Spinner
             android:id="@+id/spFragmentFiltroProvinciaCiudadProvincias4"
             android:layout_width="252dp"
             android:layout_height="25dp"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintStart_toEndOf="@+id/textView15"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spFragmentFiltroProvinciaCiudadProvincias3" />
 
         <Spinner
             android:id="@+id/spFragmentFiltroProvinciaCiudadCiudades"
             android:layout_width="252dp"
             android:layout_height="25dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spFragmentFiltroProvinciaCiudadProvincias" />
 
         <TextView
