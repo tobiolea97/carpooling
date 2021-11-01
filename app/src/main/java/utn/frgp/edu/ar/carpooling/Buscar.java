@@ -168,6 +168,35 @@ public class Buscar extends AppCompatActivity {
             }
         });
 
+
+
+
+        grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                String Texto="";
+                Texto=adapterView.getItemAtPosition(position).toString();
+                Toast.makeText(context, "asdd"+Texto, Toast.LENGTH_SHORT).show();
+                String[] parts = Texto.split("NroViaje=");
+                String part2 = parts[1];
+
+                //Para obtener el id del viaje
+                String[] partspt2 = part2.split(",");
+                String part3 = partspt2[0]; // 123
+
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+
+                Intent pagVerBusqueda= new Intent(context,Ver_Busqueda.class);
+                pagVerBusqueda.putExtra("NroViaje",part3);
+                pagVerBusqueda.putExtra("EstadoViaje", estadoViaje);
+                startActivity(pagVerBusqueda);
+
+            }
+        });
+
+
+
         crearFiltroDialog();
 
         new CargarSolicitudesFiltradas("").execute();

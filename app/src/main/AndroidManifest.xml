@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".Ver_Busqueda"
+            android:exported="true" />
+        <activity
             android:name=".ResponderSolicitud"
             android:exported="true" />
         <activity

@@ -59,7 +59,7 @@ public class MisViajes extends AppCompatActivity {
                 Texto=adapterView.getItemAtPosition(position).toString();
 
                 String[] parts = Texto.split("NroViaje=");
-                String part2 = parts[1]; // 654321
+                String part2 = parts[1];
 
                 //Para obtener el id del viaje
                 String[] partspt2 = part2.split(",");
