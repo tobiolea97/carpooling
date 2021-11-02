@@ -10,6 +10,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -38,17 +39,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="36dp"
+                android:backgroundTint="#F1ECEC"
                 android:onClick="crearFiltrarClickListener"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+                app:srcCompat="@drawable/filter" />
 
             <GridView
                 android:id="@+id/gvMisViajes"
-                android:layout_width="374dp"
+                android:layout_width="0dp"
                 android:layout_height="620dp"
                 android:layout_margin="10sp"
                 android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.486"

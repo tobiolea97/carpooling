@@ -17,6 +17,8 @@ import java.sql.*;
 import java.util.*;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Ciudad;
+import utn.frgp.edu.ar.carpooling.entities.Provincia;
 
 public class MisViajes extends AppCompatActivity {
     AlertDialog filtroDialog;
@@ -29,6 +31,12 @@ public class MisViajes extends AppCompatActivity {
     GridView grillaViajes;
     String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
     Context contexto;
+    String filterDate = "";
+    List<Provincia> itemsProvincias;
+    Provincia provOrigSelecc;
+    Provincia provDestSelecc;
+    ArrayList<String> listaCiudadesOrigen;
+    List<Ciudad> itemsCiudadesOrigen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +59,13 @@ public class MisViajes extends AppCompatActivity {
                 Texto=adapterView.getItemAtPosition(position).toString();
 
                 String[] parts = Texto.split("NroViaje=");
-                String part2 = parts[1]; // 654321
+                String part2 = parts[1];
 
                 //Para obtener el id del viaje
                 String[] partspt2 = part2.split(",");
                 String part3 = partspt2[0]; // 123
 
                 String estadoViaje = Texto.split("estado=")[1].split(",")[0];
-
-
-
 
                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
@@ -83,12 +88,55 @@ public class MisViajes extends AppCompatActivity {
         spFiltroCiudDestino = dialogFragmentView.findViewById(R.id.spFiltroCiudDestino);
         spFiltroEstado = dialogFragmentView.findViewById(R.id.spFiltroEstado);
 
+        spFiltroProvOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
+
+                if(position == 0) {
+                    ResetSpinnerCiudadesOrigen();
+                    return;
+                }
+
+                provOrigSelecc = itemsProvincias.get(position - 1);
+                //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
+                new CargarSpinnersCiudadesOrigen().execute();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spFiltroProvDestino.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
+
+                if(position == 0) {
+                    ResetSpinnerCiudadesDestino();
+                    return;
+                }
+
+                provDestSelecc = itemsProvincias.get(position - 1);
+                //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
+                new CargarSpinnersCiudadesDestino().execute();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         crearFiltroDialog(); // CREO EL DIALOG PERO NO LO ABRO. ASI NO CREAMOS UN DIALOG DE CERO CADA VEZ QUE ABRIMOS EL FILTRO
         cargarSpinnerEstado();
+        ResetSpinnerCiudadesOrigen();
+        ResetSpinnerCiudadesDestino();
 
         new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
         new CargarFiltroProvinciaSpinners().execute();
-        new CargarFiltroCiudadSpinners().execute();
     }
 
     @Override
@@ -175,7 +223,7 @@ public class MisViajes extends AppCompatActivity {
 
     private void cargarSpinnerEstado () {
         Spinner spFiltroEstado = dialogFragmentView.findViewById(R.id.spFiltroEstado);
-        String[] datos = new String[] {"--NINGUNO--", "1", "En Espera"};
+        String[] datos = new String[] {"--NINGUNO--", "Cancelado", "Finalizado", "En Espera"};
         spFiltroEstado.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, datos));
     }
 
@@ -208,7 +256,7 @@ public class MisViajes extends AppCompatActivity {
     private class CargarFiltroProvinciaSpinners extends AsyncTask<String,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(String... strings) {
-            return ejecutarQuery("SELECT Nombre FROM Provincias");
+            return ejecutarQuery("SELECT * FROM Provincias");
         }
 
         @Override
@@ -216,9 +264,13 @@ public class MisViajes extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 List<String> provincias = new ArrayList<String>();
+                itemsProvincias = new ArrayList<Provincia>();
                 provincias.add("--NINGUNA--");
 
-                while (resultados.next()) { provincias.add(resultados.getString("Nombre")); }
+                while (resultados.next()) {
+                    provincias.add(resultados.getString("Nombre"));
+                    itemsProvincias.add(new Provincia(resultados.getInt("Id"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro")));
+                }
 
                 ArrayAdapter<String> adapterProvincias = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, provincias);
                 adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -300,12 +352,68 @@ public class MisViajes extends AppCompatActivity {
                 query += " AND ci2.Nombre = '" + filtros.get("ciudadDestino") + "'";
             }
             if (!filtros.get("estado").equals("--NINGUNO--")) {
-                query += " AND vi.Estado = '" + filtros.get("estado") + "'";
+                query += " AND vj.EstadoViaje = '" + filtros.get("estado") + "'";
             }
         }
         query += " ORDER BY FechaHoraInicio ASC";
 
         return query;
+    }
+
+    private class CargarSpinnersCiudadesOrigen extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                //SI EL OBJETO DE PROV SELECCIONADA FUE CARGADO, SIGNIFICA QUE FUE SELECCIONADO DEL SPINNER.
+                if(provOrigSelecc != null){
+                    query = "SELECT * FROM Ciudades WHERE ProvinciaId=" + provOrigSelecc.getIdProvincia();
+                }
+                else{
+                    query = "SELECT * FROM Ciudades";
+                }
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                listaCiudadesOrigen = new ArrayList<String>();
+                itemsCiudadesOrigen = new ArrayList<Ciudad>();
+
+                listaCiudadesOrigen.add("--NINGUNA--");
+
+                while (resultados.next()) {
+                    Ciudad ciudad = new Ciudad(resultados.getInt("Id"),resultados.getInt("ProvinciaId"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro"));
+                    listaCiudadesOrigen.add(ciudad.getNombre());
+                    //CARGO LA LISTA GLOBAL PARA DESPUES PODES BUSCAR EL ELEMENTO SELECCIONADO
+                    itemsCiudadesOrigen.add(ciudad);
+
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFiltroCiudOrigen.setAdapter(adapter);
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private ResultSet ejecutarQuery (String query) {
@@ -319,5 +427,75 @@ public class MisViajes extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private class CargarSpinnersCiudadesDestino extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                //SI EL OBJETO DE PROV SELECCIONADA FUE CARGADO, SIGNIFICA QUE FUE SELECCIONADO DEL SPINNER.
+                if(provOrigSelecc != null){
+                    query = "SELECT * FROM Ciudades WHERE ProvinciaId=" + provDestSelecc.getIdProvincia();
+                }
+                else{
+                    query = "SELECT * FROM Ciudades";
+                }
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                listaCiudadesOrigen = new ArrayList<String>();
+                itemsCiudadesOrigen = new ArrayList<Ciudad>();
+
+                listaCiudadesOrigen.add("--NINGUNA--");
+
+                while (resultados.next()) {
+                    Ciudad ciudad = new Ciudad(resultados.getInt("Id"),resultados.getInt("ProvinciaId"),resultados.getString("Nombre"),resultados.getBoolean("EstadoRegistro"));
+                    listaCiudadesOrigen.add(ciudad.getNombre());
+                    //CARGO LA LISTA GLOBAL PARA DESPUES PODES BUSCAR EL ELEMENTO SELECCIONADO
+                    itemsCiudadesOrigen.add(ciudad);
+
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFiltroCiudDestino.setAdapter(adapter);
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void ResetSpinnerCiudadesOrigen() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("--NINGUNA--");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudOrigen.setAdapter(adapter);
+    }
+
+    public void ResetSpinnerCiudadesDestino() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("--NINGUNA--");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, list);
+        spFiltroCiudDestino.setAdapter(adapter);
     }
 }

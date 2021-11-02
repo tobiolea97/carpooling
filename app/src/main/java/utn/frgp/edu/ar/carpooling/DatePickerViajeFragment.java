@@ -33,7 +33,7 @@ public class DatePickerViajeFragment extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR,+1);
-        dpDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+        dpDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
         return dpDialog;
     }

@@ -21,8 +21,11 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class Ver_Viajes extends AppCompatActivity {
     Context contexto;
@@ -67,7 +70,7 @@ public class Ver_Viajes extends AppCompatActivity {
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
 
-        if(EstadoViaje.equals("Finalizado")){
+        if(EstadoViaje.equals("Finalizado") || EstadoViaje.equals("Cancelado")){
             Solicitudes.setVisibility(View.INVISIBLE);
             TextView txtSolicitudes = findViewById(R.id.TxtSolicitudes);
             txtSolicitudes.setVisibility(View.INVISIBLE);
@@ -132,7 +135,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += "          pr2.Nombre ProvinciaDestino,";
                 query += "          ci2.Nombre CiudadDestino,";
                 query += "          vj.FechaHoraFinalizacion,";
-                query += "          vj.CantidadPasajeros";
+                query += "          vj.CantidadPasajeros,";
+                query += "          vj.EstadoViaje";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -165,13 +169,14 @@ public class Ver_Viajes extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado", resultados.getString("EstadoViaje"));
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora, R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaverViaje.setAdapter(simpleAdapter);
 
@@ -223,7 +228,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 int PasajerosABordo=0;
                 while (resultados.next()) {
                     PasajerosABordo++;
-                    pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
+                    pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
@@ -234,9 +239,9 @@ public class Ver_Viajes extends AppCompatActivity {
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
                 Pasajeros.setAdapter(adapter);
                 if (PasajerosABordo==0) {
-                    TituloPasajeros.setText("Pasajeros " + PasajerosABordo + "/" + CantidadAsientos);
+                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
                 } else {
-                    TituloPasajeros.setText("Pasajeros" + PasajerosABordo + "/" + CantidadAsientos);
+                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
                 }
             }
             catch (Exception e) {
@@ -272,6 +277,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " ON usu.Email=pv.UsuarioEmail";
                 query += " 	Where	pv.ViajeId='" + NroViaje + "'";
                 query += " 	And	 pv.EstadoPasajero='Pendiente'";
+                query += " 	And	 usu.Rol = 'PAS'";
 
                 return st.executeQuery(query);
 
@@ -288,7 +294,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 ArrayList<String> Solicitudess= new ArrayList<String>();
                 IdSolicitudes=new ArrayList<>();
                 while (resultados.next()) {
-                    Solicitudess.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+"-"+resultados.getString("Telefono"));
+                    Solicitudess.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
                     IdSolicitudes.add(resultados.getString("Email"));
                 }
 
@@ -332,10 +338,34 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+
+                for (String Email: EmailPasajeros) {
+                    String[] parts = Email.split("-");
+                    String emailpasajero = parts[0];
+                    String RolPasajero = parts[1];
+                    NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                    Notificaciones Noti = new Notificaciones();
+                    Noti.setUsuarioEmail(emailpasajero);
+                    Noti.setUsuarioRolId(RolPasajero);
+                    Noti.setMensaje(" El nro de viaje "+NroViaje+" fue cancelado");
+                    Noti.setEstadoNotificacion("P");
+                    Noti.setEstado(1);
+                    try {
+                        NotiNeg.AñadirNotificacion(Noti);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
                 Toast.makeText(contexto, "El  viaje a sido Cancelado!.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo cancelar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();

@@ -1,10 +1,12 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,8 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
@@ -300,11 +305,27 @@ public class ResponderSolicitud extends AppCompatActivity {
                 return null;
             }
         }
-
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioEmail(Email);
+                Noti.setUsuarioRolId("PAS");
+                Noti.setMensaje(" El nro de viaje "+NroViaje+" rechazo tu solicitud");
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 Toast.makeText(contexto, "La solicitud fue rechazada correctamente.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo rechazar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -340,11 +361,25 @@ public class ResponderSolicitud extends AppCompatActivity {
                 return null;
             }
         }
-
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioEmail(Email);
+                Noti.setUsuarioRolId("PAS");
+                Noti.setMensaje(" El nro de viaje "+NroViaje+" ha aceptado tu solicitud");
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo Aceptar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -389,7 +424,7 @@ public class ResponderSolicitud extends AppCompatActivity {
 
 
                 }
-int resultado=(Integer.parseInt(Asientos)-Integer.parseInt(Pasajeros))-1;
+            int resultado=(Integer.parseInt(Asientos)-Integer.parseInt(Pasajeros))-1;
 
               if(resultado>=0&&resultado<=Integer.parseInt(Asientos)){
                   new AceptarPasajero().execute();

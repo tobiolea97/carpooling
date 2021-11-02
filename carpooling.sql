@@ -82,7 +82,7 @@ CREATE TABLE Viajes (
   FechaHoraInicio datetime NOT NULL,
   FechaHoraFinalizacion datetime,
   CantidadPasajeros int NOT NULL,
-  EstadoViaje varchar(3) NOT NULL,
+  EstadoViaje varchar(20) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
   PRIMARY KEY (Id),
@@ -98,6 +98,7 @@ CREATE TABLE Viajes (
     
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
 CREATE TABLE Solicitudes (
   Id int NOT NULL auto_increment,
   PasajeroEmail varchar(30) NOT NULL,
@@ -107,7 +108,7 @@ CREATE TABLE Solicitudes (
   CiudadDestinoId int NOT NULL,
   FechaHoraInicio datetime NOT NULL,
   CantidadAcompaniantes int NOT NULL,
-  EstadoSolicitud varchar(3) NOT NULL,
+  EstadoSolicitud varchar(20) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
   PRIMARY KEY (Id),
@@ -195,7 +196,23 @@ INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`T
 VALUES ("joni@mail.com","PAS","40379479","Jonathan","Costa",'1996-05-12 00:00','+54 9 11 6920 3645','40379479',true);
 
 INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-VALUES('tobi@mail.com',102,1008,103,1013,'2021-10-11 00:00','2021-10-11 05:00',4,1,1);
+VALUES('tobi@mail.com',102,1008,103,1013,'2021-10-11 00:00','2021-10-11 05:00',4,'Pendiente',1);
+
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 100, 1000, 100, 1001, '2021-10-30 12:30',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 100, 1000, 100, 1001, '2021-10-31 12:30',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 100, 1000, 100, 1001, '2021-10-31 22:30',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 100, 1000, 103, 1012, '2021-11-01 20:15',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 100, 1000, 102, 1010, '2021-11-02 20:20',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 102, 1010, 103, 1012, '2022-12-12 20:20',1,'Pendiente',1);
+INSERT INTO Solicitudes (PasajeroEmail, ProvinciaOrigenId, CiudadOrigenId, ProvinciaDestinoId, CiudadDestinoId, FechaHoraInicio, CantidadAcompaniantes, EstadoSolicitud, EstadoRegistro)
+VALUES ('matias@alvarado.com', 102, 1010, 103, 1015, '2021-11-02 20:20',1,'Pendiente',1);
+
 
 INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
 VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,5,1);
@@ -207,3 +224,15 @@ INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorR
 VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,5,1);
 INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
 VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,4,1);
+
+
+-- PRUEBAS TOBI
+INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
+VALUES('conductor@mail.com',102,1008,103,1013,'2021-11-30 13:30',null,4,'En Espera',1);
+
+INSERT INTO PasajerosPorViaje
+(ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
+VALUES
+();
+
+
