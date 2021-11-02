@@ -327,6 +327,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 }
 
                 Toast.makeText(contexto, "La solicitud fue rechazada correctamente.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo rechazar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -381,6 +382,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo Aceptar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }

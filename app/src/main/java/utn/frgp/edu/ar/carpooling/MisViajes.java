@@ -498,4 +498,12 @@ public class MisViajes extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, list);
         spFiltroCiudDestino.setAdapter(adapter);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
+
+    }
 }
