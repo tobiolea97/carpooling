@@ -224,3 +224,15 @@ INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorR
 VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,5,1);
 INSERT INTO Calificaciones(UsuarioEmail,UsuarioRol,CalificadorEmail,CalificadorRol,ViajeId,Calificacion,EstadoRegistro)
 VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,4,1);
+
+
+-- PRUEBAS TOBI
+INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
+VALUES('conductor@mail.com',102,1008,103,1013,'2021-11-30 13:30',null,4,'En Espera',1);
+
+INSERT INTO PasajerosPorViaje
+(ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
+VALUES
+();
+
+
