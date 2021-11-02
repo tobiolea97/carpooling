@@ -127,10 +127,10 @@
             </GridView>
 
             <LinearLayout
+                android:id="@+id/LinearLayoutBtnConductor"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/LinearLayoutBtnConductor"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
