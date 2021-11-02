@@ -177,7 +177,6 @@ public class Buscar extends AppCompatActivity {
 
                 String Texto="";
                 Texto=adapterView.getItemAtPosition(position).toString();
-                Toast.makeText(context, "asdd"+Texto, Toast.LENGTH_SHORT).show();
                 String[] parts = Texto.split("NroViaje=");
                 String part2 = parts[1];
 

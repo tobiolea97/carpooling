@@ -1,11 +1,14 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -20,18 +23,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Ciudad;
+import utn.frgp.edu.ar.carpooling.entities.Provincia;
 import utn.frgp.edu.ar.carpooling.entities.Viaje;
 
 public class Ver_Busqueda extends AppCompatActivity {
     Context contexto;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
-    String NroViaje;
+    String NroViaje,PasajeroEmail;
     String EstadoViaje;
     GridView grillaverbusqueda;
     RatingBar RbVerbusqueda;
@@ -63,6 +70,14 @@ public class Ver_Busqueda extends AppCompatActivity {
         Celular=findViewById(R.id.TxtCelVerBusque);
         ViajoCon=findViewById(R.id.TxtViajoVerBusq);
 
+
+        AceptarViaje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CargardatosparaAgregar().execute();
+
+            }
+        });
 
         new CargarViajeSeleccionado().execute();
         new CargarDatos().execute();
@@ -262,6 +277,125 @@ public class Ver_Busqueda extends AppCompatActivity {
                 }
 
                 ViajoCon.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargardatosparaAgregar extends AsyncTask<String,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(String... queries) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += " SELECT vj.Id, vj.PasajeroEmail,vj.ProvinciaOrigenId, po.Nombre ProvinciaOrigen, vj.CiudadOrigenId,co.Nombre CiudadOrigen, vj.ProvinciaDestinoId,pd.Nombre ProvinciaDestino, vj.CiudadDestinoId ,cd.Nombre CiudadDestino, vj.FechaHoraInicio, vj.EstadoSolicitud ";
+                query += " FROM Solicitudes vj ";
+                query += " LEFT JOIN Provincias po ";
+                query += " 	ON vj.ProvinciaOrigenId = po.Id ";
+                query += " LEFT JOIN Ciudades co ";
+                query += " 	ON vj.CiudadOrigenId = co.Id ";
+                query += " LEFT JOIN Provincias pd ";
+                query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
+                query += " LEFT JOIN Ciudades cd  ";
+                query += " 	ON vj.CiudadDestinoId = cd.Id ";
+                query += " 	Where	vj.Id='" + NroViaje + "'";
+
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
+                viaj= new Viaje();
+                Provincia ProvinciaOrigen= new Provincia();
+                Provincia ProvinciaDestino= new Provincia();
+                Ciudad CiudadOrigen = new Ciudad();
+                Ciudad CiudadDestino = new Ciudad();
+                while (resultados.next()) {
+                    ProvinciaOrigen.setIdProvincia(resultados.getInt("ProvinciaOrigenId"));
+                    ProvinciaOrigen.setNombre("ProvinciaOrigen");
+                    CiudadOrigen.setIdCiudad(resultados.getInt("CiudadOrigenId"));
+                    CiudadOrigen.setNombre(resultados.getString("CiudadOrigen"));
+                    ProvinciaDestino.setIdProvincia(resultados.getInt("ProvinciaDestinoId"));
+                    ProvinciaDestino.setNombre(resultados.getString("ProvinciaDestino"));
+                    CiudadDestino.setIdCiudad(resultados.getInt("CiudadDestinoId"));
+                    CiudadDestino.setNombre(resultados.getString("CiudadDestino"));
+                    viaj.setProvDestino(ProvinciaDestino);
+                    viaj.setCiudadOrigen(CiudadOrigen);
+                    viaj.setProvDestino(ProvinciaDestino);
+                    viaj.setCiudadDestino(CiudadDestino);
+                    viaj.setEmailConductor(emailUsuario);
+                //    String fechaInicio =resultados.getString("FechaHoraInicio");
+                  //  fechaInicio = fechaInicio.replace("/21", "/2021");
+                    //LocalDateTime inicioViaje = LocalDateTime.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                    //viaj.setFechaHoraInicio(inicioViaje);
+                    PasajeroEmail=resultados.getString("PasajeroEmail");
+
+
+
+
+                }
+
+              //  new AgregarViaje().execute();
+
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class AgregarViaje extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+               query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail inner join Solicitudes vj on usu.Email=vj.PasajeroEmail where vj.Id='" + NroViaje + "' and cal.UsuarioRol='PAS' ";
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                Integer cantidad = null;
+               while (resultados.next()) {
+                   // cantidad = resultados.getInt("cantidad");
+                }
+                Toast.makeText(contexto, "aaa"+PasajeroEmail, Toast.LENGTH_SHORT).show();
+               // ViajoCon.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
 
             }
             catch (SQLException e) {
