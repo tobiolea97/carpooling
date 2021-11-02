@@ -3,12 +3,15 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 
@@ -41,6 +44,11 @@ public class Ver_Viajes extends AppCompatActivity {
     String CantidadAsientos;
     TextView tituloCancelar,tituloFinalizar,tituloEditar;
     String localDateviaje;
+    View dialogFragmentView, dialogFragmentView2;
+    AlertDialog confirmarCancelacion, confirmarFinalizacion;
+    String estadoViaje;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +75,12 @@ public class Ver_Viajes extends AppCompatActivity {
         tituloFinalizar=findViewById(R.id.textView13);
         tituloEditar=findViewById(R.id.textView9);
 
+        LayoutInflater inflater = this.getLayoutInflater();
+        dialogFragmentView = inflater.inflate(R.layout.fragment_confirmar_accion, null);
+
+        LayoutInflater inflater2 = this.getLayoutInflater();
+        dialogFragmentView2 = inflater2.inflate(R.layout.fragment_confirmar_accion, null);
+
         new CargarViajeSeleccionado().execute();
         new CargarPasajeros().execute();
 
@@ -87,11 +101,14 @@ public class Ver_Viajes extends AppCompatActivity {
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if(EstadoViaje.equals("Cancelado")) return;
+
                 if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
                     String Email = "";
                     String Rol = "";
                     String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                    Email=EmailPasajeros.get(i).split("-")[0];
+                    Email = EmailPasajeros.get(i).split("-")[0];
                     Rol = EmailPasajeros.get(i).split("-")[1];
 
                     Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
@@ -116,6 +133,33 @@ public class Ver_Viajes extends AppCompatActivity {
                 startActivity(pagResponderSoli);
             }
         });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogFragmentView)
+                .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        new CancelarViaje().execute();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
+        confirmarCancelacion = builder.create();
+
+
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+        builder2.setView(dialogFragmentView2)
+                .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        new FinalizarViaje().execute();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.Cancelar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
+        confirmarFinalizacion = builder2.create();
 
 
     }
@@ -170,6 +214,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado", resultados.getString("EstadoViaje"));
+                    estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
@@ -276,7 +321,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON usu.Email=pv.UsuarioEmail";
                 query += " 	Where	pv.ViajeId='" + NroViaje + "'";
-                query += " 	And	 pv.EstadoPasajero='Pendiente'";
+                query += " 	And	 pv.EstadoPasajero = 'Pendiente'";
                 query += " 	And	 usu.Rol = 'PAS'";
 
                 return st.executeQuery(query);
@@ -308,7 +353,7 @@ public class Ver_Viajes extends AppCompatActivity {
     }
 
     public void CancelarViaje(View view){
-        new CancelarViaje().execute();
+        confirmarCancelacion.show();
     }
 
     private class CancelarViaje extends AsyncTask<Void,Integer,Boolean> {
@@ -372,15 +417,19 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void FinalizarViaje(View view) throws ParseException {
+        
         String fechaInicio = ((TextView)findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString();
         String horaInicio = ((TextView)findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString();
         fechaInicio = fechaInicio.replace("/21", "/2021");
         LocalDateTime hoy= LocalDateTime.now();
         LocalDateTime inicioViaje = LocalDateTime.parse(fechaInicio + " " + horaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
-        if (hoy.compareTo(inicioViaje) > 0) new FinalizarViaje().execute();
+        if (hoy.compareTo(inicioViaje) > 0) {
+            confirmarFinalizacion.show();
+        }
         else Toast.makeText(contexto, "El viaje no puede finalizarse antes de comenzar", Toast.LENGTH_SHORT).show();
     }
 
@@ -415,6 +464,28 @@ public class Ver_Viajes extends AppCompatActivity {
                 Toast.makeText(contexto, "No se pudo finalizar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        new CargarPasajeros().execute();
+
+        if(EstadoViaje.equals("Finalizado") || EstadoViaje.equals("Cancelado")){
+            Solicitudes.setVisibility(View.INVISIBLE);
+            TextView txtSolicitudes = findViewById(R.id.TxtSolicitudes);
+            txtSolicitudes.setVisibility(View.INVISIBLE);
+            cancelar.setVisibility(View.INVISIBLE);
+            finalizar.setVisibility(View.INVISIBLE);
+            editar.setVisibility(View.INVISIBLE);
+            tituloCancelar.setVisibility(View.INVISIBLE);
+            tituloFinalizar.setVisibility(View.INVISIBLE);
+            tituloEditar.setVisibility(View.INVISIBLE);
+        } else {
+            new CargarSolicitudes().execute();
+        }
+
     }
 
 }
