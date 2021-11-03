@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             String emailUsuario = spSesion.getString("Email","");
 
-            if(!emailUsuario.equals("")) {
-                Intent nextForm = new Intent(this, NuevaSolicitud.class);
-                startActivity(nextForm);
-                finish();
-            }
+            //if(!emailUsuario.equals("")) {
+              //  Intent nextForm = new Intent(this, NuevaSolicitud.class);
+              //  startActivity(nextForm);
+              //  finish();
+            //}
 
         }
         catch(Exception e) {
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         login=findViewById(R.id.btnMainActivityLogin);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
 
-        /*email.setText("tobi@mail.com");
-        password.setText("40379479");*/
+        email.setText("conductor@mail.com");
+        password.setText("40379479");
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();
