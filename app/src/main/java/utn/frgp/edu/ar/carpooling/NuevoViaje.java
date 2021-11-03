@@ -235,7 +235,7 @@ public class NuevoViaje extends AppCompatActivity {
             return;
         }
 
-        boolean hayViajesEnRango = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
+        boolean hayViajesEnRango = vNegImpl.validarViajeConductorEnRangoFechayHora(nuevoViaje);
         if (hayViajesEnRango) {
             Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha", Toast.LENGTH_LONG).show();
         } else {

@@ -177,17 +177,22 @@ public class NuevaSolicitud extends AppCompatActivity {
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA!! JONA
-         if(vNegImpl.validarDatosViaje(nuevaSolicitud) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
-            Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
-            return;
-         }
+        if(vNegImpl.validarDatosViaje(nuevaSolicitud) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
+           Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
+           return;
+        }
 
-
-        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevaSolicitud);
+        boolean retorno = vNegImpl.validarViajePasajeroEnRangoFechayHora(nuevaSolicitud);
         if(retorno){
             Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha!.", Toast.LENGTH_LONG).show();
             return;
         }
+
+       /* retorno = vNegImpl.validarViajeConductorEnRangoFechayHora(nuevaSolicitud);
+        if(retorno){
+            Toast.makeText(contexto, "Ya tiene un viaje pendiente como conductor en el rango horario +- 3hs para la misma fecha!.", Toast.LENGTH_LONG).show();
+            return;
+        }*/
 
         retorno = vNegImpl.validarSolicitudEnRangoFechayHora(nuevaSolicitud);
         if(retorno){
