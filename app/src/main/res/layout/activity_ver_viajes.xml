@@ -111,6 +111,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="55dp"
                 android:background="@drawable/edit"
+                android:onClick="onEditarViaje"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/LvSolicitudes" />
 

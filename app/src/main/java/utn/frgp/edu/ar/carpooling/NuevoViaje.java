@@ -14,12 +14,7 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -42,8 +37,9 @@ import utn.frgp.edu.ar.carpooling.utils.Validadores;
 
 public class NuevoViaje extends AppCompatActivity {
 
+    SharedPreferences spEdicion;
     private EditText fechaViaje;
-    private EditText  horaViaje;
+    private EditText horaViaje;
     private Spinner spProvinciasOrigen;
     private Spinner spProvinciasDestino;
     private Spinner spCiudadesOrigen;
@@ -71,6 +67,16 @@ public class NuevoViaje extends AppCompatActivity {
     private Context contexto;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (spEdicion.getString("modoEdicion", "false").equals("true")) {
+            SharedPreferences.Editor editor = spEdicion.edit();
+            editor.putString("modoEdicion", "false");
+            editor.commit();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_viaje);
@@ -88,12 +94,22 @@ public class NuevoViaje extends AppCompatActivity {
 
         contexto = this;
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        spEdicion = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre", "No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
 
+        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
+        if (esModoEdicion.equals("true")) {
+            TextView tvTitulo = findViewById(R.id.txtViewTitulo);
+            Button btCrearViaje = findViewById(R.id.btnCrearViaje);
+            tvTitulo.setText("Editar Viaje");
+            btCrearViaje.setText("Actualizar viaje");
+            fechaViaje.setText(spEdicion.getString("fechaInicio",""));
+            horaViaje.setText(spEdicion.getString("horaInicio",""));
+        }
 
         provDestSelecc = null;
         provOrigSelecc = null;
@@ -174,9 +190,7 @@ public class NuevoViaje extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClickCrearViaje(View view) throws ExecutionException, InterruptedException {
-
         nuevoViaje = new Viaje();
-
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nuevoViaje.setEmailConductor( spSesion.getString("Email","No hay datos"));
@@ -187,15 +201,14 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevoViaje.setEstadoViaje("En Espera");
 
-
-        if(!Validadores.validarNacimiento(true,fechaViaje)){
-            return;
+        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
+        if (esModoEdicion.equals("true")) {
+            nuevoViaje.setIdViaje(Integer.parseInt(spEdicion.getString("idViaje", "0")));
         }
 
-        if(!Validadores.validarHoraViaje(true,horaViaje)){
-            return;
-        }
+        if(!Validadores.validarNacimiento(true,fechaViaje)) return;
 
+        if(!Validadores.validarHoraViaje(true,horaViaje)) return;
 
         String separadorFecha = Pattern.quote("/");
         String separadorHora = Pattern.quote(":");
@@ -207,7 +220,7 @@ public class NuevoViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio + 2000,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
@@ -222,17 +235,13 @@ public class NuevoViaje extends AppCompatActivity {
             return;
         }
 
-        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
-        if(!retorno){
-            new AltaNuevoViaje().execute();
+        boolean hayViajesEnRango = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
+        if (hayViajesEnRango) {
+            Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha", Toast.LENGTH_LONG).show();
+        } else {
+            if (esModoEdicion.equals("true")) new ActualizarViaje().execute();
+            else new AltaNuevoViaje().execute();
         }
-        else{
-            Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha!.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-
-
     }
 
     public void onClickFechaViaje(View view) {
@@ -301,6 +310,10 @@ public class NuevoViaje extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCiudadesOrigen.setAdapter(adapter);
 
+                if (!spEdicion.getString("ciudadOrigen", "false").equals("false")) {
+                    spCiudadesOrigen.setSelection(adapter.getPosition(spEdicion.getString("ciudadOrigen", "false")));
+                    spCiudadesDestino.setSelection(adapter.getPosition(spEdicion.getString("ciudadDestino", "false")));
+                }
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -328,9 +341,7 @@ public class NuevoViaje extends AppCompatActivity {
                     query = "SELECT * FROM Ciudades";
                 }
 
-
                 return st.executeQuery(query);
-
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -400,6 +411,12 @@ public class NuevoViaje extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spProvinciasOrigen.setAdapter(adapter);
                 spProvinciasDestino.setAdapter(adapter);
+                // OBLIGADAMENTE TENGO QUE PONER UN VALOR POR DEFAULT SI NO ENCUETRO provinciasOrigen
+                // ENTONCES APROVECHO ESO PARA CHEQUEAR QUE SI ES DISTINTO DE FALSE, SIGNIFICA QUE HAY DATO PARA provinciasOrigen
+                if (!spEdicion.getString("provinciaOrigen", "false").equals("false")) {
+                    spProvinciasOrigen.setSelection(adapter.getPosition(spEdicion.getString("provinciaOrigen", "false")));
+                    spProvinciasDestino.setSelection(adapter.getPosition(spEdicion.getString("provinciaDestino", "false")));
+                }
 
                 spProvinciasOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -473,17 +490,9 @@ public class NuevoViaje extends AppCompatActivity {
                 query += ")";
 
                 int resultado = st.executeUpdate(query);
-
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
-
                 return false;
             }
         }
@@ -499,4 +508,38 @@ public class NuevoViaje extends AppCompatActivity {
         }
     }
 
+    private class ActualizarViaje extends AsyncTask<Void,Integer,Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "UPDATE Viajes SET ";
+                query += "ConductorEmail='" + nuevoViaje.getEmailConductor() + "',";
+                query += "ProvinciaOrigenId='" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
+                query += "CiudadOrigenId='" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
+                query += "ProvinciaDestinoId='" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
+                query += "CiudadDestinoId='" + nuevoViaje.getCiudadDestino().getIdCiudad() + "',";
+                query += "FechaHoraInicio='" + nuevoViaje.getFechaHoraInicio() + "',";
+                query += "CantidadPasajeros='" + nuevoViaje.getCantPasajeros() + "',";
+                query += "EstadoViaje='" + nuevoViaje.getEstadoViaje() + "'";
+                query += " WHERE Id = " + nuevoViaje.getIdViaje();
+
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if (resultado) Toast.makeText(contexto, "El viaje fue actualizado correctametne", Toast.LENGTH_LONG).show();
+            else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
+        }
+    }
 }
