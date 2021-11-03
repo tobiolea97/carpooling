@@ -48,7 +48,6 @@ public class Ver_Viajes extends AppCompatActivity {
     AlertDialog confirmarCancelacion, confirmarFinalizacion;
     String estadoViaje;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -433,6 +432,25 @@ public class Ver_Viajes extends AppCompatActivity {
         else Toast.makeText(contexto, "El viaje no puede finalizarse antes de comenzar", Toast.LENGTH_SHORT).show();
     }
 
+    public void onEditarViaje(View view) {
+        String[] origen = ((TextView)findViewById(R.id.tvGridItemViajeOrigen)).getText().toString().split(",");
+        String[] destino = ((TextView)findViewById(R.id.tvGridItemViajeDestino)).getText().toString().split(",");
+        SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString("fechaInicio", ((TextView)findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString());
+        editor.putString("horaInicio", ((TextView)findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString());
+        editor.putString("ciudadOrigen", origen[0].trim());
+        editor.putString("provinciaOrigen", origen[1].trim());
+        editor.putString("ciudadDestino", destino[0].trim());
+        editor.putString("provinciaDestino", destino[1].trim());
+        editor.putString("idViaje", NroViaje);
+        editor.putString("modoEdicion", "true");
+        editor.commit();
+
+        Intent pagNuevoViaje = new Intent(contexto, NuevoViaje.class);
+        startActivity(pagNuevoViaje);
+    }
+
     private class FinalizarViaje extends AsyncTask<Void,Integer,Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -465,7 +483,6 @@ public class Ver_Viajes extends AppCompatActivity {
             }
         }
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -485,7 +502,5 @@ public class Ver_Viajes extends AppCompatActivity {
         } else {
             new CargarSolicitudes().execute();
         }
-
     }
-
 }

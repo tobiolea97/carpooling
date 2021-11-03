@@ -10,5 +10,6 @@ public interface viajeNeg {
 
     int validarDatosViaje(Viaje v);
     boolean validarViajeEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
+    boolean validarSolicitudEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
     LocalDate ObtenerFechaFinalizacionViaje(int NroViaje) throws ExecutionException, InterruptedException;
 }

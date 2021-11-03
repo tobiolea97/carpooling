@@ -81,6 +81,7 @@ public class VerPasajero extends AppCompatActivity {
         botonDesAsignarUsuario =findViewById(R.id.BtnVpCancelar);
         botonVolver = findViewById(R.id.btnVpVolver);
 
+        botonVolver.setVisibility(View.VISIBLE);
         calificacionInicial = true;
         CalificacionDada = 0;
 
@@ -137,14 +138,18 @@ public class VerPasajero extends AppCompatActivity {
         new CargarViajeSeleccionado().execute();
         new VerificarCalificacion().execute(); //VERIFICA SI YA FUE DADA UNA CALIFICACION PARA EL USUARIO
 
-        if(EstadoViaje.equals("En Espera")){
+        if(EstadoViaje.equals("En Espera") || EstadoViaje.equals("Cancelado")){
             Rating.setIsIndicator(true);
+        }
+
+        if(EstadoViaje.equals("Cancelado") || rolUsuarioLog.equals("PAS")){
+            botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
         }
 
         if(EstadoViaje.equals("Finalizado")){
 
             botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
-            viajeNegImpl vNegImpl = new viajeNegImpl();
+            /*viajeNegImpl vNegImpl = new viajeNegImpl();
             LocalDate fechaFinalizacionViaje =  LocalDate.of(2020,10,01);
             try {
                 fechaFinalizacionViaje  = vNegImpl.ObtenerFechaFinalizacionViaje(Integer.parseInt(NroViaje));
@@ -160,7 +165,7 @@ public class VerPasajero extends AppCompatActivity {
 
             if(numberOFDays >= 1){
                 Rating.setIsIndicator(true);
-            }
+            }*/
         }
     }
 
@@ -269,8 +274,6 @@ public class VerPasajero extends AppCompatActivity {
                 //Le agrego el promedio al rating para que pueda mostrarlo
                 Rating.setRating(promedio);
 
-                //funciona pero cuando lo deshabilito la puntuacion son todas las mitad de las estrellas
-                //ratingBarconductor.setEnabled(false);
                 calificacionInicial=false;
 
             }
@@ -433,9 +436,9 @@ public class VerPasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "El  Pasajero a sido destituido de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El  Pasajero a sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(contexto, "No se pudo destituir el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo desasignar el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -485,11 +488,20 @@ public class VerPasajero extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                String calificacion= String.valueOf(CalificacionDada);
 
+                String calificacion= String.valueOf(CalificacionDada);
                 if(calificacion.substring(1).equals(".0")){
                     calificacion = calificacion.substring(0,1);
                 }
+
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioEmail(EmailVerUsuario);
+                Noti.setUsuarioRolId(RolVerUsuario);
+                Noti.setMensaje("El usuario " + nombreUsuarioLog + " " + apellidoUsuarioLog + "te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+
                 Rating.setIsIndicator(true);
                 Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
             }else{
