@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,7 +37,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 import utn.frgp.edu.ar.carpooling.utils.EnumsErrores;
 import utn.frgp.edu.ar.carpooling.utils.Validadores;
 
-public class NuevoViaje extends AppCompatActivity {
+public class NuevaSolicitud extends AppCompatActivity {
 
     private EditText fechaViaje;
     private EditText  horaViaje;
@@ -65,15 +62,14 @@ public class NuevoViaje extends AppCompatActivity {
     Provincia provOrigSelecc;
     Provincia provDestSelecc;
 
-    //ES PARA PODER DAR DE ALTA EL NUEVO VIAJE
-    Viaje nuevoViaje;
+    //ES PARA PODER DAR DE ALTA LA NUEVA SOLICITUD
+    Viaje nuevaSolicitud;
 
     private Context contexto;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nuevo_viaje);
+        setContentView(R.layout.activity_nueva_solicitud);
 
         fechaViaje = (EditText) findViewById(R.id.edTextFecha);
         horaViaje = (EditText) findViewById(R.id.edTextHora);
@@ -97,7 +93,7 @@ public class NuevoViaje extends AppCompatActivity {
 
         provDestSelecc = null;
         provOrigSelecc = null;
-        nuevoViaje = null;
+        nuevaSolicitud = null;
 
         ArrayList<String> listaCantPasajeros = new ArrayList<String>();
 
@@ -113,79 +109,43 @@ public class NuevoViaje extends AppCompatActivity {
         fechaViaje.setFocusableInTouchMode(false);
         fechaViaje.setInputType(InputType.TYPE_NULL);
         fechaViaje.requestFocus();
-        new CargarSpinnersProvincias().execute();
+
+        new NuevaSolicitud.CargarSpinnersProvincias().execute();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu miMenu) {
+    public void onClickFechaViaje(View view) {
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        DatePickerViajeFragment newFragment = DatePickerViajeFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                String selectedDate =
+                        (day < 10 ? "0" + day :  day) + "/" +
+                                (month + 1 < 10 ? "0" + (month+1) : (month+1)) +"/" +
+                                year;
+                fechaViaje.setText(selectedDate);
+                fechaViaje.setError(null);
+            }
+        });
 
-        return true;
-    }
+        newFragment.show(getSupportFragmentManager(), "datePicker");
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
-        int id = opcionMenu.getItemId();
-
-        if(id == R.id.miperfil) {
-            finish();
-            Intent intent = new Intent(this, Home.class);
-            startActivity(intent);
-        }
-
-        if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajes.class);
-            startActivity(intent);
-        }
-
-        if(id == R.id.cerrarSesion) {
-
-            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = spSesion.edit();
-            editor.clear();
-            editor.commit();
-
-            finish();
-
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(opcionMenu);
-    }
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
-        MenuItem misviajes = menu.findItem(R.id.misViajes);
-        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
-
-        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
-
-        if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
-            CrearViaje.setVisible(false);
-        }
-
-
-
-        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onClickCrearViaje(View view) throws ExecutionException, InterruptedException {
+    public void onClickCrearSolicitud(View view) throws ExecutionException, InterruptedException {
 
-        nuevoViaje = new Viaje();
+        nuevaSolicitud = new Viaje();
 
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nuevoViaje.setEmailConductor( spSesion.getString("Email","No hay datos"));
-        nuevoViaje.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
-        nuevoViaje.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
-        nuevoViaje.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
-        nuevoViaje.setCiudadDestino(itemsCiudadesDestino.get(spCiudadesDestino.getSelectedItemPosition()));
-        nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
-        nuevoViaje.setEstadoViaje("En Espera");
+        nuevaSolicitud.setEmailConductor( spSesion.getString("Email","No hay datos"));
+        nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
+        nuevaSolicitud.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
+        nuevaSolicitud.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
+        nuevaSolicitud.setCiudadDestino(itemsCiudadesDestino.get(spCiudadesDestino.getSelectedItemPosition()));
+        nuevaSolicitud.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
+        nuevaSolicitud.setEstadoViaje("Pendiente");
 
 
         if(!Validadores.validarNacimiento(true,fechaViaje)){
@@ -207,50 +167,35 @@ public class NuevoViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        nuevaSolicitud.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
-        if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
+        if(vNegImpl.validarDatosViaje(nuevaSolicitud) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
             Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_LONG).show();
             return;
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA!! JONA
-        if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
+         if(vNegImpl.validarDatosViaje(nuevaSolicitud) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
             Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
             return;
-        }
+         }
 
-        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevoViaje);
-        if(!retorno){
-            new AltaNuevoViaje().execute();
-        }
-        else{
+
+        boolean retorno = vNegImpl.validarViajeEnRangoFechayHora(nuevaSolicitud);
+        if(retorno){
             Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha!.", Toast.LENGTH_LONG).show();
             return;
         }
 
+        retorno = vNegImpl.validarSolicitudEnRangoFechayHora(nuevaSolicitud);
+        if(retorno){
+            Toast.makeText(contexto, "Ya tiene una solicitud creada en el rango horario +- 3hs para la misma fecha!.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-
-    }
-
-    public void onClickFechaViaje(View view) {
-
-        DatePickerViajeFragment newFragment = DatePickerViajeFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                // +1 because January is zero
-                String selectedDate =
-                        (day < 10 ? "0" + day :  day) + "/" +
-                                (month + 1 < 10 ? "0" + (month+1) : (month+1)) +"/" +
-                                year;
-                fechaViaje.setText(selectedDate);
-                fechaViaje.setError(null);
-            }
-        });
-
-        newFragment.show(getSupportFragmentManager(), "datePicker");
+        new NuevaSolicitud.AltaNuevaSolicitud().execute();
 
     }
 
@@ -362,7 +307,7 @@ public class NuevoViaje extends AppCompatActivity {
         }
     }
 
-    private class CargarSpinnersProvincias extends AsyncTask<Void,Integer, ResultSet>{
+    private class CargarSpinnersProvincias extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
@@ -407,7 +352,7 @@ public class NuevoViaje extends AppCompatActivity {
                         //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
                         provOrigSelecc = itemsProvincias.get(position);
                         //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
-                        new CargarSpinnersCiudadesOrigen().execute();
+                        new NuevaSolicitud.CargarSpinnersCiudadesOrigen().execute();
                     }
 
                     @Override
@@ -422,7 +367,7 @@ public class NuevoViaje extends AppCompatActivity {
                         //POR MEDIO DE LA POS DEL ITEM SELECCIONADO EN EL SPINNER, OBTENGO EL OBJETO CARGADO DE MI LISTA DE OBJETOS EN LA MISMA POS
                         provDestSelecc = itemsProvincias.get(position);
                         //CARGO EL SPINNER CON LOS DATOS DE LAS CIUDADES PERTENECIENTES A LA PROV SELECCIONADA.
-                        new CargarSpinnersCiudadesDestino().execute();
+                        new NuevaSolicitud.CargarSpinnersCiudadesDestino().execute();
                     }
 
                     @Override
@@ -439,7 +384,7 @@ public class NuevoViaje extends AppCompatActivity {
         }
     }
 
-    private class AltaNuevoViaje extends AsyncTask<Void,Integer,Boolean>{
+    private class AltaNuevaSolicitud extends AsyncTask<Void,Integer,Boolean>{
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -450,26 +395,26 @@ public class NuevoViaje extends AppCompatActivity {
 
                 String query = "";
 
-                query += "INSERT INTO Viajes";
-                query += "(ConductorEmail,";
+                query += "INSERT INTO Solicitudes";
+                query += "(PasajeroEmail,";
                 query += "ProvinciaOrigenId,";
                 query += "CiudadOrigenId,";
                 query += "ProvinciaDestinoId,";
                 query += "CiudadDestinoId,";
                 query += "FechaHoraInicio,";
-                query += "CantidadPasajeros,";
-                query += "EstadoViaje)";
+                query += "CantidadAcompaniantes,";
+                query += "EstadoSolicitud)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + nuevoViaje.getEmailConductor() + "',";
-                query +=  "'" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
-                query +=  "'" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
-                query +=  "'" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
-                query +=  "'" + nuevoViaje.getCiudadDestino().getIdCiudad() + "',";
-                //query +=  "'2021-10-11 00:00:00',";
-                query +=  "'" + nuevoViaje.getFechaHoraInicio() + "',"; //VOLVER HABILITAR, AMI NO ME FUNCIONA. JONNA
-                query +=  "'" + nuevoViaje.getCantPasajeros() + "',";
-                query +=  "'" + nuevoViaje.getEstadoViaje() + "'";
+                query +=  "'" + nuevaSolicitud.getEmailConductor() + "',";
+                query +=  "'" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
+                query +=  "'" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
+                query +=  "'" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";
+                query +=  "'" + nuevaSolicitud.getCiudadDestino().getIdCiudad() + "',";
+                //query +=  "'2021-10-22 15:00:00',";
+                query +=  "'" + nuevaSolicitud.getFechaHoraInicio() + "',"; //VOLVER HABILITAR, AMI NO ME FUNCIONA. JONNA
+                query +=  "'" + nuevaSolicitud.getCantPasajeros() + "',";
+                query +=  "'" + nuevaSolicitud.getEstadoViaje() + "'";
                 query += ")";
 
                 int resultado = st.executeUpdate(query);
@@ -492,11 +437,10 @@ public class NuevoViaje extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La nueva solicitud a sido creada!.", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo generar la nuevo solicitud, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
 }
