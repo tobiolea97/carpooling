@@ -23,11 +23,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
@@ -339,23 +341,27 @@ public class Ver_Busqueda extends AppCompatActivity {
                     ProvinciaDestino.setNombre(resultados.getString("ProvinciaDestino"));
                     CiudadDestino.setIdCiudad(resultados.getInt("CiudadDestinoId"));
                     CiudadDestino.setNombre(resultados.getString("CiudadDestino"));
-                    viaj.setProvDestino(ProvinciaDestino);
+                    viaj.setProvOrigen(ProvinciaOrigen);
                     viaj.setCiudadOrigen(CiudadOrigen);
                     viaj.setProvDestino(ProvinciaDestino);
                     viaj.setCiudadDestino(CiudadDestino);
                     viaj.setEmailConductor(emailUsuario);
-                //    String fechaInicio =resultados.getString("FechaHoraInicio");
-                  //  fechaInicio = fechaInicio.replace("/21", "/2021");
-                    //LocalDateTime inicioViaje = LocalDateTime.parse(fechaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-                    //viaj.setFechaHoraInicio(inicioViaje);
+                    String fechaInicio = resultados.getString("FechaHoraInicio"); // 2021-11-22 12:30:00.0
+                    LocalDateTime inicioViaje = LocalDateTime.of(
+                            Integer.parseInt(fechaInicio.substring(0,4)),
+                            Integer.parseInt(fechaInicio.substring(5,7)),
+                            Integer.parseInt(fechaInicio.substring(8,10)),
+                            Integer.parseInt(fechaInicio.substring(11,13)),
+                            Integer.parseInt(fechaInicio.substring(14,16)),
+                            Integer.parseInt(fechaInicio.substring(17,19))
+                    );
+
+                    viaj.setFechaHoraInicio(inicioViaje);
                     PasajeroEmail=resultados.getString("PasajeroEmail");
-
-
-
 
                 }
 
-              //  new AgregarViaje().execute();
+              new AgregarViaje().execute();
 
 
             }
@@ -365,20 +371,40 @@ public class Ver_Busqueda extends AppCompatActivity {
         }
     }
 
-    private class AgregarViaje extends AsyncTask<Void,Integer, ResultSet> {
+    private class AgregarViaje extends AsyncTask<Void,Integer, Boolean> {
 
         @Override
-        protected ResultSet doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
 
                 String query = "";
-               query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail inner join Solicitudes vj on usu.Email=vj.PasajeroEmail where vj.Id='" + NroViaje + "' and cal.UsuarioRol='PAS' ";
 
+                query += "INSERT INTO Viajes";
+                query += "(ConductorEmail,";
+                query += "ProvinciaOrigenId,";
+                query += "CiudadOrigenId,";
+                query += "ProvinciaDestinoId,";
+                query += "CiudadDestinoId,";
+                query += "FechaHoraInicio,";
+                query += "CantidadPasajeros,";
+                query += "EstadoViaje)";
+                query += "VALUES";
+                query += "(";
+                query +=  "'" + viaj.getEmailConductor() + "',";
+                query +=  "'" + viaj.getProvOrigen().getIdProvincia()+ "',";
+                query +=  "'" + viaj.getCiudadOrigen().getIdCiudad()+ "',";
+                query +=  "'" + viaj.getProvDestino().getIdProvincia() + "',";
+                query +=  "'" + viaj.getCiudadDestino().getIdCiudad() + "',";
+                query +=  "'" + viaj.getFechaHoraInicio().toString() + "',";
+                query +=  "'" + viaj.getCantPasajeros() + "',";
+                query +=  "'En Espera'";
+                query += ")";
 
-                return st.executeQuery(query);
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
 
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
@@ -387,20 +413,14 @@ public class Ver_Busqueda extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                Integer cantidad = null;
-               while (resultados.next()) {
-                   // cantidad = resultados.getInt("cantidad");
-                }
-                Toast.makeText(contexto, "aaa"+PasajeroEmail, Toast.LENGTH_SHORT).show();
-               // ViajoCon.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
 
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
