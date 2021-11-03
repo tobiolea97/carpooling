@@ -50,20 +50,28 @@ public class viajeNegImpl implements viajeNeg {
     @Override
     public boolean  validarViajeEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
         objOrigViaje = obj;
-        boolean vBoleana = false;
+        boolean hayConflictoConViajes = false;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
         ResultSet resultado = new buscarViajeEnRangoTiempo().execute().get();
 
         try {
-            while (resultado.next()) {
-                vBoleana = true;
+            // SI EL ID DE VIAJE ESTA DEFINIDO (MAYOR A 0) SIFNIFICA Q ESTAMOS EDITANDO UN VIAJE EXISTENTE
+            // ENTONCES AL TRAER LOS RESULTADOS, NO DEBE TENERSE EN CUENTA A SI MISMO SI SE ENCUENTRA EN EL RANGO HORARIO
+            if (obj.getIdViaje() > 0) {
+                while (resultado.next()) {
+                    if (obj.getIdViaje() != resultado.getInt("Id")) hayConflictoConViajes = true;
+                }
+            } else {
+                while (resultado.next()) {
+                    hayConflictoConViajes = true;
+                }
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return vBoleana;
+        return hayConflictoConViajes;
     }
 
     @Override

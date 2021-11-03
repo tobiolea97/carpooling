@@ -18,7 +18,8 @@
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.21875" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.25" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_nuevo_viaje.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.33" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/filtrar_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes_dialog.xml" value="0.36666666666666664" />
@@ -52,6 +53,7 @@
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/fragment_confirmar_accion.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/fragment_filtro_provincia_ciudad.xml" value="0.5" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.5" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/list_item_viajes.xml" value="0.36666666666666664" />
