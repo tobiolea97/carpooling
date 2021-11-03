@@ -48,7 +48,7 @@ public class viajeNegImpl implements viajeNeg {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public boolean  validarViajeEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
+    public boolean validarViajeConductorEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
         objOrigViaje = obj;
         boolean hayConflictoConViajes = false;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
@@ -80,6 +80,26 @@ public class viajeNegImpl implements viajeNeg {
         boolean vBoleana = false;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
         ResultSet resultado = new buscarSolicitudEnRangoTiempo().execute().get();
+
+        try {
+            while (resultado.next()) {
+                vBoleana = true;
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vBoleana;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean validarViajePasajeroEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
+        objOrigViaje = obj;
+        boolean vBoleana = false;
+        //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
+        ResultSet resultado = new buscarViajePasajeroEnRangoTiempo().execute().get();
 
         try {
             while (resultado.next()) {
@@ -193,6 +213,43 @@ public class viajeNegImpl implements viajeNeg {
                 String query = "";
 
                 query = "SELECT * FROM Viajes WHERE Id = " + objOrigViaje.getIdViaje() ;
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private class buscarViajePasajeroEnRangoTiempo extends AsyncTask<Void,Integer, ResultSet>{
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+
+                //HABILITENLO SI NO MORIMOS TODOS!!!!!   YO NO LO PUEDO PROBAR. JONNA
+                LocalDateTime fechaInicio,fechaFin;
+                fechaInicio = objOrigViaje.getFechaHoraInicio().plusHours(-3);
+                fechaFin = objOrigViaje.getFechaHoraInicio().plusHours(+3);
+
+                //QUERY QUE HAY QUE HABILITAR!! YO NO LA PUEDO PROBAR. JONNA
+                query = "SELECT * FROM PasajerosPorViaje pxv ";
+                query += "INNER JOIN Viajes v ";
+                query += "ON pxv.ViajeId = v.Id ";
+                query += "WHERE (pxv.UsuarioEmail = '" + objOrigViaje.getEmailConductor() + "' ";
+                query += "AND (pxv.EstadoPasajero = 'Aceptado' OR pxv.EstadoPasajero = 'Pendiente')) ";
+                query += "AND (v.EstadoViaje = 'En Espera' ";
+                query += "AND (v.FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'))";
+                //QUERY PARA PODER PROBAR
+                //query += "AND (v.FechaHoraInicio BETWEEN '2021-11-01 12:00:00' AND '2021-11-01 14:15:00'))";
 
                 return st.executeQuery(query);
 
