@@ -53,4 +53,8 @@
     <string name="Volver">Volver</string>
     <string name="Aplicar">Aplicar</string>
 
+    <!-- PANTALLA NUEVA SOLICITUD -->
+    <string name="TituloNuevaSolicitud">Nueva Solicitud</string>
+    <string name="CrearSolicitud">Crear Solicitud</string>
+
 </resources>
