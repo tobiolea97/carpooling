@@ -47,12 +47,14 @@ public class Ver_Viajes extends AppCompatActivity {
     View dialogFragmentView, dialogFragmentView2;
     AlertDialog confirmarCancelacion, confirmarFinalizacion;
     String estadoViaje;
+    boolean shouldExecuteOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_viajes);
         contexto = this;
+        shouldExecuteOnResume = false;
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
@@ -485,22 +487,19 @@ public class Ver_Viajes extends AppCompatActivity {
     }
     @Override
     public void onResume() {
+
         super.onResume();
-
-        new CargarPasajeros().execute();
-
-        if(EstadoViaje.equals("Finalizado") || EstadoViaje.equals("Cancelado")){
-            Solicitudes.setVisibility(View.INVISIBLE);
-            TextView txtSolicitudes = findViewById(R.id.TxtSolicitudes);
-            txtSolicitudes.setVisibility(View.INVISIBLE);
-            cancelar.setVisibility(View.INVISIBLE);
-            finalizar.setVisibility(View.INVISIBLE);
-            editar.setVisibility(View.INVISIBLE);
-            tituloCancelar.setVisibility(View.INVISIBLE);
-            tituloFinalizar.setVisibility(View.INVISIBLE);
-            tituloEditar.setVisibility(View.INVISIBLE);
-        } else {
-            new CargarSolicitudes().execute();
+        if(shouldExecuteOnResume){
+            finish();
+            Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+            pagVerViaje.putExtra("NroViaje",NroViaje);
+            pagVerViaje.putExtra("EstadoViaje", estadoViaje);
+            startActivity(pagVerViaje);
+        } else{
+            shouldExecuteOnResume = true;
         }
+
+
+
     }
 }
