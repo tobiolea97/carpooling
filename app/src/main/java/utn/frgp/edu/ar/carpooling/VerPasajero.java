@@ -134,8 +134,6 @@ public class VerPasajero extends AppCompatActivity {
 
         new CargarDatos().execute();
 
-        new VerificarCalificacion().execute(); //VERIFICA SI YA FUE DADA UNA CALIFICACION PARA EL USUARIO
-
         if(EstadoViaje.equals("En Espera") || EstadoViaje.equals("Cancelado")){
             Rating.setIsIndicator(true);
         }
@@ -170,14 +168,8 @@ public class VerPasajero extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void ClickDesAsignarPasajero(View view) throws ExecutionException, InterruptedException {
 
-
         new CancelarPasajero().execute();
-        Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-        pagVerViaje.putExtra("NroViaje",NroViaje);
-        pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
-        startActivity(pagVerViaje);
-
-
+        
     }
 
     public void ClickVolver(View view){
@@ -193,7 +185,7 @@ public class VerPasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " CALL InfoParaResponderSolicitud('" + EmailVerUsuario + "'," + NroViaje + ");";
+                query += " CALL InfoParaVerPasajero('" + EmailVerUsuario + "'," + NroViaje + ",'" + emailUsuarioLog + "');";
 
                 return st.executeQuery(query);
 
@@ -230,6 +222,10 @@ public class VerPasajero extends AppCompatActivity {
                     Rating.setRating(promedio);
 
                     calificacionInicial=false;
+
+                    if(resultados.getFloat("IdCalificacion") > 0 ) {
+                        Rating.setIsIndicator(true);
+                    }
 
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));
@@ -300,6 +296,7 @@ public class VerPasajero extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Toast.makeText(contexto, "El  Pasajero a sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -380,42 +377,5 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
     }
-
-    private class VerificarCalificacion extends AsyncTask<Void,Integer,ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-
-                String query = "";
-                query += "SELECT Id FROM Calificaciones WHERE UsuarioEmail = '" + EmailVerUsuario + "' AND UsuarioRol = '" + RolVerUsuario + "' AND CalificadorEmail = '" + emailUsuarioLog +"' AND CalificadorRol = '" + rolUsuarioLog + "'";
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-
-                while (resultados.next()) {
-                    Rating.setIsIndicator(true);
-                }
-
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 }

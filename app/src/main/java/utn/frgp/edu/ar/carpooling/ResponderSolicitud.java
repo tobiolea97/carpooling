@@ -29,6 +29,8 @@ import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
+import utn.frgp.edu.ar.carpooling.entities.Rol;
+import utn.frgp.edu.ar.carpooling.entities.Usuario;
 import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class ResponderSolicitud extends AppCompatActivity {
@@ -38,6 +40,8 @@ public class ResponderSolicitud extends AppCompatActivity {
     RatingBar Rating;
     Button botoncancelar,botonaceptar;
     GridView grillaVerViaje;
+    Usuario usuarioACalificar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,12 +84,74 @@ public class ResponderSolicitud extends AppCompatActivity {
 
 
         new CargarDatos().execute();
-        new CargarCalificaciones().execute();
-        new ContarCalificaciones().execute();
-        new CargarViajeSeleccionado().execute();
 
     }
+
     private class CargarDatos extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " CALL InfoParaResponderSolicitud('" + Email + "'," + NroViaje + ");";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            usuarioACalificar = new Usuario();
+            try {
+                Float promedio = 0f;
+                Integer cantidad = null;
+                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
+                while (resultados.next()) {
+
+                    Nombre.setText(resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
+                    Numero.setText(resultados.getString("Telefono"));
+
+                    Rol r = new Rol();
+                    r.setId(resultados.getString("IdRol"));
+                    r.setNombre(resultados.getString("NombreRol"));
+                    usuarioACalificar.setRol(r);
+                    usuarioACalificar.setDni(resultados.getString("Dni"));
+                    promedio = resultados.getFloat("Promedio");
+                    cantidad = resultados.getInt("cantidad");
+                    viajocon.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No Viajo con ningun conductor");
+                    Rating.setRating(promedio);
+
+                    Rating.setIsIndicator(true);
+
+                    Map<String, String> item = new HashMap<String, String>();
+                    item.put("NroViaje", resultados.getString("Id"));
+                    item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
+                    item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
+                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
+                    item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+
+                    itemsGrilla.add(item);
+                }
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
+                grillaVerViaje.setAdapter(simpleAdapter);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargarDatos2 extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {

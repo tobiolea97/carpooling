@@ -1,6 +1,7 @@
-CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaResponderSolicitud`(
+CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaVerPasajero`(
 	IN pasajero_mail VARCHAR(30),
-    IN viaje_id INT
+    IN viaje_id INT,
+    IN conductor_mail VARCHAR(30)
 )
 BEGIN
 	
@@ -38,6 +39,15 @@ BEGIN
 	  vj.Id = viaje_id
 	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD;
     
+    -- VERIFICAR CALIFICACION
+    SELECT Id
+    FROM Calificaciones
+    WHERE 	UsuarioEmail = pasajero_mail
+			AND UsuarioRol = 'PAS'
+            AND CalificadorEmail = conductor_mail
+            AND CalificadorRol = 'CON'
+	INTO @IdCalificacion;
+    
     SELECT 	@NombreUsuario Nombre,
 			@ApellidoUsuario Apellido,
             @TelefonoUsuario Telefono,
@@ -51,6 +61,7 @@ BEGIN
             @PO ProvinciaOrigen,
             @CO CiudadOrigen,
             @PD ProvinciaDestino,
-            @CD CiudadDestino;
+            @CD CiudadDestino,
+            @IdCalificacion IdCalificacion;
             
 END
