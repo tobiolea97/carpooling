@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             String emailUsuario = spSesion.getString("Email","");
 
             if(!emailUsuario.equals("")) {
-                Intent nextForm = new Intent(this, Registro.class);
+                Intent nextForm = new Intent(this, Home.class);
                 startActivity(nextForm);
                 finish();
             }
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickRegistrar(View view) {
-        Intent nextForm = new Intent(this, NuevaSolicitud.class);
+        Intent nextForm = new Intent(this, Home.class);
         c=0;
         login.setEnabled(true);
         startActivity(nextForm);

@@ -491,7 +491,7 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() ";
+                query += " WHERE vj.FechaHoraInicio > now() AND vj.PasajeroEmail != '" + emailUsuario + "'";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 
