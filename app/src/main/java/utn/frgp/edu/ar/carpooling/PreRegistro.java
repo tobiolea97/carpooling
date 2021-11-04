@@ -48,8 +48,8 @@ public class PreRegistro extends AppCompatActivity {
         etDNI = (EditText) findViewById(R.id.etPreRegistroDni);
         tvError = (TextView) findViewById(R.id.tvPreRegistroError);
 
-        etEmail.setText("tobiolea97@gmail.com");
-        etDNI.setText("11222333");
+        //etEmail.setText("tobiolea97@gmail.com");
+        //etDNI.setText("11222333");
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();

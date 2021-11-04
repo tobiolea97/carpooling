@@ -33,7 +33,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
-    TextView Nombre,viajocon;
+    TextView Nombre,viajocon, Numero;
     String Email,NroViaje,Asientos,Pasajeros;
     RatingBar Rating;
     Button botoncancelar,botonaceptar;
@@ -52,6 +52,7 @@ public class ResponderSolicitud extends AppCompatActivity {
         grillaVerViaje=(GridView) findViewById(R.id.GrResponderSoli);
         botoncancelar=findViewById(R.id.btnResponderSoliRechazar);
         botonaceptar=findViewById(R.id.btnRespSoliAceptar);
+        Numero=findViewById(R.id.textView17);
 
         botoncancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +115,7 @@ public class ResponderSolicitud extends AppCompatActivity {
 
                 while (resultados.next()) {
                     Nombre.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
-
+                    Numero.setText(resultados.getString("Telefono"));
 
 
                 }
