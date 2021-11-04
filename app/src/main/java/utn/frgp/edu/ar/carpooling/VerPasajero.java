@@ -484,6 +484,7 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
@@ -502,6 +503,13 @@ public class VerPasajero extends AppCompatActivity {
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
 
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Rating.setIsIndicator(true);
                 Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
             }else{

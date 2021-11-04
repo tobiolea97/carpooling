@@ -9,7 +9,8 @@ import utn.frgp.edu.ar.carpooling.entities.Viaje;
 public interface viajeNeg {
 
     int validarDatosViaje(Viaje v);
-    boolean validarViajeEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
+    boolean validarViajeConductorEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
     boolean validarSolicitudEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
+    boolean validarViajePasajeroEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException;
     LocalDate ObtenerFechaFinalizacionViaje(int NroViaje) throws ExecutionException, InterruptedException;
 }
