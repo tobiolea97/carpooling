@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         c=0;
         login.setEnabled(true);
         startActivity(nextForm);
+        finish();
     }
 
     public void onClickLogin(View view) {

@@ -107,8 +107,13 @@ public class NuevoViaje extends AppCompatActivity {
             Button btCrearViaje = findViewById(R.id.btnCrearViaje);
             tvTitulo.setText("Editar Viaje");
             btCrearViaje.setText("Actualizar viaje");
+            fechaViaje.setEnabled(false);
             fechaViaje.setText(spEdicion.getString("fechaInicio",""));
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            spProvinciasOrigen.setEnabled(false);
+            spCiudadesOrigen.setEnabled(false);
+            spProvinciasDestino.setEnabled(false);
+            spCiudadesDestino.setEnabled(false);
         }
 
         provDestSelecc = null;
@@ -501,7 +506,8 @@ public class NuevoViaje extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El nuevo viaje ha sido creado!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -538,7 +544,10 @@ public class NuevoViaje extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
-            if (resultado) Toast.makeText(contexto, "El viaje fue actualizado correctametne", Toast.LENGTH_LONG).show();
+            if (resultado) {
+                Toast.makeText(contexto, "El viaje fue actualizado correctamente", Toast.LENGTH_LONG).show();
+                finish();
+            }
             else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
         }
     }

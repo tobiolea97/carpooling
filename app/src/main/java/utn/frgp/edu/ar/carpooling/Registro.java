@@ -55,12 +55,12 @@ public class Registro extends AppCompatActivity {
         nacimiento.setFocusableInTouchMode(false);
         nacimiento.setInputType(InputType.TYPE_NULL);
 
-        nombre.setText("Tobias");
-        apellido.setText("Olea Martinez");
-        telefono.setText("+54 9 11 6920 3645");
-        nacimiento.setText("12/05/1997");
-        password.setText("40379479");
-        reingresoPassword.setText("40379479");
+        nombre.setText("");
+        apellido.setText("");
+        telefono.setText("");
+        nacimiento.setText("");
+        password.setText("");
+        reingresoPassword.setText("");
 
         // Seteo de eventos
         registrar.setOnClickListener(new View.OnClickListener() {

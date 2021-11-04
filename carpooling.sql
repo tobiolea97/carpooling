@@ -128,6 +128,7 @@ CREATE TABLE PasajerosPorViaje (
   ViajeId int NOT NULL,
   UsuarioEmail varchar(30) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
+  EstadoPasajero varchar(20) NOT NULL,
   
   PRIMARY KEY (ViajeId, UsuarioEmail),
   
@@ -230,9 +231,11 @@ VALUES ('tobi@mail.com','CON','joni@mail.com','PAS',1,4,1);
 INSERT INTO Viajes (ConductorEmail,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
 VALUES('conductor@mail.com',102,1008,103,1013,'2021-11-30 13:30',null,4,'En Espera',1);
 
-INSERT INTO PasajerosPorViaje
-(ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
-VALUES
-();
+INSERT INTO PasajerosPorViaje (ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
+VALUES (13,'joni@mail.com',1,'Pendiente');
+INSERT INTO PasajerosPorViaje (ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
+VALUES (13,'matias@alvarado.com',1,'Pendiente');
+INSERT INTO PasajerosPorViaje (ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajero)
+VALUES (13,'tobi@mail.com',1,'Pendiente');
 
 
