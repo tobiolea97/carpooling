@@ -124,6 +124,40 @@ public class Validadores {
             password.setError("Este campo admite un maximo de 20 characteres");
             return false;
         }
+        if(password.getText().toString().length() >= 20) {
+            password.setError("Este campo admite un maximo de 20 characteres");
+            return false;
+        }
+
+        boolean caracterNoValido = false;
+        int caracter = 0;
+        for(int i = 0; i<password.getText().toString().length();i++){
+
+           caracter = password.getText().toString().charAt(i);
+
+           if(caracter <47){
+               caracterNoValido = true;
+           }
+           else if( caracter > 57 &&caracter < 64){
+               caracterNoValido = true;
+           }
+           else if(caracter>90 && caracter<97){
+               caracterNoValido = true;
+           }
+           else if(caracter>122){
+               caracterNoValido = true;
+           }
+
+           if(caracter == 22 || caracter == 33 || caracter == 44 || caracter == 46 || caracter == 35 || caracter == 36 || caracter == 38){
+               caracterNoValido = false;
+           }
+        }
+
+        if(caracterNoValido==true){
+            password.setError("Este campo admite solo caracteres alfanumericos y _.,!#$&");
+            return false;
+        }
+
         password.setError(null);
         return flag;
     }

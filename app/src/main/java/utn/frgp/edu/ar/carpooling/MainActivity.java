@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             String emailUsuario = spSesion.getString("Email","");
 
-            //if(!emailUsuario.equals("")) {
-              //  Intent nextForm = new Intent(this, NuevaSolicitud.class);
-              //  startActivity(nextForm);
-              //  finish();
-            //}
+            if(!emailUsuario.equals("")) {
+                Intent nextForm = new Intent(this, Registro.class);
+                startActivity(nextForm);
+                finish();
+            }
 
         }
         catch(Exception e) {
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickRegistrar(View view) {
-        Intent nextForm = new Intent(this, PreRegistro.class);
+        Intent nextForm = new Intent(this, NuevaSolicitud.class);
         c=0;
         login.setEnabled(true);
         startActivity(nextForm);
