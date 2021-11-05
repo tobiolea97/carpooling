@@ -101,40 +101,25 @@ public class Ver_Viajes extends AppCompatActivity {
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (EstadoViaje.equals("Cancelado") ||
+                    Pasajeros.getItemAtPosition(i).equals("Libre") ||
+                    Pasajeros.getItemAtPosition(i).toString().contains("Acompañante")) return;
 
-                if(EstadoViaje.equals("Cancelado")) return;
+                String Email = "";
+                String Rol = "";
+                String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
+                Email = EmailPasajeros.get(i).split("-")[0];
+                Rol = EmailPasajeros.get(i).split("-")[1];
 
-
-                    if(Pasajeros.getItemAtPosition(i).equals("Libre")){
-                        return;
-
-                    }
-                    else{
-                        if(Pasajeros.getItemAtPosition(i).equals("Acompañante")){
-                           return;
-                        }else{
-                            String Email = "";
-                            String Rol = "";
-                            String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                            Email = EmailPasajeros.get(i).split("-")[0];
-                            Rol = EmailPasajeros.get(i).split("-")[1];
-
-                            Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
-                            pagVerPasajero.putExtra("NroViaje",NroViaje);
-                            pagVerPasajero.putExtra("EmailVerUsuario",Email);
-                            pagVerPasajero.putExtra("RolVerUsuario",Rol);
-                            pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
-                            startActivity(pagVerPasajero);
-                        }
-
-                    }
+                Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
+                pagVerPasajero.putExtra("NroViaje",NroViaje);
+                pagVerPasajero.putExtra("EmailVerUsuario",Email);
+                pagVerPasajero.putExtra("RolVerUsuario",Rol);
+                pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
+                startActivity(pagVerPasajero);
              //
                 //   Entraba igual por eso lo saque 
                 //   if(!Pasajeros.getItemAtPosition(i).equals("Libre")||!Pasajeros.getItemAtPosition(i).equals("Acompañante")) {
-
-
-
-                    /**/
                // }
             }
         });
@@ -299,6 +284,7 @@ public class Ver_Viajes extends AppCompatActivity {
                         for(int i=0; i < cantidadAcompañantes; i++){
                             PasajerosABordo++;
                             pasajeros.add("Acompañante de " + resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
+                            EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
                         }
                     }
 
