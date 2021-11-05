@@ -41,7 +41,6 @@ public class Ver_Viajes extends AppCompatActivity {
     ArrayList<String> IdSolicitudes;
     ImageButton cancelar,finalizar,editar;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
-    String CantidadAsientos;
     TextView tituloCancelar,tituloFinalizar,tituloEditar;
     String localDateviaje;
     View dialogFragmentView, dialogFragmentView2;
@@ -236,7 +235,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
+                    // CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
@@ -290,33 +289,29 @@ public class Ver_Viajes extends AppCompatActivity {
             try {
                 ArrayList<String> pasajeros= new ArrayList<String>();
                 EmailPasajeros= new ArrayList<>();
+                int cantidadDeAsientos=0;
                 int PasajerosABordo=0;
-                String cantidadacompañantes="";
                 while (resultados.next()) {
                     PasajerosABordo++;
-                    cantidadacompañantes=resultados.getString("cantAcompañantes");
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
-                    if(Integer.parseInt(cantidadacompañantes)>0){
-                        for(int i=0;i<Integer.parseInt(cantidadacompañantes);i++){
+                    int cantidadAcompañantes=resultados.getInt("cantAcompañantes");
+                    if(cantidadAcompañantes > 0){
+                        for(int i=0; i < cantidadAcompañantes; i++){
                             PasajerosABordo++;
-                            pasajeros.add("Acompañante");
+                            pasajeros.add("Acompañante de " + resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
                         }
                     }
 
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
+                    cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
                 }
 
-                ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(CantidadAsientos), PasajerosABordo);
+                ArrayList<String> asientosLibres = agregarAsientosLibres(cantidadDeAsientos, PasajerosABordo);
                 if (asientosLibres.size() > 0) pasajeros.addAll(asientosLibres);
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
                 Pasajeros.setAdapter(adapter);
-                if (PasajerosABordo==0) {
-                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
-                } else {
-                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
-                }
+                TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + cantidadDeAsientos + ")");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -325,17 +320,13 @@ public class Ver_Viajes extends AppCompatActivity {
     }
 
     private ArrayList<String> agregarAsientosLibres(int cantAsientos, int asientosOcupados) {
-
         int asientosLibres = cantAsientos - asientosOcupados;
 
-            ArrayList<String> arrAsientosLibres = new ArrayList<String>();
-            for (int i = 0; i < asientosLibres; i++) {
-                arrAsientosLibres.add("Libre");
-            }
-            return arrAsientosLibres;
-
-
-
+        ArrayList<String> arrAsientosLibres = new ArrayList<String>();
+        for (int i = 0; i < asientosLibres; i++) {
+            arrAsientosLibres.add("Libre");
+        }
+        return arrAsientosLibres;
     }
 
     private class CargarSolicitudes extends AsyncTask<Void,Integer,ResultSet> {
