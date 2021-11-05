@@ -105,20 +105,38 @@ public class Ver_Viajes extends AppCompatActivity {
 
                 if(EstadoViaje.equals("Cancelado")) return;
 
-                if(!Pasajeros.getItemAtPosition(i).equals("Libre")) {
-                    String Email = "";
-                    String Rol = "";
-                    String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                    Email = EmailPasajeros.get(i).split("-")[0];
-                    Rol = EmailPasajeros.get(i).split("-")[1];
 
-                    Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
-                    pagVerPasajero.putExtra("NroViaje",NroViaje);
-                    pagVerPasajero.putExtra("EmailVerUsuario",Email);
-                    pagVerPasajero.putExtra("RolVerUsuario",Rol);
-                    pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
-                    startActivity(pagVerPasajero);
-                }
+                    if(Pasajeros.getItemAtPosition(i).equals("Libre")){
+                        return;
+
+                    }
+                    else{
+                        if(Pasajeros.getItemAtPosition(i).equals("Acompañante")){
+                           return;
+                        }else{
+                            String Email = "";
+                            String Rol = "";
+                            String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
+                            Email = EmailPasajeros.get(i).split("-")[0];
+                            Rol = EmailPasajeros.get(i).split("-")[1];
+
+                            Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
+                            pagVerPasajero.putExtra("NroViaje",NroViaje);
+                            pagVerPasajero.putExtra("EmailVerUsuario",Email);
+                            pagVerPasajero.putExtra("RolVerUsuario",Rol);
+                            pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
+                            startActivity(pagVerPasajero);
+                        }
+
+                    }
+             //
+                //   Entraba igual por eso lo saque 
+                //   if(!Pasajeros.getItemAtPosition(i).equals("Libre")||!Pasajeros.getItemAtPosition(i).equals("Acompañante")) {
+
+
+
+                    /**/
+               // }
             }
         });
 
@@ -246,7 +264,8 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " 		    usu.Telefono,";
                 query += " 		    usu.Email,";
                 query += " 		    usu.Rol,";
-                query += " 		    vj.CantidadPasajeros";
+                query += " 		    vj.CantidadPasajeros,";
+                query += " 		    pv.cantAcompañantes";
                 query += " FROM Viajes vj";
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON pv.ViajeId=vj.Id";
@@ -272,9 +291,18 @@ public class Ver_Viajes extends AppCompatActivity {
                 ArrayList<String> pasajeros= new ArrayList<String>();
                 EmailPasajeros= new ArrayList<>();
                 int PasajerosABordo=0;
+                String cantidadacompañantes="";
                 while (resultados.next()) {
                     PasajerosABordo++;
+                    cantidadacompañantes=resultados.getString("cantAcompañantes");
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
+                    if(Integer.parseInt(cantidadacompañantes)>0){
+                        for(int i=0;i<Integer.parseInt(cantidadacompañantes);i++){
+                            PasajerosABordo++;
+                            pasajeros.add("Acompañante");
+                        }
+                    }
+
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
                     CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
@@ -297,12 +325,17 @@ public class Ver_Viajes extends AppCompatActivity {
     }
 
     private ArrayList<String> agregarAsientosLibres(int cantAsientos, int asientosOcupados) {
+
         int asientosLibres = cantAsientos - asientosOcupados;
-        ArrayList<String> arrAsientosLibres = new ArrayList<String>();
-        for (int i = 0; i < asientosLibres; i++) {
-            arrAsientosLibres.add("Libre");
-        }
-        return arrAsientosLibres;
+
+            ArrayList<String> arrAsientosLibres = new ArrayList<String>();
+            for (int i = 0; i < asientosLibres; i++) {
+                arrAsientosLibres.add("Libre");
+            }
+            return arrAsientosLibres;
+
+
+
     }
 
     private class CargarSolicitudes extends AsyncTask<Void,Integer,ResultSet> {

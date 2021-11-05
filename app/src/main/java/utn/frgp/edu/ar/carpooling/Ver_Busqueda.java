@@ -34,8 +34,10 @@ import java.util.Map;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Ciudad;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
 import utn.frgp.edu.ar.carpooling.entities.Provincia;
 import utn.frgp.edu.ar.carpooling.entities.Viaje;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class Ver_Busqueda extends AppCompatActivity {
     Context contexto;
@@ -48,6 +50,7 @@ public class Ver_Busqueda extends AppCompatActivity {
     Spinner CantAsientos;
     TextView Nombre,Celular,ViajoCon;
     Viaje viaj;
+    String idviaje="",emailpasajero;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -346,6 +349,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                     viaj.setProvDestino(ProvinciaDestino);
                     viaj.setCiudadDestino(CiudadDestino);
                     viaj.setEmailConductor(emailUsuario);
+                    emailpasajero=resultados.getString("PasajeroEmail");
                     String fechaInicio = resultados.getString("FechaHoraInicio"); // 2021-11-22 12:30:00.0
                     LocalDateTime inicioViaje = LocalDateTime.of(
                             Integer.parseInt(fechaInicio.substring(0,4)),
@@ -416,11 +420,134 @@ public class Ver_Busqueda extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+                new BuscarDatosparaInsertarElPasajero().execute();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
 
+        }
+    }
+    private class BuscarDatosparaInsertarElPasajero extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += "SELECT Id FROM Viajes where ConductorEmail='" + viaj.getEmailConductor() + "' order by Id DESC limit 1 ";
+
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+
+             int c=0;
+                while (resultados.next()) {
+                    c++;
+                    idviaje=resultados.getString("Id");
+
+                }
+            if(c!=0){
+                new AgregarPasajeroxViaje().execute();
+            }else{
+              System.out.println("Un error al mandarle el id");
+                }
+
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class AgregarPasajeroxViaje extends AsyncTask<Void,Integer, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                System.out.println(idviaje+"  "+emailpasajero+"  asdasdsa");
+                String query = "";
+                query += "INSERT INTO `PasajerosPorViaje`";
+                query += "(ViajeId,";
+                query += "UsuarioEmail,";
+                query += "EstadoRegistro,";
+                query += "EstadoPasajero,";
+                query += "cantAcompañantes)";
+                query += "VALUES";
+                query += "(";
+                query +=  "'" + idviaje+ "',";
+                query +=  "'" + emailpasajero+ "',";
+                query +=  "'1',";
+                query +=  "'Aceptado',";
+                query +=  "'0'";
+                query += ")";
+
+
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                new ActualizarSolicitud().execute();
+            }else{
+                Toast.makeText(contexto, "No se pudo agregar el pasajero al viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private class ActualizarSolicitud extends AsyncTask<Void,Integer,Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "UPDATE Solicitudes SET ";
+                query += "EstadoRegistro='0'";
+                query += " WHERE Id = " + NroViaje;
+
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if (resultado) {
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioEmail(emailpasajero);
+                Noti.setUsuarioRolId("PAS");
+                Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+            }
+            else System.out.println("No se pudo cambiar la solicitud");
         }
     }
 
