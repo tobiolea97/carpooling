@@ -169,6 +169,7 @@ public class ResponderSolicitud extends AppCompatActivity {
             try {
                 Float promedio = 0f;
                 Integer cantidad = null;
+                Integer asientosLibres = 0;
                 List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
                 while (resultados.next()) {
 
@@ -181,7 +182,11 @@ public class ResponderSolicitud extends AppCompatActivity {
                     usuarioACalificar.setRol(r);
                     usuarioACalificar.setDni(resultados.getString("Dni"));
                     promedio = resultados.getFloat("Promedio");
-                    cantidad = resultados.getInt("cantidad");
+                    cantidad = resultados.getInt("Cantidad");
+                    asientosLibres = resultados.getInt("EspaciosDisponibles");
+
+                    if(asientosLibres <= 0) botonaceptar.setEnabled(false);
+
                     viajocon.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No Viajo con ningun conductor");
                     Rating.setRating(promedio);
 
