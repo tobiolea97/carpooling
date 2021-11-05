@@ -1,4 +1,4 @@
-CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaResponderSolicitud`(
+CREATE DEFINER=`sql10441832`@`%` PROCEDURE `InfoParaResponderSolicitud`(
 	IN pasajero_mail VARCHAR(30),
     IN viaje_id INT
 )
@@ -38,6 +38,17 @@ BEGIN
 	  vj.Id = viaje_id
 	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD;
     
+    -- LUGARES DISPONIBLES 
+    SELECT CantidadPasajeros FROM Viajes WHERE Id = viaje_id INTO @CantidadAsientos;
+    SELECT COUNT(*) FROM PasajerosPorViaje WHERE ViajeId = viaje_id AND EstadoPasajero = "Aceptado" INTO @CantidadPasajeros;
+    SELECT SUM(cantAcompañantes) FROM PasajerosPorViaje WHERE ViajeId = viaje_id AND EstadoPasajero = "Aceptado" INTO @CantidadAcompaniantes;
+    
+    IF @CantidadAcompaniantes IS NULL THEN
+		SET @CantidadAcompaniantes = 0;
+	END IF;
+        
+	SET @EspaciosDisponibles = @CantidadAsientos - @CantidadPasajeros - @CantidadAcompaniantes;
+    
     SELECT 	@NombreUsuario Nombre,
 			@ApellidoUsuario Apellido,
             @TelefonoUsuario Telefono,
@@ -51,6 +62,7 @@ BEGIN
             @PO ProvinciaOrigen,
             @CO CiudadOrigen,
             @PD ProvinciaDestino,
-            @CD CiudadDestino;
+            @CD CiudadDestino,
+            @EspaciosDisponibles EspaciosDisponibles;
             
 END

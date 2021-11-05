@@ -129,6 +129,7 @@ CREATE TABLE PasajerosPorViaje (
   UsuarioEmail varchar(30) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   EstadoPasajero varchar(20) NOT NULL,
+  cantAcompañantes int DEFAULT 0,
   
   PRIMARY KEY (ViajeId, UsuarioEmail),
   
