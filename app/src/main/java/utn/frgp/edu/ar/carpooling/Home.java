@@ -112,7 +112,7 @@ public class Home extends AppCompatActivity {
         }
         if(id == R.id.misViajes) {
             finish();
-            Intent intent = new Intent(this, MisViajes.class);
+            Intent intent = new Intent(this, MisViajesModoPasajero.class);
             startActivity(intent);
         }
 
@@ -151,7 +151,7 @@ public class Home extends AppCompatActivity {
         
 
         if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
+          //  misviajes.setVisible(false);
             CrearViaje.setVisible(false);
         }
 
@@ -166,6 +166,7 @@ public class Home extends AppCompatActivity {
     }
 
     public void onClickBuscar (View view) {
+
         Intent intent= new Intent(context, Buscar.class);
         startActivity(intent);
     }

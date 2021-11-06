@@ -89,8 +89,8 @@
 
             <GridView
                 android:id="@+id/GrPeticionViaje"
-                android:layout_width="479dp"
-                android:layout_height="126dp"
+                android:layout_width="406dp"
+                android:layout_height="120dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
