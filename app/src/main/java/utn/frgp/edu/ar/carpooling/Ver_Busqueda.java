@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Ciudad;
@@ -539,7 +540,6 @@ public class Ver_Busqueda extends AppCompatActivity {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-                System.out.println(idviaje+"  "+emailpasajero+"  asdasdsa");
                 String query = "";
                 query += "INSERT INTO `PasajerosPorViaje`";
                 query += "(ViajeId,";
@@ -595,6 +595,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 return false;
             }
         }
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
@@ -606,6 +607,13 @@ public class Ver_Busqueda extends AppCompatActivity {
                 Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             else System.out.println("No se pudo cambiar la solicitud");
         }

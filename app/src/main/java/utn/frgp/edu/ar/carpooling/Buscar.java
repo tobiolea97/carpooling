@@ -193,10 +193,19 @@ public class Buscar extends AppCompatActivity {
 
                 String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
+                if(rolUsuario.equals("CON")){
                 Intent pagVerBusqueda= new Intent(context,Ver_Busqueda.class);
                 pagVerBusqueda.putExtra("NroViaje",part3);
                 pagVerBusqueda.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerBusqueda);
+                }
+                else{
+                    Intent pagPeticionViaje= new Intent(context,PeticionDeViaje.class);
+                    pagPeticionViaje.putExtra("NroViaje",part3);
+                    pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
+                    startActivity(pagPeticionViaje);
+
+                }
 
             }
         });

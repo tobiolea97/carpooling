@@ -35,7 +35,7 @@ public class Home extends AppCompatActivity {
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
     private final static String CHANNEL_ID="NOTIFICACION";
-    private final static int NOTIFICACION_ID=0;
+    public final static int NOTIFICACION_ID=0;
     private PendingIntent pendingIntent;
     GridView grillaViajes;
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;

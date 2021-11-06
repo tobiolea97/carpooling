@@ -2,6 +2,7 @@ package utn.frgp.edu.ar.carpooling;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import static utn.frgp.edu.ar.carpooling.Home.NOTIFICACION_ID;
+
 import android.widget.Toast;
 
 import java.sql.Connection;
@@ -35,7 +38,6 @@ public class Notificaciones extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
         contexto = this;
-
         LvNotificacion=findViewById(R.id.LvNotificaciones);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
@@ -50,6 +52,16 @@ public class Notificaciones extends AppCompatActivity {
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+
+        NotificationManagerCompat notificationManagerCompat= NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.cancel(NOTIFICACION_ID);
+
+
+
+
+
+
+
         new CargarNotificaciones().execute();
     }
     @Override
