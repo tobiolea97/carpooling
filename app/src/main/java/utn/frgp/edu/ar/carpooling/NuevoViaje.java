@@ -99,7 +99,14 @@ public class NuevoViaje extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
         String esModoEdicion = spEdicion.getString("modoEdicion", "false");
         if (esModoEdicion.equals("true")) {
@@ -158,6 +165,11 @@ public class NuevoViaje extends AppCompatActivity {
         if(id == R.id.misViajes) {
             finish();
             Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 

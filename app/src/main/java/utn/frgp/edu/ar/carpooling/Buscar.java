@@ -108,7 +108,14 @@ public class Buscar extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
         grillaViajes = (GridView) findViewById(R.id.gvHomeProximosVIajes);
         context = this;
 
@@ -491,7 +498,7 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND vj.PasajeroEmail != '" + emailUsuario + "'";
+                query += " WHERE vj.FechaHoraInicio > now() AND vj.PasajeroEmail != '" + emailUsuario + "' and vj.EstadoRegistro=1";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 

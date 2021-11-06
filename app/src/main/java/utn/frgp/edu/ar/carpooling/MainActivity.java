@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRegistrar(View view) {
         Intent nextForm = new Intent(this, Home.class);
-        c=0;
         login.setEnabled(true);
         startActivity(nextForm);
         finish();
