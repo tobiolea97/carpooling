@@ -20,7 +20,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tvPreRegistroTitulo"
+                android:id="@+id/tvEditarPerfilInformacionPersona"
                 android:layout_width="0dp"
                 android:layout_height="47dp"
                 android:layout_marginStart="16dp"
@@ -63,7 +63,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toEndOf="@+id/ivHomeStar3"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona"
                 app:srcCompat="@mipmap/emptystar_foreground" />
 
             <ImageView
@@ -73,7 +73,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toEndOf="@+id/ivHomeStar4"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona"
                 app:srcCompat="@mipmap/emptystar_foreground" />
 
             <ImageView
@@ -83,7 +83,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toEndOf="@+id/ivHomeStar2"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona"
                 app:srcCompat="@mipmap/emptystar_foreground" />
 
             <ImageView
@@ -93,7 +93,7 @@
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona"
                 app:srcCompat="@mipmap/emptystar_foreground" />
 
             <ImageView
@@ -103,7 +103,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toEndOf="@+id/ivHomeStar1"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona"
                 app:srcCompat="@mipmap/emptystar_foreground" />
 
             <GridView

@@ -25,7 +25,7 @@
             android:paddingEnd="15dp">
 
             <TextView
-                android:id="@+id/tvPreRegistroTitulo"
+                android:id="@+id/tvEditarPerfilInformacionPersona"
                 android:layout_width="281dp"
                 android:layout_height="39dp"
                 android:layout_marginStart="16dp"
@@ -39,7 +39,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvPreRegistroEmail"
+                android:id="@+id/tvEditarPerfilNombre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -47,10 +47,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroTitulo" />
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionPersona" />
 
             <EditText
-                android:id="@+id/etPreRegistroEmail"
+                android:id="@+id/etEditarPerfilNombre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -59,10 +59,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroEmail" />
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilNombre" />
 
             <EditText
-                android:id="@+id/etPreRegistroDni"
+                android:id="@+id/etEditarPerfilDni"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -71,10 +71,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroDNI" />
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilApellido" />
 
             <TextView
-                android:id="@+id/tvPreRegistroDNI"
+                android:id="@+id/tvEditarPerfilApellido"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -83,10 +83,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etPreRegistroEmail" />
+                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilNombre" />
 
             <TextView
-                android:id="@+id/tvPreRegistroRol"
+                android:id="@+id/tvEditarPerfilNacimiento"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -94,11 +94,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etPreRegistroDni" />
+                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilDni" />
 
 
             <Button
-                android:id="@+id/btnRegistroContinuar"
+                android:id="@+id/btnEditarPerfilInformacionPersonal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="196dp"
@@ -118,7 +118,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPreRegistroRol" />
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilNacimiento" />
 
             <TextView
                 android:id="@+id/tvPreRegistroError"
