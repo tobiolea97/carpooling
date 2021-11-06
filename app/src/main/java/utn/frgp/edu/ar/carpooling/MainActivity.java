@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         login=findViewById(R.id.btnMainActivityLogin);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
 
-        email.setText("conductor@mail.com");
+        email.setText("pasajero1@mail.com");
         password.setText("40379479");
 
         // Carga de roles
