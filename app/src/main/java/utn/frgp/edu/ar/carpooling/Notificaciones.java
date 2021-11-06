@@ -112,7 +112,7 @@ public class Notificaciones extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	noti.Mensaje";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "'and noti.UsuarioRol='"+rolUsuario+"'and noti.EstadoNotificacion='P'";
+                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "'and noti.UsuarioRol='"+rolUsuario+"'";
 
                 return st.executeQuery(query);
 
