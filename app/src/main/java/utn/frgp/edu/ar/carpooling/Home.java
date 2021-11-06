@@ -55,7 +55,7 @@ public class Home extends AppCompatActivity {
         cantidadCalificaciones.setText("");
         btnRedireccionarAMisViajes=findViewById(R.id.btnHomeRedireccionarAViajes);
         btnRedireccionarABusqueda=findViewById(R.id.btnHomeRedireccionarABusqueda);
-        Info = findViewById(R.id.tvPreRegistroTitulo);
+        Info = findViewById(R.id.tvEditarPerfilInformacionPersona);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
@@ -121,9 +121,16 @@ public class Home extends AppCompatActivity {
             Intent intent = new Intent(this, NuevoViaje.class);
             startActivity(intent);
         }
+
         if(id == R.id.notificaciones) {
             finish();
             Intent intent = new Intent(this, Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.editarPerfil) {
+            finish();
+            Intent intent = new Intent(this, EditarPerfil.class);
             startActivity(intent);
         }
 

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         try {
-            Info = findViewById(R.id.tvPreRegistroTitulo);
+            Info = findViewById(R.id.tvEditarPerfilInformacionPersona);
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             String emailUsuario = spSesion.getString("Email","");
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickRegistrar(View view) {
-        Intent nextForm = new Intent(this, Home.class);
+        Intent nextForm = new Intent(this, PreRegistro.class);
         login.setEnabled(true);
         startActivity(nextForm);
         finish();

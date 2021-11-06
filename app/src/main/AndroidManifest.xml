@@ -16,6 +16,9 @@
             android:name=".MisViajesModoPasajero"
             android:exported="true" />
         <activity
+            android:name=".EditarPerfil"
+            android:exported="true" />
+        <activity
             android:name=".PeticionDeViaje"
             android:exported="true" />
         <activity
