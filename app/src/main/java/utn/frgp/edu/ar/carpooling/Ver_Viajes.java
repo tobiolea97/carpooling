@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
@@ -41,13 +43,14 @@ public class Ver_Viajes extends AppCompatActivity {
     ArrayList<String> IdSolicitudes;
     ImageButton cancelar,finalizar,editar;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
-    String CantidadAsientos;
     TextView tituloCancelar,tituloFinalizar,tituloEditar;
     String localDateviaje;
     View dialogFragmentView, dialogFragmentView2;
     AlertDialog confirmarCancelacion, confirmarFinalizacion;
     String estadoViaje;
     boolean shouldExecuteOnResume;
+    int pasajerosABordo=0;
+    int cantidadDeAsientos=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,14 @@ public class Ver_Viajes extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         EstadoViaje=getIntent().getStringExtra("EstadoViaje");
@@ -102,40 +112,25 @@ public class Ver_Viajes extends AppCompatActivity {
         Pasajeros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (EstadoViaje.equals("Cancelado") ||
+                    Pasajeros.getItemAtPosition(i).equals("Libre") ||
+                    Pasajeros.getItemAtPosition(i).toString().contains("Acompañante")) return;
 
-                if(EstadoViaje.equals("Cancelado")) return;
+                String Email = "";
+                String Rol = "";
+                String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
+                Email = EmailPasajeros.get(i).split("-")[0];
+                Rol = EmailPasajeros.get(i).split("-")[1];
 
-
-                    if(Pasajeros.getItemAtPosition(i).equals("Libre")){
-                        return;
-
-                    }
-                    else{
-                        if(Pasajeros.getItemAtPosition(i).equals("Acompañante")){
-                           return;
-                        }else{
-                            String Email = "";
-                            String Rol = "";
-                            String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
-                            Email = EmailPasajeros.get(i).split("-")[0];
-                            Rol = EmailPasajeros.get(i).split("-")[1];
-
-                            Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
-                            pagVerPasajero.putExtra("NroViaje",NroViaje);
-                            pagVerPasajero.putExtra("EmailVerUsuario",Email);
-                            pagVerPasajero.putExtra("RolVerUsuario",Rol);
-                            pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
-                            startActivity(pagVerPasajero);
-                        }
-
-                    }
+                Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
+                pagVerPasajero.putExtra("NroViaje",NroViaje);
+                pagVerPasajero.putExtra("EmailVerUsuario",Email);
+                pagVerPasajero.putExtra("RolVerUsuario",Rol);
+                pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
+                startActivity(pagVerPasajero);
              //
                 //   Entraba igual por eso lo saque 
                 //   if(!Pasajeros.getItemAtPosition(i).equals("Libre")||!Pasajeros.getItemAtPosition(i).equals("Acompañante")) {
-
-
-
-                    /**/
                // }
             }
         });
@@ -181,6 +176,57 @@ public class Ver_Viajes extends AppCompatActivity {
         confirmarFinalizacion = builder2.create();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
 
@@ -236,7 +282,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
+                    // CantidadAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
@@ -290,33 +336,28 @@ public class Ver_Viajes extends AppCompatActivity {
             try {
                 ArrayList<String> pasajeros= new ArrayList<String>();
                 EmailPasajeros= new ArrayList<>();
-                int PasajerosABordo=0;
-                String cantidadacompañantes="";
                 while (resultados.next()) {
-                    PasajerosABordo++;
-                    cantidadacompañantes=resultados.getString("cantAcompañantes");
+                    pasajerosABordo++;
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
-                    if(Integer.parseInt(cantidadacompañantes)>0){
-                        for(int i=0;i<Integer.parseInt(cantidadacompañantes);i++){
-                            PasajerosABordo++;
-                            pasajeros.add("Acompañante");
+                    int cantidadAcompañantes=resultados.getInt("cantAcompañantes");
+                    if(cantidadAcompañantes > 0){
+                        for(int i=0; i < cantidadAcompañantes; i++){
+                            pasajerosABordo++;
+                            pasajeros.add("Acompañante de " + resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
+                            EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
                         }
                     }
 
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
-                    CantidadAsientos=resultados.getString("CantidadPasajeros");
+                    cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
                 }
 
-                ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(CantidadAsientos), PasajerosABordo);
+                ArrayList<String> asientosLibres = agregarAsientosLibres(cantidadDeAsientos, pasajerosABordo);
                 if (asientosLibres.size() > 0) pasajeros.addAll(asientosLibres);
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
                 Pasajeros.setAdapter(adapter);
-                if (PasajerosABordo==0) {
-                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
-                } else {
-                    //TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + CantidadAsientos + ")");
-                }
+                TituloPasajeros.setText("Pasajeros (" + pasajerosABordo + "/" + cantidadDeAsientos + ")");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -325,17 +366,13 @@ public class Ver_Viajes extends AppCompatActivity {
     }
 
     private ArrayList<String> agregarAsientosLibres(int cantAsientos, int asientosOcupados) {
-
         int asientosLibres = cantAsientos - asientosOcupados;
 
-            ArrayList<String> arrAsientosLibres = new ArrayList<String>();
-            for (int i = 0; i < asientosLibres; i++) {
-                arrAsientosLibres.add("Libre");
-            }
-            return arrAsientosLibres;
-
-
-
+        ArrayList<String> arrAsientosLibres = new ArrayList<String>();
+        for (int i = 0; i < asientosLibres; i++) {
+            arrAsientosLibres.add("Libre");
+        }
+        return arrAsientosLibres;
     }
 
     private class CargarSolicitudes extends AsyncTask<Void,Integer,ResultSet> {
@@ -478,8 +515,10 @@ public class Ver_Viajes extends AppCompatActivity {
         editor.putString("provinciaOrigen", origen[1].trim());
         editor.putString("ciudadDestino", destino[0].trim());
         editor.putString("provinciaDestino", destino[1].trim());
-        editor.putString("idViaje", NroViaje);
-        editor.putString("modoEdicion", "true");
+        editor.putInt("idViaje", Integer.parseInt(NroViaje));
+        editor.putInt("cantAsientos", cantidadDeAsientos);
+        editor.putInt("cantPasajeros", pasajerosABordo);
+        editor.putBoolean("modoEdicion", true);
         editor.commit();
 
         Intent pagNuevoViaje = new Intent(contexto, NuevoViaje.class);

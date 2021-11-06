@@ -1,11 +1,20 @@
 package utn.frgp.edu.ar.carpooling;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +34,9 @@ public class Home extends AppCompatActivity {
     Context context;
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
+    private final static String CHANNEL_ID="NOTIFICACION";
+    public final static int NOTIFICACION_ID=0;
+    private PendingIntent pendingIntent;
     GridView grillaViajes;
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
@@ -50,7 +62,15 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
             btnRedireccionarABusqueda.setText("Buscar solicitudes");
@@ -66,6 +86,9 @@ public class Home extends AppCompatActivity {
         new Home.CargarCalificaciones().execute();
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
+
+
+        new Home.VerificarNotificacion().execute();
     }
 
     @Override
@@ -89,13 +112,18 @@ public class Home extends AppCompatActivity {
         }
         if(id == R.id.misViajes) {
             finish();
-            Intent intent = new Intent(this, MisViajes.class);
+            Intent intent = new Intent(this, MisViajesModoPasajero.class);
             startActivity(intent);
         }
 
         if(id == R.id.crearViaje) {
             finish();
             Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
@@ -123,7 +151,7 @@ public class Home extends AppCompatActivity {
         
 
         if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
+          //  misviajes.setVisible(false);
             CrearViaje.setVisible(false);
         }
 
@@ -138,6 +166,7 @@ public class Home extends AppCompatActivity {
     }
 
     public void onClickBuscar (View view) {
+
         Intent intent= new Intent(context, Buscar.class);
         startActivity(intent);
     }
@@ -298,6 +327,95 @@ public class Home extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+
+
+    private class VerificarNotificacion extends AsyncTask<Void,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT 	*";
+                query += " FROM Notificaciones noti";
+                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "'and noti.UsuarioRol='"+rolUsuario+"'and noti.EstadoNotificacion='P'";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+
+                boolean verificacion=false;
+                while (resultados.next()) {
+                verificacion=true;
+
+
+                }
+
+
+
+               if(verificacion){
+                   setPendingIntent();
+                   CrearAlertaChannel();
+                   CrearAlerta();
+
+               }
+
+
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void setPendingIntent(){
+        Intent intent = new Intent(context,Notificaciones.class);
+        TaskStackBuilder stackBuilder= TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(Notificaciones.class);
+        stackBuilder.addNextIntent(intent);
+        pendingIntent= stackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);
+
+    }
+    private void CrearAlertaChannel(){
+     if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+         CharSequence name= "Notificacion";
+         NotificationChannel notificationChannel= new NotificationChannel(CHANNEL_ID,name, NotificationManager.IMPORTANCE_DEFAULT);
+         NotificationManager notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+         notificationManager.createNotificationChannel(notificationChannel);
+
+
+     }
+
+    }
+
+    private void CrearAlerta(){
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID);
+        builder.setSmallIcon(R.mipmap.car);
+        builder.setContentTitle("Carpooling");
+        builder.setContentText("Tienes una notificacion");
+        builder.setColor(Color.BLUE);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setLights(Color.MAGENTA,1000,1000);
+        builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManagerCompat notificationManagerCompat= NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.notify(NOTIFICACION_ID,builder.build());
+
     }
 
 }

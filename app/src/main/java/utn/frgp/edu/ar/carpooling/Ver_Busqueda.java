@@ -4,10 +4,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Ciudad;
@@ -61,7 +65,14 @@ public class Ver_Busqueda extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         EstadoViaje=getIntent().getStringExtra("EstadoViaje");
@@ -89,6 +100,56 @@ public class Ver_Busqueda extends AppCompatActivity {
         new CargarCalificacion().execute();
         new ContarCalificacion().execute();
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
 
     private class CargarViajeSeleccionado extends AsyncTask<String,Integer, ResultSet> {
@@ -479,7 +540,6 @@ public class Ver_Busqueda extends AppCompatActivity {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-                System.out.println(idviaje+"  "+emailpasajero+"  asdasdsa");
                 String query = "";
                 query += "INSERT INTO `PasajerosPorViaje`";
                 query += "(ViajeId,";
@@ -535,6 +595,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 return false;
             }
         }
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
@@ -546,6 +607,13 @@ public class Ver_Busqueda extends AppCompatActivity {
                 Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             else System.out.println("No se pudo cambiar la solicitud");
         }

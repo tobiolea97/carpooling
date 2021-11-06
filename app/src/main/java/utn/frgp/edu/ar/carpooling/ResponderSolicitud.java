@@ -69,7 +69,14 @@ public class ResponderSolicitud extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
         botoncancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,9 +132,15 @@ public class ResponderSolicitud extends AppCompatActivity {
             startActivity(intent);
         }
 
+
         if(id == R.id.crearViaje) {
             finish();
             Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
             startActivity(intent);
         }
 

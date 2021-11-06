@@ -13,6 +13,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -66,7 +68,14 @@ public class VerPasajero extends AppCompatActivity {
         apellidoUsuarioLog = spSesion.getString("Apellido","No hay datos");
         emailUsuarioLog = spSesion.getString("Email","No hay datos");
         rolUsuarioLog = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuarioLog+" "+ apellidoUsuarioLog +" Rol: "+ rolUsuarioLog);
+        String Rol="";
+        if(rolUsuarioLog.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuarioLog+" "+ apellidoUsuarioLog+" Rol: "+Rol);
 
 
         NroViaje=getIntent().getStringExtra("NroViaje");
@@ -163,6 +172,56 @@ public class VerPasajero extends AppCompatActivity {
                 Rating.setIsIndicator(true);
             }*/
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
