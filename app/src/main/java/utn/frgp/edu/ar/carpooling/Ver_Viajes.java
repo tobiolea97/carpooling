@@ -49,6 +49,8 @@ public class Ver_Viajes extends AppCompatActivity {
     AlertDialog confirmarCancelacion, confirmarFinalizacion;
     String estadoViaje;
     boolean shouldExecuteOnResume;
+    int pasajerosABordo=0;
+    int cantidadDeAsientos=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -334,15 +336,13 @@ public class Ver_Viajes extends AppCompatActivity {
             try {
                 ArrayList<String> pasajeros= new ArrayList<String>();
                 EmailPasajeros= new ArrayList<>();
-                int cantidadDeAsientos=0;
-                int PasajerosABordo=0;
                 while (resultados.next()) {
-                    PasajerosABordo++;
+                    pasajerosABordo++;
                     pasajeros.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
                     int cantidadAcompañantes=resultados.getInt("cantAcompañantes");
                     if(cantidadAcompañantes > 0){
                         for(int i=0; i < cantidadAcompañantes; i++){
-                            PasajerosABordo++;
+                            pasajerosABordo++;
                             pasajeros.add("Acompañante de " + resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
                             EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
                         }
@@ -352,12 +352,12 @@ public class Ver_Viajes extends AppCompatActivity {
                     cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
                 }
 
-                ArrayList<String> asientosLibres = agregarAsientosLibres(cantidadDeAsientos, PasajerosABordo);
+                ArrayList<String> asientosLibres = agregarAsientosLibres(cantidadDeAsientos, pasajerosABordo);
                 if (asientosLibres.size() > 0) pasajeros.addAll(asientosLibres);
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
                 Pasajeros.setAdapter(adapter);
-                TituloPasajeros.setText("Pasajeros (" + PasajerosABordo + "/" + cantidadDeAsientos + ")");
+                TituloPasajeros.setText("Pasajeros (" + pasajerosABordo + "/" + cantidadDeAsientos + ")");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -515,8 +515,10 @@ public class Ver_Viajes extends AppCompatActivity {
         editor.putString("provinciaOrigen", origen[1].trim());
         editor.putString("ciudadDestino", destino[0].trim());
         editor.putString("provinciaDestino", destino[1].trim());
-        editor.putString("idViaje", NroViaje);
-        editor.putString("modoEdicion", "true");
+        editor.putInt("idViaje", Integer.parseInt(NroViaje));
+        editor.putInt("cantAsientos", cantidadDeAsientos);
+        editor.putInt("cantPasajeros", pasajerosABordo);
+        editor.putBoolean("modoEdicion", true);
         editor.commit();
 
         Intent pagNuevoViaje = new Intent(contexto, NuevoViaje.class);

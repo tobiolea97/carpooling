@@ -69,9 +69,9 @@ public class NuevoViaje extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (spEdicion.getString("modoEdicion", "false").equals("true")) {
+        if (spEdicion.getBoolean("modoEdicion", false)) {
             SharedPreferences.Editor editor = spEdicion.edit();
-            editor.putString("modoEdicion", "false");
+            editor.putBoolean("modoEdicion", false);
             editor.commit();
         }
     }
@@ -100,6 +100,8 @@ public class NuevoViaje extends AppCompatActivity {
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         String Rol="";
+        int cantPasajerosMinima = 1;
+        int cantAsientosMaxima = 4;
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
         }else{
@@ -108,8 +110,8 @@ public class NuevoViaje extends AppCompatActivity {
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
-        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
-        if (esModoEdicion.equals("true")) {
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
             TextView tvTitulo = findViewById(R.id.txtViewTitulo);
             Button btCrearViaje = findViewById(R.id.btnCrearViaje);
             tvTitulo.setText("Editar Viaje");
@@ -121,6 +123,9 @@ public class NuevoViaje extends AppCompatActivity {
             spCiudadesOrigen.setEnabled(false);
             spProvinciasDestino.setEnabled(false);
             spCiudadesDestino.setEnabled(false);
+            if (spEdicion.getInt("cantPasajeros", 0) > cantPasajerosMinima)
+                cantPasajerosMinima = spEdicion.getInt("cantPasajeros", 0);
+                cantAsientosMaxima = spEdicion.getInt("cantAsientos", 4);
         }
 
         provDestSelecc = null;
@@ -128,8 +133,7 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje = null;
 
         ArrayList<String> listaCantPasajeros = new ArrayList<String>();
-
-        for(int i = 1; i<=4; i++){
+        for (int i = cantPasajerosMinima; i <= cantAsientosMaxima; i++) {
             listaCantPasajeros.add(String.valueOf(i));
         }
 
@@ -218,9 +222,9 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevoViaje.setEstadoViaje("En Espera");
 
-        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
-        if (esModoEdicion.equals("true")) {
-            nuevoViaje.setIdViaje(Integer.parseInt(spEdicion.getString("idViaje", "0")));
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
+            nuevoViaje.setIdViaje(spEdicion.getInt("idViaje", 0));
         }
 
         if(!Validadores.validarNacimiento(true,fechaViaje)) return;
@@ -256,7 +260,7 @@ public class NuevoViaje extends AppCompatActivity {
         if (hayViajesEnRango) {
             Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha", Toast.LENGTH_LONG).show();
         } else {
-            if (esModoEdicion.equals("true")) new ActualizarViaje().execute();
+            if (esModoEdicion) new ActualizarViaje().execute();
             else new AltaNuevoViaje().execute();
         }
     }
@@ -428,7 +432,7 @@ public class NuevoViaje extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spProvinciasOrigen.setAdapter(adapter);
                 spProvinciasDestino.setAdapter(adapter);
-                // OBLIGADAMENTE TENGO QUE PONER UN VALOR POR DEFAULT SI NO ENCUETRO provinciasOrigen
+                // PARA EL 2do PARAMETRO DEL getString, TENGO QUE PONER OBLIGADAMENTE UN VALOR POR DEFAULT ("false") SI NO ENCUETRO provinciasOrigen
                 // ENTONCES APROVECHO ESO PARA CHEQUEAR QUE SI ES DISTINTO DE FALSE, SIGNIFICA QUE HAY DATO PARA provinciasOrigen
                 if (!spEdicion.getString("provinciaOrigen", "false").equals("false")) {
                     spProvinciasOrigen.setSelection(adapter.getPosition(spEdicion.getString("provinciaOrigen", "false")));
