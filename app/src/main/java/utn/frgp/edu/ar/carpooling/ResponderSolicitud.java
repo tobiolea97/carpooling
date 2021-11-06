@@ -38,7 +38,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
-    TextView Nombre,viajocon, Numero;
+    TextView Nombre,viajocon, Numero, tvNoFreeSeats;
     String Email,NroViaje,Asientos,Pasajeros;
     RatingBar Rating;
     Button botoncancelar,botonaceptar;
@@ -61,6 +61,8 @@ public class ResponderSolicitud extends AppCompatActivity {
         botoncancelar=findViewById(R.id.btnResponderSoliRechazar);
         botonaceptar=findViewById(R.id.btnRespSoliAceptar);
         Numero=findViewById(R.id.textView17);
+        tvNoFreeSeats=findViewById(R.id.textView20);
+
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
@@ -198,7 +200,10 @@ public class ResponderSolicitud extends AppCompatActivity {
                     cantidad = resultados.getInt("Cantidad");
                     asientosLibres = resultados.getInt("EspaciosDisponibles");
 
-                    if(asientosLibres <= 0) botonaceptar.setEnabled(false);
+                    if(asientosLibres <= 0) {
+                        botonaceptar.setEnabled(false);
+                        tvNoFreeSeats.setVisibility(View.VISIBLE);
+                    }
 
                     viajocon.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No Viajo con ningun conductor");
                     Rating.setRating(promedio);
