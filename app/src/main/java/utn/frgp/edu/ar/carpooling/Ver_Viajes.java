@@ -376,7 +376,6 @@ public class Ver_Viajes extends AppCompatActivity {
 
     private ArrayList<String> agregarAsientosLibres(int cantAsientos, int asientosOcupados) {
         int asientosLibres = cantAsientos - asientosOcupados;
-
         ArrayList<String> arrAsientosLibres = new ArrayList<String>();
         for (int i = 0; i < asientosLibres; i++) {
             arrAsientosLibres.add("Libre");

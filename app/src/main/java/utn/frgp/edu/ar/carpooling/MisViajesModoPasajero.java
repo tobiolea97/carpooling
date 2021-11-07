@@ -3,9 +3,12 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 
@@ -45,7 +48,36 @@ public class MisViajesModoPasajero extends AppCompatActivity {
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+        GrMisViajesModoPasajero.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+
+                String Texto="";
+                Texto=adapterView.getItemAtPosition(position).toString();
+
+                String[] parts = Texto.split("NroViaje=");
+                String part2 = parts[1];
+
+                //Para obtener el id del viaje
+                String[] partspt2 = part2.split(",");
+                String part3 = partspt2[0]; // 123
+
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+if(estadoViaje.equals("Aceptado")||estadoViaje.equals("Pendiente")) {
+    Intent PagCancelarViaje = new Intent(contexto, CancelarViajePasajero.class);
+    PagCancelarViaje.putExtra("NroViaje", part3);
+    PagCancelarViaje.putExtra("EstadoViaje", estadoViaje);
+    startActivity(PagCancelarViaje);
+}
+
+                //Para viaje finalizado
+               /* Intent pagVerViajeFinalizado= new Intent(contexto,VerVIajeFinalizado.class);
+                pagVerViajeFinalizado.putExtra("NroViaje",part3);
+                startActivity(pagVerViajeFinalizado);
+                finish();*/
+            }
+        });
         new CargarViajes().execute();
     }
     private class CargarViajes extends AsyncTask<Void,Integer, ResultSet> {
