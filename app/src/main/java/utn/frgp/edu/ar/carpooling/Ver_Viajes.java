@@ -50,7 +50,7 @@ public class Ver_Viajes extends AppCompatActivity {
     String estadoViaje;
     boolean shouldExecuteOnResume;
     int pasajerosABordo=0;
-    int cantidadDeAsientos=0;
+    String cantidadDeAsientos="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,7 @@ public class Ver_Viajes extends AppCompatActivity {
         dialogFragmentView2 = inflater2.inflate(R.layout.fragment_confirmar_accion, null);
 
         new CargarViajeSeleccionado().execute();
-        new CargarPasajeros().execute();
+
 
         if(EstadoViaje.equals("Finalizado") || EstadoViaje.equals("Cancelado")){
             Solicitudes.setVisibility(View.INVISIBLE);
@@ -282,13 +282,14 @@ public class Ver_Viajes extends AppCompatActivity {
                     estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
-                    // CantidadAsientos=resultados.getString("CantidadPasajeros");
+                    cantidadDeAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora, R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaverViaje.setAdapter(simpleAdapter);
+                new CargarPasajeros().execute();
 
             }
             catch (Exception e) {
@@ -349,10 +350,10 @@ public class Ver_Viajes extends AppCompatActivity {
                     }
 
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
-                    cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
+
                 }
 
-                ArrayList<String> asientosLibres = agregarAsientosLibres(cantidadDeAsientos, pasajerosABordo);
+                ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(cantidadDeAsientos), pasajerosABordo);
                 if (asientosLibres.size() > 0) pasajeros.addAll(asientosLibres);
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,pasajeros);
@@ -515,7 +516,7 @@ public class Ver_Viajes extends AppCompatActivity {
         editor.putString("ciudadDestino", destino[0].trim());
         editor.putString("provinciaDestino", destino[1].trim());
         editor.putInt("idViaje", Integer.parseInt(NroViaje));
-        editor.putInt("cantAsientos", cantidadDeAsientos);
+        editor.putInt("cantAsientos", Integer.parseInt(cantidadDeAsientos));
         editor.putInt("cantPasajeros", pasajerosABordo);
         editor.putBoolean("modoEdicion", true);
         editor.commit();
