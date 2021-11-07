@@ -43,7 +43,7 @@ public class Buscar extends AppCompatActivity {
 
     AlertDialog filtroDialog, filtroDialog2;
     View dialogFragmentView, dialogFragmentView1;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, dniUsuario;
     GridView grillaViajes;
     Context context;
     TextView filtroRecorrido, filtroRecorridoDestino, filtroFecha, filtroFechaQuery;
@@ -108,6 +108,8 @@ public class Buscar extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        dniUsuario = spSesion.getString("Dni","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -525,7 +527,9 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND vj.PasajeroEmail != '" + emailUsuario + "' and vj.EstadoRegistro=1";
+                query += " LEFT JOIN Usuarios us ";
+                query += " 	ON vj.PasajeroId = us.Id ";
+                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoRegistro=1";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 
