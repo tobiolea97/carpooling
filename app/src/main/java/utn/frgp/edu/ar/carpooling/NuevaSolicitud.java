@@ -461,7 +461,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                 String query = "";
 
                 query += "INSERT INTO Solicitudes";
-                query += "(PasajeroEmail,";
+                query += "(PasajeroId,";
                 query += "ProvinciaOrigenId,";
                 query += "CiudadOrigenId,";
                 query += "ProvinciaDestinoId,";
@@ -471,7 +471,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                 query += "EstadoSolicitud)";
                 query += "VALUES";
                 query += "(";
-                //query +=  "'" + nuevaSolicitud.getEmailConductor() + "',"; TODO - fix
+                query +=  "'" + nuevaSolicitud.getIdConductor() + "',";
                 query +=  "'" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";

@@ -36,7 +36,7 @@ public class PeticionDeViaje extends AppCompatActivity {
     Context contexto;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
     GridView GrViajeSolicitado;
-    String EmailConductor;
+    String EmailConductor, IdConductor;
     String NroViaje,EstadoViaje;
     String estadoViaje;
     String localDateviaje;
@@ -105,7 +105,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 query += "          vj.FechaHoraFinalizacion,";
                 query += "          vj.CantidadPasajeros,";
                 query += "          vj.EstadoViaje,";
-                query += "          vj.ConductorEmail";
+                query += "          vj.ConductorId";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -142,7 +142,8 @@ public class PeticionDeViaje extends AppCompatActivity {
                     estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                     localDateviaje=resultados.getString("FechaHoraFinalizacion");
-                    EmailConductor=resultados.getString("ConductorEmail");
+                    //EmailConductor=resultados.getString("ConductorEmail");
+                    IdConductor=resultados.getString("ConductorId");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
@@ -175,7 +176,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 query += " 		    usu.Email,";
                 query += " 		    usu.Rol";
                 query += " From Usuarios usu";
-                query += " 	Where	 usu.Email='" + EmailConductor + "'";
+                query += " 	Where	 usu.Id='" + IdConductor + "'";
                 query += " 	And	 usu.Rol='CON'";
 
                 return st.executeQuery(query);
@@ -214,7 +215,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + EmailConductor + "'";
+                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + IdConductor + "'";
 
 
                 return st.executeQuery(query);
@@ -262,7 +263,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + EmailConductor + "'";
+                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + IdConductor + "'";
 
 
                 return st.executeQuery(query);
@@ -374,8 +375,7 @@ public class PeticionDeViaje extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
-                // Noti.setUsuarioEmail(EmailConductor); TODO - Fix
-                // Noti.setUsuarioRolId("CON"); TODO - Fix
+                Noti.setUsuarioId(Integer.parseInt(IdConductor));
                 Noti.setMensaje("Tienes una nueva peticion en el  Nro de viaje "+NroViaje+"");
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);

@@ -64,12 +64,12 @@ public class MisViajesModoPasajero extends AppCompatActivity {
                 String part3 = partspt2[0]; // 123
 
                 String estadoViaje = Texto.split("estado=")[1].split(",")[0];
-if(estadoViaje.equals("Aceptado")||estadoViaje.equals("Pendiente")) {
-    Intent PagCancelarViaje = new Intent(contexto, CancelarViajePasajero.class);
-    PagCancelarViaje.putExtra("NroViaje", part3);
-    PagCancelarViaje.putExtra("EstadoViaje", estadoViaje);
-    startActivity(PagCancelarViaje);
-}
+                if(estadoViaje.equals("Aceptado")||estadoViaje.equals("Pendiente")) {
+                    Intent PagCancelarViaje = new Intent(contexto, CancelarViajePasajero.class);
+                    PagCancelarViaje.putExtra("NroViaje", part3);
+                    PagCancelarViaje.putExtra("EstadoViaje", estadoViaje);
+                    startActivity(PagCancelarViaje);
+                }
 
                 //Para viaje finalizado
                /* Intent pagVerViajeFinalizado= new Intent(contexto,VerVIajeFinalizado.class);

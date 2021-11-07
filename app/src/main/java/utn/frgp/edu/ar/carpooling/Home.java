@@ -293,7 +293,8 @@ public class Home extends AppCompatActivity {
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " AND FechaHoraInicio > now()";
                 query += " ORDER BY FechaHoraInicio ASC";
-                query += " LIMIT 3";
+                if(rolUsuario.equals("CON"))
+                    query += " LIMIT 3";
 
                 return st.executeQuery(query);
 
