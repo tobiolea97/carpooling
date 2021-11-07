@@ -1,4 +1,4 @@
-CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaVerPasajero`(
+CREATE DEFINER=`sql10441832`@`%` PROCEDURE `InfoParaVerPasajero`(
 	IN pasajero_id INT,
     IN viaje_id INT,
     IN conductor_id INT
@@ -17,12 +17,14 @@ BEGIN
     SELECT 	AVG(cal.Calificacion) as promedio
 	FROM 	Calificaciones cal
     WHERE 	UsuarioId = pasajero_id
+	LIMIT 1
 	INTO @Promedio;
     
     -- CANTIDAD DE CALIFICACIONES
     SELECT COUNT(Calificacion)
     FROM Calificaciones 
     WHERE 	UsuarioId = pasajero_id
+    LIMIT 1
 	INTO @CantidadCalificaciones;
     
     -- VIAJE
@@ -35,12 +37,14 @@ BEGIN
 	  LEFT JOIN Ciudades ci2 ON ci2.Id = vj.CiudadDestinoId 
 	WHERE
 	  vj.Id = viaje_id
+      LIMIT 1
 	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD;
     
     -- VERIFICAR CALIFICACION
     SELECT Id
     FROM Calificaciones
     WHERE 	UsuarioId = pasajero_id
+    LIMIT 1
 	INTO @IdCalificacion;
     
     SELECT 	@NombreUsuario Nombre,

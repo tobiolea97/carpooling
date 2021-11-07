@@ -390,7 +390,7 @@ public class Ver_Viajes extends AppCompatActivity {
                         for(int i=0; i < cantidadAcompañantes; i++){
                             pasajerosABordo++;
                             pasajeros.add("Acompañante de " + resultados.getString("Nombre") + " " + resultados.getString("Apellido"));
-                            EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
+                            EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol") + "-" + resultados.getString("Id"));
                         }
                     }
 
