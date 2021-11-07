@@ -32,7 +32,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 public class Notificaciones extends AppCompatActivity {
     ListView LvNotificacion;
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,8 @@ public class Notificaciones extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -64,12 +66,18 @@ public class Notificaciones extends AppCompatActivity {
 
         new CargarNotificaciones().execute();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
 
-
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
 
         return true;
     }
@@ -78,29 +86,51 @@ public class Notificaciones extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
-        if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajes.class);
+
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.crearViaje) {
-            finish();
-            Intent intent = new Intent(this, NuevoViaje.class);
-            startActivity(intent);
-        }
-        if(id == R.id.notificaciones) {
-            finish();
-            Intent intent = new Intent(this, Notificaciones.class);
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.cerrarSesion) {
 
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
@@ -114,6 +144,14 @@ public class Notificaciones extends AppCompatActivity {
         return super.onOptionsItemSelected(opcionMenu);
     }
 
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem currentOption = menu.findItem(R.id.notificaciones);
+        currentOption.setVisible(false);
+
+        return true;
+    }
+
     private class CargarNotificaciones extends AsyncTask<Void,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(Void... voids) {
@@ -124,7 +162,7 @@ public class Notificaciones extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	noti.Mensaje";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "'and noti.UsuarioRol='"+rolUsuario+"'";
+                query += " 	Where	noti.UsuarioId=" + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -172,7 +210,7 @@ public class Notificaciones extends AppCompatActivity {
                 query += " UPDATE 	Notificaciones noti";
                 query += "  	    SET";
                 query += " 		    EstadoNotificacion='L'";
-                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "' and noti.UsuarioRol='" + rolUsuario + "'";
+                query += " 	Where	noti.UsuarioId=" + idUsuario;
 
 
                 int resultado = st.executeUpdate(query);
