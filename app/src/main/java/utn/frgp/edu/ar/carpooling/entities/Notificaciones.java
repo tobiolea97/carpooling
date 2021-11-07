@@ -4,8 +4,7 @@ public class Notificaciones {
 
 
     private int id;
-    private String UsuarioEmail;
-    private String UsuarioRolId;
+    private Integer UsuarioId;
     private String Mensaje;
     private String EstadoNotificacion;
     private int estado;
@@ -13,10 +12,9 @@ public class Notificaciones {
     public Notificaciones() {
     }
 
-    public Notificaciones(int id, String usuarioEmail, String usuarioRolId, String mensaje, String estadoNotificacion, int estado) {
+    public Notificaciones(int id, Integer usuarioId, String usuarioRolId, String mensaje, String estadoNotificacion, int estado) {
         this.id = id;
-        UsuarioEmail = usuarioEmail;
-        UsuarioRolId = usuarioRolId;
+        UsuarioId = usuarioId;
         Mensaje = mensaje;
         EstadoNotificacion = estadoNotificacion;
         this.estado = estado;
@@ -34,14 +32,6 @@ public class Notificaciones {
         return id;
     }
 
-    public String getUsuarioEmail() {
-        return UsuarioEmail;
-    }
-
-    public String getUsuarioRolId() {
-        return UsuarioRolId;
-    }
-
     public String getMensaje() {
         return Mensaje;
     }
@@ -54,19 +44,19 @@ public class Notificaciones {
         this.id = id;
     }
 
-    public void setUsuarioEmail(String usuarioEmail) {
-        UsuarioEmail = usuarioEmail;
-    }
-
-    public void setUsuarioRolId(String usuarioRolId) {
-        UsuarioRolId = usuarioRolId;
-    }
-
     public void setMensaje(String mensaje) {
         Mensaje = mensaje;
     }
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public Integer getUsuarioId() {
+        return UsuarioId;
+    }
+
+    public void setUsuarioId(Integer usuarioId) {
+        UsuarioId = usuarioId;
     }
 }

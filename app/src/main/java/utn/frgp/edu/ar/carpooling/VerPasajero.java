@@ -345,8 +345,7 @@ public class VerPasajero extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailVerUsuario);
-                Noti.setUsuarioRolId(RolVerUsuario);
+                Noti.setUsuarioId(Integer.parseInt(IdVerUsuario));
                 Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
@@ -419,8 +418,8 @@ public class VerPasajero extends AppCompatActivity {
 
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailVerUsuario);
-                Noti.setUsuarioRolId(RolVerUsuario);
+                // Noti.setUsuarioEmail(EmailVerUsuario); TODO - Fix
+                // Noti.setUsuarioRolId(RolVerUsuario); TODO - Fix
                 Noti.setMensaje("El usuario " + nombreUsuarioLog + " " + apellidoUsuarioLog + "te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
