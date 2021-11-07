@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
@@ -55,13 +56,15 @@ public class Registro extends AppCompatActivity {
         nacimiento.setFocusableInTouchMode(false);
         nacimiento.setInputType(InputType.TYPE_NULL);
 
-        nombre.setText("");
-        apellido.setText("");
-        telefono.setText("");
-        nacimiento.setText("");
-        password.setText("");
-        reingresoPassword.setText("");
-
+        /*
+        nombre.setText("Tobias");
+        apellido.setText("Olea");
+        telefono.setText("+54 9 11 6920 3645");
+        nacimiento.setText("12/05/1997");
+        password.setText("12345678");
+        reingresoPassword.setText("12345678");
+        */
+        
         // Seteo de eventos
         registrar.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)

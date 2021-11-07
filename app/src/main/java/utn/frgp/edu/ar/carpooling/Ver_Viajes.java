@@ -478,8 +478,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     String RolPasajero = parts[1];
                     NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                     Notificaciones Noti = new Notificaciones();
-                    Noti.setUsuarioEmail(emailpasajero);
-                    Noti.setUsuarioRolId(RolPasajero);
+                    Noti.setUsuarioId(Integer.parseInt(Email.split("-")[2]));
                     Noti.setMensaje(" El nro de viaje "+NroViaje+" fue cancelado");
                     Noti.setEstadoNotificacion("P");
                     Noti.setEstado(1);

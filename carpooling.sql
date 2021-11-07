@@ -59,7 +59,7 @@ CREATE TABLE Usuarios (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE Notificaciones (
-  Id int NOT NULL,
+  Id int NOT NULL auto_increment,
   UsuarioId int NOT NULL,
   Mensaje varchar(100) NOT NULL,
   EstadoNotificacion varchar(3) NOT NULL,

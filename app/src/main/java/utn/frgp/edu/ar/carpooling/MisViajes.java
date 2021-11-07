@@ -208,6 +208,12 @@ public class MisViajes extends AppCompatActivity {
     }
 
     public void ClickAgregarNuevoViaje(View view){
+
+        SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putBoolean("modoEdicion", false);
+        editor.commit();
+
         Intent i = new Intent(this,NuevoViaje.class);
         startActivity(i);
     }
