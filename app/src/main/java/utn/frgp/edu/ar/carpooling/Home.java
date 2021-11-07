@@ -30,7 +30,7 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 public class Home extends AppCompatActivity {
 
     TextView Info, cantidadCalificaciones;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     Context context;
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
@@ -62,6 +62,8 @@ public class Home extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -188,10 +190,7 @@ public class Home extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT AVG(Calificacion) as promedio FROM Calificaciones WHERE UsuarioEmail = '";
-                query += emailUsuario;
-                query += " ' AND UsuarioRol = '";
-                query += rolUsuario + "'";
+                query += "SELECT AVG(Calificacion) as promedio FROM Calificaciones WHERE UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -234,10 +233,7 @@ public class Home extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(Calificacion) as cantidad FROM Calificaciones WHERE UsuarioEmail = '";
-                query += emailUsuario;
-                query += " ' AND UsuarioRol = '";
-                query += rolUsuario + "'";
+                query += "SELECT COUNT(Calificacion) as cantidad FROM Calificaciones WHERE UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -292,12 +288,13 @@ public class Home extends AppCompatActivity {
                 query += " 	ON ci1.Id = vj.CiudadOrigenId";
                 query += " LEFT JOIN Ciudades ci2";
                 query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : "";
-                query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
+                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND" : "";
+                query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorId = '" + idUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " AND FechaHoraInicio > now()";
                 query += " ORDER BY FechaHoraInicio ASC";
-                query += " LIMIT 3";
+                if(rolUsuario.equals("CON"))
+                    query += " LIMIT 3";
 
                 return st.executeQuery(query);
 

@@ -42,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+        SharedPreferences spSesion2 = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = spSesion2.edit();
+        editor.clear();
+        editor.commit();*/
+
 
         try {
             Info = findViewById(R.id.tvEditarPerfilInformacionPersona);
@@ -65,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
         login=findViewById(R.id.btnMainActivityLogin);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
 
-        email.setText("pasajero1@mail.com");
-        password.setText("40379479");
+        email.setText("tobi@mail.com");
+        password.setText("password");
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();
@@ -166,9 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 Usuario usuario = new Usuario();
                 while (resultados.next()) {
                     exists = true;
+                    usuario.setId(resultados.getInt("Id"));
                     usuario.setNombre(resultados.getString("Nombre"));
                     usuario.setApellido(resultados.getString("Apellido"));
                     usuario.setEmail(resultados.getString("Email"));
+                    usuario.setDni(resultados.getString("Dni"));
                     usuario.setRol(new Rol(spRol.getSelectedItem().toString().equals("Conductor") ? "CON" : "PAS"));
                 }
 
@@ -180,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", usuario.getEmail());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Dni", usuario.getDni());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Id",  usuario.getId().toString());
                     editor.commit();
 
                     editor = sharedPreference.edit();
@@ -252,9 +268,11 @@ public class MainActivity extends AppCompatActivity {
                 Usuario usuario = new Usuario();
                 while (resultados.next()) {
                     exists = true;
+                    usuario.setId(resultados.getInt("Id"));
                     usuario.setNombre(resultados.getString("Nombre"));
                     usuario.setApellido(resultados.getString("Apellido"));
                     usuario.setEmail(resultados.getString("Email"));
+                    usuario.setDni(resultados.getString("Dni"));
                     usuario.setRol(new Rol(spRol.getSelectedItem().toString().equals("Conductor") ? "CON" : "PAS"));
                 }
 
@@ -267,7 +285,11 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", usuario.getEmail());
                     editor.commit();
-
+                    
+                    editor = sharedPreference.edit();
+                    editor.putString("Dni", usuario.getDni());
+                    editor.commit();
+                    
                     editor = sharedPreference.edit();
                     editor.putString("Nombre",  usuario.getNombre());
                     editor.commit();
@@ -278,6 +300,10 @@ public class MainActivity extends AppCompatActivity {
 
                     editor = sharedPreference.edit();
                     editor.putString("Rol",  usuario.getRol().getId());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Id",  usuario.getId().toString());
                     editor.commit();
 
                     Intent pagPasajero= new Intent(context,Home.class);

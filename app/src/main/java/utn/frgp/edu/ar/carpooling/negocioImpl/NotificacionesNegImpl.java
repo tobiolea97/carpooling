@@ -40,15 +40,13 @@ public class NotificacionesNegImpl implements NotificacionesNeg {
 
                 String query = "";
                 query += "INSERT INTO Notificaciones";
-                query += "(UsuarioEmail,";
-                query += "UsuarioRol,";
+                query += "(UsuarioId,";
                 query += "Mensaje,";
                 query += "EstadoNotificacion,";
                 query += "EstadoRegistro)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + noti.getUsuarioEmail() + "',";
-                query +=  "'" + noti.getUsuarioRolId()+ "',";
+                query +=  "'" + noti.getUsuarioId()+ "',";
                 query +=  "'" + noti.getMensaje()+ "',";
                 query +=  "'" + noti.getEstadoNotificacion()+ "',";
                 query +=  "'" + noti.getEstado() + "'";

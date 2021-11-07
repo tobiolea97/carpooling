@@ -111,12 +111,12 @@ public class Validadores {
 
     }
 
-    public static boolean validarPassword(boolean flag, EditText password) {
-        if(password.getText().toString().equals("")) {
+    public static boolean validarPassword(boolean flag, EditText password, boolean obligatorio) {
+        if(password.getText().toString().equals("") && obligatorio) {
             password.setError("Campo obligatorio");
             return false;
         }
-        if(password.getText().toString().length() < 8) {
+        if(password.getText().toString().length() < 8 && obligatorio) {
             password.setError("La contraseña debe tener al menos 8 caracteres");
             return false;
         }
@@ -162,8 +162,8 @@ public class Validadores {
         return flag;
     }
 
-    public static boolean validarReingresoPassword(boolean flag, EditText reingresoPassword, EditText password) {
-        if(reingresoPassword.getText().toString().equals("")) {
+    public static boolean validarReingresoPassword(boolean flag, EditText reingresoPassword, EditText password, boolean obligatorio) {
+        if(reingresoPassword.getText().toString().equals("") && obligatorio) {
             reingresoPassword.setError("Campo obligatorio");
             return false;
         }

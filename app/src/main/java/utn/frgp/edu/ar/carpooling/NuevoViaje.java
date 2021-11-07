@@ -45,7 +45,7 @@ public class NuevoViaje extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
-    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario, idUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
     //LOS LIST SON PARA PODER BUSCAR EL OBJETO CORRESPONDIENTE AL ITEM SELECCIONADO EN EL SPINNER
@@ -99,6 +99,8 @@ public class NuevoViaje extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         int cantPasajerosMinima = 1;
         int cantAsientosMaxima = 4;
@@ -214,7 +216,7 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje = new Viaje();
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nuevoViaje.setEmailConductor( spSesion.getString("Email","No hay datos"));
+        nuevoViaje.setIdConductor( Integer.parseInt(idUsuario) );
         nuevoViaje.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
         nuevoViaje.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
         nuevoViaje.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
@@ -489,7 +491,7 @@ public class NuevoViaje extends AppCompatActivity {
                 String query = "";
 
                 query += "INSERT INTO Viajes";
-                query += "(ConductorEmail,";
+                query += "(ConductorId,";
                 query += "ProvinciaOrigenId,";
                 query += "CiudadOrigenId,";
                 query += "ProvinciaDestinoId,";
@@ -499,7 +501,7 @@ public class NuevoViaje extends AppCompatActivity {
                 query += "EstadoViaje)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + nuevoViaje.getEmailConductor() + "',";
+                query +=  "'" + idUsuario + "',";
                 query +=  "'" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
@@ -540,7 +542,7 @@ public class NuevoViaje extends AppCompatActivity {
 
                 String query = "";
                 query += "UPDATE Viajes SET ";
-                query += "ConductorEmail='" + nuevoViaje.getEmailConductor() + "',";
+                query += "ConductorId='" + idUsuario + "',";
                 query += "ProvinciaOrigenId='" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
                 query += "CiudadOrigenId='" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
                 query += "ProvinciaDestinoId='" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
