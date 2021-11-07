@@ -166,15 +166,20 @@ public class Registro extends AppCompatActivity {
 
                 int resultado = st.executeUpdate(query);
 
-                query = "SELECT Id FROM Usuarios WHERE Email = '" + Usuario.getEmail()  + "' AND Rol = '" + Usuario.getRol().getId() + "'";
+                query = "SELECT Id, Dni FROM Usuarios WHERE Email = '" + Usuario.getEmail()  + "' AND Rol = '" + Usuario.getRol().getId() + "'";
                 ResultSet rs = st.executeQuery(query);
                 rs.next();
                 Integer id = rs.getInt("Id");
+                String dni = rs.getString("Dni");
 
                 if(resultado > 0) {
                     SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
                     editor.putString("Email", Usuario.getEmail());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Dni",  dni);
                     editor.commit();
 
                     editor = sharedPreference.edit();

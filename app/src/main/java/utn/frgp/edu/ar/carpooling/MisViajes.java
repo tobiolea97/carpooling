@@ -357,7 +357,7 @@ public class MisViajes extends AppCompatActivity {
         query += " 	ON ci1.Id = vj.CiudadOrigenId";
         query += " LEFT JOIN Ciudades ci2";
         query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND" : " WHERE vj.ConductorId = '" + idUsuario + "'";
+        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' " : " WHERE vj.ConductorId = '" + idUsuario + "' ";
 
         if (!filtros.isEmpty()) {
             if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {

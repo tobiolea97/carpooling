@@ -398,6 +398,10 @@ public class EditarPerfil extends AppCompatActivity {
                 editor.commit();
 
                 editor = spSesion.edit();
+                editor.putString("Dni", dni.getText().toString());
+                editor.commit();
+
+                editor = spSesion.edit();
                 editor.putString("Email", emailUsuario);
                 editor.commit();
 

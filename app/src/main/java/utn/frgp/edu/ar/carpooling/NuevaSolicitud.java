@@ -199,7 +199,7 @@ public class NuevaSolicitud extends AppCompatActivity {
 
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        //nuevaSolicitud.setIdConductor( spSesion.getString("Email","No hay datos")); TODO - fix
+        nuevaSolicitud.setIdConductor(Integer.parseInt(spSesion.getString("Id","No hay datos")));
         nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
