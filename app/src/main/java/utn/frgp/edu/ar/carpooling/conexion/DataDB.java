@@ -8,7 +8,7 @@ public class DataDB {
     /* Uso en comun*/
     public static final String nameBD="sql10441832";
     public static final String user="sql10441832";
-    public static final String pass="htqH2SiCQg";*/
+    public static final String pass="htqH2SiCQg";
 
     /* Pruebas Tobi 
     public static final String nameBD="sql10448827";
