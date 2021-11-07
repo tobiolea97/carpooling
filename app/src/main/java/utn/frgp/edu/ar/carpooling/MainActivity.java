@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences spSesion2 = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = spSesion2.edit();
+        editor.clear();
+        editor.commit();
+
 
         try {
             Info = findViewById(R.id.tvEditarPerfilInformacionPersona);

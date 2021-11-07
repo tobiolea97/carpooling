@@ -199,7 +199,7 @@ public class NuevaSolicitud extends AppCompatActivity {
 
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nuevaSolicitud.setEmailConductor( spSesion.getString("Email","No hay datos"));
+        //nuevaSolicitud.setIdConductor( spSesion.getString("Email","No hay datos")); TODO - fix
         nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
@@ -471,7 +471,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                 query += "EstadoSolicitud)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + nuevaSolicitud.getEmailConductor() + "',";
+                //query +=  "'" + nuevaSolicitud.getEmailConductor() + "',"; TODO - fix
                 query +=  "'" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";

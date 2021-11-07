@@ -374,8 +374,8 @@ public class PeticionDeViaje extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailConductor);
-                Noti.setUsuarioRolId("CON");
+                // Noti.setUsuarioEmail(EmailConductor); TODO - Fix
+                // Noti.setUsuarioRolId("CON"); TODO - Fix
                 Noti.setMensaje("Tienes una nueva peticion en el  Nro de viaje "+NroViaje+"");
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);

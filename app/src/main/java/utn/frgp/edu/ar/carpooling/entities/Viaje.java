@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class Viaje {
 
     private int idViaje;
-    private String emailConductor;
+    private Integer idConductor;
     private Provincia provOrigen;
     private Ciudad ciudadOrigen;
     private Provincia provDestino;
@@ -21,9 +21,9 @@ public class Viaje {
 
     }
 
-    public Viaje(int idViaje, String emailConductor, Provincia provOrigen, Ciudad ciudadOrigen, Provincia provDestino, Ciudad ciudadDestino, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, int cantPasajeros, String estadoViaje, boolean estadoRegistro) {
+    public Viaje(int idViaje, Integer idConductor, Provincia provOrigen, Ciudad ciudadOrigen, Provincia provDestino, Ciudad ciudadDestino, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, int cantPasajeros, String estadoViaje, boolean estadoRegistro) {
         this.idViaje = idViaje;
-        this.emailConductor = emailConductor;
+        this.idConductor = idConductor;
         this.provOrigen = provOrigen;
         this.ciudadOrigen = ciudadOrigen;
         this.provDestino = provDestino;
@@ -43,12 +43,12 @@ public class Viaje {
         this.idViaje = idViaje;
     }
 
-    public String getEmailConductor() {
-        return emailConductor;
+    public Integer getIdConductor() {
+        return idConductor;
     }
 
-    public void setEmailConductor(String emailConductor) {
-        this.emailConductor = emailConductor;
+    public void setIdConductor(Integer idConductor) {
+        this.idConductor = idConductor;
     }
 
     public Provincia getProvOrigen() {

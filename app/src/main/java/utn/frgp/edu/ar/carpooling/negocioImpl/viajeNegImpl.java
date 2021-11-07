@@ -153,7 +153,7 @@ public class viajeNegImpl implements viajeNeg {
                 fechaFin = objOrigViaje.getFechaHoraInicio().plusHours(+3);
 
                 //QUERY QUE HAY QUE HABILITAR!! YO NO LA PUEDO PROBAR. JONNA
-                query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND ConductorEmail = '" + objOrigViaje.getEmailConductor() + "'" ;
+                query = "SELECT * FROM `Viajes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND ConductorId = '" + objOrigViaje.getIdConductor() + "'" ;
 
 
                 //QUERY PARA PODER PROBAR
@@ -186,7 +186,7 @@ public class viajeNegImpl implements viajeNeg {
                 fechaFin = objOrigViaje.getFechaHoraInicio().plusHours(+3);
 
                 //QUERY QUE HAY QUE HABILITAR!! YO NO LA PUEDO PROBAR. JONNA
-                query = "SELECT * FROM `Solicitudes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND PasajeroEmail = '" + objOrigViaje.getEmailConductor() + "'" ;
+                query = "SELECT * FROM `Solicitudes` WHERE (FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "') AND PasajeroId = '" + objOrigViaje.getIdConductor() + "'" ;
 
 
                 //QUERY PARA PODER PROBAR
@@ -244,7 +244,7 @@ public class viajeNegImpl implements viajeNeg {
                 query = "SELECT * FROM PasajerosPorViaje pxv ";
                 query += "INNER JOIN Viajes v ";
                 query += "ON pxv.ViajeId = v.Id ";
-                query += "WHERE (pxv.UsuarioEmail = '" + objOrigViaje.getEmailConductor() + "' ";
+                //query += "WHERE (pxv.UsuarioEmail = '" + objOrigViaje.getEmailConductor() + "' "; TODO - fix
                 query += "AND (pxv.EstadoPasajero = 'Aceptado' OR pxv.EstadoPasajero = 'Pendiente')) ";
                 query += "AND (v.EstadoViaje = 'En Espera' ";
                 query += "AND (v.FechaHoraInicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'))";

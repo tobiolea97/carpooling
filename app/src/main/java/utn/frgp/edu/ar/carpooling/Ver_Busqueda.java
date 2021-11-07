@@ -54,7 +54,7 @@ public class Ver_Busqueda extends AppCompatActivity {
     Spinner CantAsientos;
     TextView Nombre,Celular,ViajoCon;
     Viaje viaj;
-    String idviaje="",emailpasajero;
+    String idviaje="",emailpasajero, idPasajero;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -409,7 +409,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                     viaj.setCiudadOrigen(CiudadOrigen);
                     viaj.setProvDestino(ProvinciaDestino);
                     viaj.setCiudadDestino(CiudadDestino);
-                    viaj.setEmailConductor(emailUsuario);
+                    // viaj.setEmailConductor(emailUsuario); TODO - fix
                     emailpasajero=resultados.getString("PasajeroEmail");
                     String fechaInicio = resultados.getString("FechaHoraInicio"); // 2021-11-22 12:30:00.0
                     LocalDateTime inicioViaje = LocalDateTime.of(
@@ -458,7 +458,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 query += "EstadoViaje)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + viaj.getEmailConductor() + "',";
+                //query +=  "'" + viaj.getEmailConductor() + "',"; TODO - fix
                 query +=  "'" + viaj.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + viaj.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + viaj.getProvDestino().getIdProvincia() + "',";
@@ -498,7 +498,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += "SELECT Id FROM Viajes where ConductorEmail='" + viaj.getEmailConductor() + "' order by Id DESC limit 1 ";
+                // query += "SELECT Id FROM Viajes where ConductorEmail='" + viaj.getEmailConductor() + "' order by Id DESC limit 1 "; TODO - fix
 
 
                 return st.executeQuery(query);
@@ -602,8 +602,8 @@ public class Ver_Busqueda extends AppCompatActivity {
             if (resultado) {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(emailpasajero);
-                Noti.setUsuarioRolId("PAS");
+                // Noti.setUsuarioEmail(emailpasajero); TODO - Fix
+                // Noti.setUsuarioRolId("PAS"); TODO - Fix
                 Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);

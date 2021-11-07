@@ -56,14 +56,14 @@ public class Registro extends AppCompatActivity {
         nacimiento.setFocusableInTouchMode(false);
         nacimiento.setInputType(InputType.TYPE_NULL);
 
-        /*
+
         nombre.setText("Tobias");
         apellido.setText("Olea");
         telefono.setText("+54 9 11 6920 3645");
         nacimiento.setText("12/05/1997");
         password.setText("12345678");
         reingresoPassword.setText("12345678");
-        */
+
         
         // Seteo de eventos
         registrar.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +166,11 @@ public class Registro extends AppCompatActivity {
 
                 int resultado = st.executeUpdate(query);
 
+                query = "SELECT Id FROM Usuarios WHERE Email = '" + Usuario.getEmail()  + "' AND Rol = '" + Usuario.getRol().getId() + "'";
+                ResultSet rs = st.executeQuery(query);
+                rs.next();
+                Integer id = rs.getInt("Id");
+
                 if(resultado > 0) {
                     SharedPreferences sharedPreference = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreference.edit();
@@ -182,6 +187,10 @@ public class Registro extends AppCompatActivity {
 
                     editor = sharedPreference.edit();
                     editor.putString("Rol",  Usuario.getRol().getId());
+                    editor.commit();
+
+                    editor = sharedPreference.edit();
+                    editor.putString("Id",  id.toString());
                     editor.commit();
 
                     return true;
