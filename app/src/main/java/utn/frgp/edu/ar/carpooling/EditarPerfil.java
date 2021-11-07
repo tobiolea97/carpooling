@@ -35,9 +35,9 @@ import utn.frgp.edu.ar.carpooling.utils.Validadores;
 
 public class EditarPerfil extends AppCompatActivity {
 
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
-    EditText nombre, apellido, nacimiento, telefono, dni, email;
-    TextView errorDNI;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
+    EditText nombre, apellido, nacimiento, telefono, dni, email, password, reingresoPassword;
+    TextView errorDNI, errorEmail;
     Button guardarInfoPersonal, guardarInfoLogin;
     Context context;
 
@@ -57,11 +57,15 @@ public class EditarPerfil extends AppCompatActivity {
         guardarInfoPersonal = findViewById(R.id.btnEditarPerfilInformacionPersonal);
         guardarInfoLogin = findViewById(R.id.btnEditarPerfilInformacionLogin);
         errorDNI = findViewById(R.id.tvEditarPerfilErrorDNI);
+        errorEmail = findViewById(R.id.tvEditarPerfilErrorEmail);
+        password = findViewById(R.id.etEditarPerfilPassword);
+        reingresoPassword = findViewById(R.id.etEditarPerfilRepetirPassword);
 
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
 
         nacimiento.setFocusable(false);
         nacimiento.setFocusableInTouchMode(false);
@@ -114,6 +118,22 @@ public class EditarPerfil extends AppCompatActivity {
                         true
                 );
                 new Registro.InsertarUsuario(usuario).execute();*/
+            }
+        });
+
+        guardarInfoLogin.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+
+                boolean isValid = true;
+                isValid = Validadores.validarPassword(isValid,password,false);
+                isValid = Validadores.validarReingresoPassword(isValid,reingresoPassword, password, false);
+                isValid = Validadores.validarEmail(isValid,email);
+
+                if (!isValid) return;
+
+                new ValidarEmailRol().execute();
             }
         });
     }
@@ -279,7 +299,7 @@ public class EditarPerfil extends AppCompatActivity {
                 }
                 else {
                     errorDNI.setText("");
-                    new ActualizarViaje().execute();
+                    new ActualizarInfoPersonal().execute();
                     return;
                 }
 
@@ -289,7 +309,53 @@ public class EditarPerfil extends AppCompatActivity {
         }
     }
 
-    private class ActualizarViaje extends AsyncTask<Void,Integer,Boolean> {
+    private class ValidarEmailRol extends AsyncTask<Void,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "SELECT * FROM Usuarios WHERE Email = '";
+                query += Helper.RemoverCaracteresSQLInjection(email.getText().toString());
+                query += "' AND Rol = '" + rolUsuario + "' AND Email <> '" + emailUsuario + "'";
+                return st.executeQuery(query);
+
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                boolean exists = false;
+                while (resultados.next()) {
+                    exists = true;
+                }
+
+                if (exists) {
+                    errorEmail.setText("Email ya registrado como " + rolUsuario);
+                    return;
+                }
+                else {
+                    errorDNI.setText("");
+                    new ActualizarDatosLogin().execute();
+                    return;
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ActualizarInfoPersonal extends AsyncTask<Void,Integer,Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
@@ -308,7 +374,7 @@ public class EditarPerfil extends AppCompatActivity {
                 query += "Nacimiento='" + anio + "-" + mes + "-" + dia + "',";
                 query += "Dni='" + dni.getText() + "',";
                 query += "Telefono='" + telefono.getText() + "'";
-                query += " WHERE Email = '" + emailUsuario + "' AND Rol = '" + rolUsuario + "'";
+                query += " WHERE Id = " + idUsuario;
 
                 int resultado = st.executeUpdate(query);
                 return resultado > 0;
@@ -321,10 +387,14 @@ public class EditarPerfil extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if (resultado) {
-                Toast.makeText(context, "El pasajero fué actualizado correctamente", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Su información fué actualizada correctamente", Toast.LENGTH_LONG).show();
                 SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = spSesion.edit();
                 editor.clear();
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Id", idUsuario);
                 editor.commit();
 
                 editor = spSesion.edit();
@@ -337,6 +407,73 @@ public class EditarPerfil extends AppCompatActivity {
 
                 editor = spSesion.edit();
                 editor.putString("Apellido",  apellido.getText().toString());
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Rol",  rolUsuario);
+                editor.commit();
+
+                Intent intent = new Intent(context, Home.class);
+                startActivity(intent);
+
+                finish();
+            }
+            else Toast.makeText(context, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class ActualizarDatosLogin extends AsyncTask<Void,Integer,Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                Integer anio = Integer.parseInt(nacimiento.getText().toString().substring(6,10));
+                Integer mes = Integer.parseInt(nacimiento.getText().toString().substring(3,5));
+                Integer dia = Integer.parseInt(nacimiento.getText().toString().substring(0,2));
+
+                String query = "";
+                String stringPassword = "";
+                query += "UPDATE Usuarios SET ";
+                query += "Email='" + email.getText().toString() + "' ";
+                stringPassword = password.getText().toString();
+                if(!stringPassword.equals(""))
+                    query += ", Pass='" + password.getText().toString() + "' ";
+                query += " WHERE Id = " + idUsuario;
+
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if (resultado) {
+                Toast.makeText(context, "Su información fué actualizada correctamente", Toast.LENGTH_LONG).show();
+                SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = spSesion.edit();
+                editor.clear();
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Id", idUsuario);
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Email", email.getText().toString());
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Nombre",  nombreUsuario);
+                editor.commit();
+
+                editor = spSesion.edit();
+                editor.putString("Apellido",  apellidoUsuario);
                 editor.commit();
 
                 editor = spSesion.edit();

@@ -76,8 +76,8 @@ public class Registro extends AppCompatActivity {
                 isValid = Validadores.validarApellido(isValid,apellido);
                 isValid = Validadores.validarTelefono(isValid,telefono);
                 isValid = Validadores.validarNacimiento(isValid,nacimiento);
-                isValid = Validadores.validarPassword(isValid,password);
-                isValid = Validadores.validarReingresoPassword(isValid,reingresoPassword,password);
+                isValid = Validadores.validarPassword(isValid,password, true);
+                isValid = Validadores.validarReingresoPassword(isValid,reingresoPassword,password, true);
 
                 if (!isValid) return;
 
