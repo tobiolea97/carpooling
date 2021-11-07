@@ -33,7 +33,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class CancelarViajePasajero extends AppCompatActivity {
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario, conductorId;
     GridView GrViajeSolicitado;
     String NroViaje,EstadoViaje,EmailConductor;
     RatingBar ratingBar;
@@ -67,6 +67,8 @@ public class CancelarViajePasajero extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -96,7 +98,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 query += "          vj.FechaHoraFinalizacion,";
                 query += "          vj.CantidadPasajeros,";
                 query += "          vj.EstadoViaje,";
-                query += "          vj.ConductorEmail";
+                query += "          vj.ConductorId";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -131,8 +133,10 @@ public class CancelarViajePasajero extends AppCompatActivity {
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado", resultados.getString("EstadoViaje"));
 
+                    conductorId = resultados.getString("ConductorId");
+
                     itemsGrilla.add(item);
-                    EmailConductor=resultados.getString("ConductorEmail");
+                    //EmailConductor=resultados.getString("ConductorEmail");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
@@ -165,8 +169,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 query += " 		    usu.Email,";
                 query += " 		    usu.Rol";
                 query += " From Usuarios usu";
-                query += " 	Where	 usu.Email='" + EmailConductor + "'";
-                query += " 	And	 usu.Rol='CON'";
+                query += " 	Where	 usu.Id='" + conductorId + "'";
 
                 return st.executeQuery(query);
 
@@ -203,7 +206,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + EmailConductor + "'";
+                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + conductorId + "'";
 
 
                 return st.executeQuery(query);
@@ -251,7 +254,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Email='" + EmailConductor + "'";
+                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + conductorId + "'";
 
 
                 return st.executeQuery(query);
@@ -307,8 +310,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 if(EstadoViaje.equals("Aceptado")){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailConductor);
-                Noti.setUsuarioRolId("CON");
+                Noti.setUsuarioId(Integer.parseInt(conductorId));
                 Noti.setMensaje("El pasajero "+nombreUsuario+" "+apellidoUsuario+" ha abandonado el viaje Nro "+NroViaje+" ");
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
