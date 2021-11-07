@@ -359,7 +359,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     }
 
                     EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol") + "-" + resultados.getString("Id"));
-                    cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
+                    cantidadDeAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 ArrayList<String> asientosLibres = agregarAsientosLibres(Integer.parseInt(cantidadDeAsientos), pasajerosABordo);

@@ -529,7 +529,7 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
                 query += " LEFT JOIN Usuarios us ";
                 query += " 	ON vj.PasajeroId = us.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoRegistro=1";
+                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoSolicitud='En Espera'";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 
@@ -652,6 +652,19 @@ public class Buscar extends AppCompatActivity {
         list.add(" ");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list);
         spFiltroCiudadesDestino.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(rolUsuario.equals("PAS")){
+            new CargarViajesFiltrados("").execute();
+        }
+        else{
+            new CargarSolicitudesFiltradas("").execute();
+        }
+
     }
 
 }
