@@ -71,7 +71,7 @@ public class Home extends AppCompatActivity {
             Rol="Pasajero";
         }
 
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+        getSupportActionBar().setTitle("Home Conductor");
 
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
@@ -89,16 +89,20 @@ public class Home extends AppCompatActivity {
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
 
-
         new Home.VerificarNotificacion().execute();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
 
-
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
 
         return true;
     }
@@ -107,36 +111,51 @@ public class Home extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
-        if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajesModoPasajero.class);
-            startActivity(intent);
-        }
 
-        if(id == R.id.crearViaje) {
-            finish();
-            Intent intent = new Intent(this, NuevoViaje.class);
-            startActivity(intent);
-        }
-
-        if(id == R.id.notificaciones) {
-            finish();
+        if (id == R.id.notificaciones) {
             Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.editarPerfil) {
-            finish();
+        if (id == R.id.editarPerfil) {
             Intent intent = new Intent(this, EditarPerfil.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.cerrarSesion) {
 
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
@@ -152,19 +171,8 @@ public class Home extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem misviajes = menu.findItem(R.id.misViajes);
-        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
-
-        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
-
-        
-
-        if(!rolUsuario.equals("CON")){
-          //  misviajes.setVisible(false);
-            CrearViaje.setVisible(false);
-        }
-
-
+        MenuItem miPerfil = menu.findItem(R.id.miperfil);
+        miPerfil.setVisible(false);
 
         return true;
     }

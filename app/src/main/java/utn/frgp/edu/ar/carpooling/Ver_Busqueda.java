@@ -458,7 +458,8 @@ public class Ver_Busqueda extends AppCompatActivity {
 
                 String query = "";
                 query += "UPDATE Solicitudes SET ";
-                query += "EstadoRegistro='0'";
+                query += "EstadoRegistro='0',";
+                query += "EstadoSolicitud='Cerrada'";
                 query += " WHERE Id = " + NroViaje;
 
                 int resultado = st.executeUpdate(query);
