@@ -1,7 +1,7 @@
 CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaVerPasajero`(
-	IN pasajero_mail VARCHAR(30),
+	IN pasajero_id INT,
     IN viaje_id INT,
-    IN conductor_mail VARCHAR(30)
+    IN conductor_id INT
 )
 BEGIN
 	
@@ -9,22 +9,20 @@ BEGIN
     SELECT 	u.Nombre, u.Apellido, u.Telefono, u.Dni, r.Id IdRol, r.Nombre NombreRol
 	FROM Usuarios u
 	INNER JOIN Roles r ON u.Rol = r.Id
-	WHERE Email = pasajero_mail AND Rol = 'PAS'
+	WHERE u.Id = pasajero_id
     LIMIT 1
     INTO 	@NombreUsuario, @ApellidoUsuario, @TelefonoUsuario, @DniUsuario, @IdRol, @NombreRol;
     
     -- CALIFICACION
     SELECT 	AVG(cal.Calificacion) as promedio
 	FROM 	Calificaciones cal
-    WHERE 	cal.UsuarioEmail= pasajero_mail AND
-			UsuarioRol = 'PAS'
+    WHERE 	UsuarioId = pasajero_id
 	INTO @Promedio;
     
     -- CANTIDAD DE CALIFICACIONES
     SELECT COUNT(Calificacion)
     FROM Calificaciones 
-    WHERE 	UsuarioEmail = pasajero_mail AND
-			UsuarioRol = 'PAS'
+    WHERE 	UsuarioId = pasajero_id
 	INTO @CantidadCalificaciones;
     
     -- VIAJE
@@ -42,10 +40,7 @@ BEGIN
     -- VERIFICAR CALIFICACION
     SELECT Id
     FROM Calificaciones
-    WHERE 	UsuarioEmail = pasajero_mail
-			AND UsuarioRol = 'PAS'
-            AND CalificadorEmail = conductor_mail
-            AND CalificadorRol = 'CON'
+    WHERE 	UsuarioId = pasajero_id
 	INTO @IdCalificacion;
     
     SELECT 	@NombreUsuario Nombre,

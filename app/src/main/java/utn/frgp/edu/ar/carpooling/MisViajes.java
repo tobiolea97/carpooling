@@ -29,7 +29,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroCiudDestino;
     Spinner spFiltroEstado;
     GridView grillaViajes;
-    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario, idUsuario;
     Context contexto;
     String filterDate = "";
     List<Provincia> itemsProvincias;
@@ -51,6 +51,8 @@ public class MisViajes extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -349,7 +351,7 @@ public class MisViajes extends AppCompatActivity {
         query += " 	ON ci1.Id = vj.CiudadOrigenId";
         query += " LEFT JOIN Ciudades ci2";
         query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : " WHERE vj.ConductorEmail = '" + emailUsuario + "'";
+        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND" : " WHERE vj.ConductorId = '" + idUsuario + "'";
 
         if (!filtros.isEmpty()) {
             if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {

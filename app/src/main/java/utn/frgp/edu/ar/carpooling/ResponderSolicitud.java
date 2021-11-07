@@ -39,12 +39,12 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 public class ResponderSolicitud extends AppCompatActivity {
     Context contexto;
     TextView Nombre,viajocon, Numero, tvNoFreeSeats;
-    String Email,NroViaje,Asientos,Pasajeros;
+    String Email,NroViaje,Asientos,Pasajeros,IdSolicitante;
     RatingBar Rating;
     Button botoncancelar,botonaceptar;
     GridView grillaVerViaje;
     Usuario usuarioACalificar;
-    String nombreUsuario,apellidoUsuario,emailUsuario,rolUsuario;
+    String nombreUsuario,apellidoUsuario,emailUsuario,rolUsuario,idUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class ResponderSolicitud extends AppCompatActivity {
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         Email=getIntent().getStringExtra("Email");
+        IdSolicitante=getIntent().getStringExtra("IdSolicitante");
         Nombre=findViewById(R.id.TxtNombreRespSol);
         Rating=findViewById(R.id.ratingBarResponderSoli);
         viajocon=findViewById(R.id.TxtViajoRespSol);
@@ -69,6 +70,7 @@ public class ResponderSolicitud extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -167,7 +169,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " CALL InfoParaResponderSolicitud('" + Email + "'," + NroViaje + ");";
+                query += " CALL InfoParaResponderSolicitud('" + IdSolicitante + "'," + NroViaje + ");";
 
                 return st.executeQuery(query);
 

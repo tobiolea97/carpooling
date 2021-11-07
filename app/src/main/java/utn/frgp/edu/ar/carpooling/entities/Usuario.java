@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Usuario {
+
+    private Integer Id;
     private String Email;
     private Rol Rol;
     private String Password;
@@ -27,6 +29,27 @@ public class Usuario {
         Telefono = telefono;
         Dni = dni;
         EstadoRegistro = estadoRegistro;
+    }
+
+    public Usuario(Integer id, String email, Rol rol, String password, String nombre, String apellido, LocalDate nacimiento, String telefono, String dni, boolean estadoRegistro) {
+        Id = id;
+        Email = email;
+        Rol = rol;
+        Password = password;
+        Nombre = nombre;
+        Apellido = apellido;
+        Nacimiento = nacimiento;
+        Telefono = telefono;
+        Dni = dni;
+        EstadoRegistro = estadoRegistro;
+    }
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
     }
 
     public String getEmail() {

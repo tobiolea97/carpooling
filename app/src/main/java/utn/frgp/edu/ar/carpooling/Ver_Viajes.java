@@ -41,8 +41,9 @@ public class Ver_Viajes extends AppCompatActivity {
     ListView Pasajeros,Solicitudes;
     ArrayList<String> EmailPasajeros;
     ArrayList<String> IdSolicitudes;
+    ArrayList<String> IdSolicitantes;
     ImageButton cancelar,finalizar,editar;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     TextView tituloCancelar,tituloFinalizar,tituloEditar;
     String localDateviaje;
     View dialogFragmentView, dialogFragmentView2;
@@ -64,6 +65,7 @@ public class Ver_Viajes extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -118,14 +120,17 @@ public class Ver_Viajes extends AppCompatActivity {
 
                 String Email = "";
                 String Rol = "";
+                String Id = "";
                 String[] parts = Pasajeros.getItemAtPosition(i).toString().split("-");
                 Email = EmailPasajeros.get(i).split("-")[0];
                 Rol = EmailPasajeros.get(i).split("-")[1];
+                Id = EmailPasajeros.get(i).split("-")[2];
 
                 Intent pagVerPasajero= new Intent(contexto,VerPasajero.class);
                 pagVerPasajero.putExtra("NroViaje",NroViaje);
                 pagVerPasajero.putExtra("EmailVerUsuario",Email);
                 pagVerPasajero.putExtra("RolVerUsuario",Rol);
+                pagVerPasajero.putExtra("IdVerUsuario",Id);
                 pagVerPasajero.putExtra("EstadoViaje", EstadoViaje);
                 startActivity(pagVerPasajero);
              //
@@ -139,11 +144,14 @@ public class Ver_Viajes extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String Email="";
+                String IdSolicitante = "";
                 Email=IdSolicitudes.get(i);
+                IdSolicitante = IdSolicitantes.get(i);
 
                 Intent pagResponderSoli= new Intent(contexto,ResponderSolicitud.class);
                 pagResponderSoli.putExtra("NroViaje",NroViaje);
                 pagResponderSoli.putExtra("Email",Email);
+                pagResponderSoli.putExtra("IdSolicitante",IdSolicitante);
                 startActivity(pagResponderSoli);
             }
         });
@@ -306,6 +314,7 @@ public class Ver_Viajes extends AppCompatActivity {
                 Statement st = con.createStatement();
                 String query = "";
                 query += " SELECT 	usu.Nombre,";
+                query += "  	    usu.Id,";
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
                 query += " 		    usu.Email,";
@@ -316,10 +325,10 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " Inner join PasajerosPorViaje pv";
                 query += " ON pv.ViajeId=vj.Id";
                 query += " Inner join Usuarios usu";
-                query += " ON usu.Email=pv.UsuarioEmail";
+                query += " ON usu.Id=pv.UsuarioId";
                 query += " 	Where	pv.ViajeId='" + NroViaje + "'";
                 query += " 	And	 pv.EstadoRegistro=1";
-                query += " 	And	 usu.Rol='PAS'";
+                query += " 	And	 vj.ConductorId = " + idUsuario;
                 query += " 	And	 pv.EstadoPasajero='Aceptado'";
 
                 return st.executeQuery(query);
@@ -348,7 +357,7 @@ public class Ver_Viajes extends AppCompatActivity {
                         }
                     }
 
-                    EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol"));
+                    EmailPasajeros.add(resultados.getString("Email") + "-" + resultados.getString("Rol") + "-" + resultados.getString("Id"));
                     cantidadDeAsientos=resultados.getInt("CantidadPasajeros");
                 }
 
@@ -387,10 +396,11 @@ public class Ver_Viajes extends AppCompatActivity {
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
                 query += " 		    usu.Telefono,";
+                query += " 		    usu.Id,";
                 query += " 		    usu.Email";
                 query += " FROM Usuarios usu";
                 query += " Inner join PasajerosPorViaje pv";
-                query += " ON usu.Email=pv.UsuarioEmail";
+                query += " ON usu.Id = pv.UsuarioId";
                 query += " 	Where	pv.ViajeId='" + NroViaje + "'";
                 query += " 	And	 pv.EstadoPasajero = 'Pendiente'";
                 query += " 	And	 usu.Rol = 'PAS'";
@@ -409,9 +419,11 @@ public class Ver_Viajes extends AppCompatActivity {
             try {
                 ArrayList<String> Solicitudess= new ArrayList<String>();
                 IdSolicitudes=new ArrayList<>();
+                IdSolicitantes = new ArrayList<>();
                 while (resultados.next()) {
                     Solicitudess.add(resultados.getString("Nombre")+" "+ resultados.getString("Apellido")+" - "+resultados.getString("Telefono"));
                     IdSolicitudes.add(resultados.getString("Email"));
+                    IdSolicitantes.add(resultados.getString("Id"));
                 }
 
                 ArrayAdapter<String>adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Solicitudess);

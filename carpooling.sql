@@ -40,6 +40,7 @@ CREATE TABLE Ciudades (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE Usuarios (
+  Id int NOT NULL auto_increment,
   Email varchar(30) NOT NULL,
   Rol varchar(3) NOT NULL,
   Pass varchar(15) NOT NULL,
@@ -50,7 +51,7 @@ CREATE TABLE Usuarios (
   Dni varchar(8) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
-  PRIMARY KEY (Email,Rol),
+  PRIMARY KEY (Id),
   
   FOREIGN KEY (Rol)
 	REFERENCES Roles(Id)
@@ -59,22 +60,21 @@ CREATE TABLE Usuarios (
 
 CREATE TABLE Notificaciones (
   Id int NOT NULL,
-  UsuarioEmail varchar(30) NOT NULL,
-  UsuarioRol varchar(3) NOT NULL,
+  UsuarioId int NOT NULL,
   Mensaje varchar(100) NOT NULL,
   EstadoNotificacion varchar(3) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
   PRIMARY KEY (Id),
   
-  FOREIGN KEY (UsuarioEmail,UsuarioRol)
-	REFERENCES Usuarios(Email,Rol)
+  FOREIGN KEY (UsuarioId)
+	REFERENCES Usuarios(Id)
   
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE Viajes (
   Id int NOT NULL auto_increment,
-  ConductorEmail varchar(30) NOT NULL,
+  ConductorId int NOT NULL,
   ProvinciaOrigenId int NOT NULL,
   CiudadOrigenId int NOT NULL,
   ProvinciaDestinoId int NOT NULL,
@@ -87,8 +87,8 @@ CREATE TABLE Viajes (
   
   PRIMARY KEY (Id),
   
-  FOREIGN KEY (ConductorEmail)
-	REFERENCES Usuarios(Email),
+  FOREIGN KEY (ConductorId)
+	REFERENCES Usuarios(Id),
     
   FOREIGN KEY (ProvinciaOrigenId,CiudadOrigenId)
 	REFERENCES Ciudades(ProvinciaId, Id),
@@ -101,7 +101,7 @@ CREATE TABLE Viajes (
 
 CREATE TABLE Solicitudes (
   Id int NOT NULL auto_increment,
-  PasajeroEmail varchar(30) NOT NULL,
+  PasajeroId int NOT NULL,
   ProvinciaOrigenId int NOT NULL,
   CiudadOrigenId int NOT NULL,
   ProvinciaDestinoId int NOT NULL,
@@ -113,8 +113,8 @@ CREATE TABLE Solicitudes (
   
   PRIMARY KEY (Id),
   
-  FOREIGN KEY (PasajeroEmail)
-	REFERENCES Usuarios(Email),
+  FOREIGN KEY (PasajeroId)
+	REFERENCES Usuarios(Id),
     
   FOREIGN KEY (ProvinciaOrigenId,CiudadOrigenId)
 	REFERENCES Ciudades(ProvinciaId, Id),
@@ -126,15 +126,15 @@ CREATE TABLE Solicitudes (
 
 CREATE TABLE PasajerosPorViaje (
   ViajeId int NOT NULL,
-  UsuarioEmail varchar(30) NOT NULL,
+  UsuarioId int NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   EstadoPasajero varchar(20) NOT NULL,
   cantAcompañantes int DEFAULT 0,
   
-  PRIMARY KEY (ViajeId, UsuarioEmail),
+  PRIMARY KEY (ViajeId, UsuarioId),
   
-  FOREIGN KEY (UsuarioEmail)
-	REFERENCES Usuarios(Email),
+  FOREIGN KEY (UsuarioId)
+	REFERENCES Usuarios(Id),
     
   FOREIGN KEY (ViajeId)
 	REFERENCES Viajes(Id)
@@ -143,26 +143,26 @@ CREATE TABLE PasajerosPorViaje (
 
 CREATE TABLE Calificaciones (
   Id int NOT NULL AUTO_INCREMENT,
-  UsuarioEmail varchar(30) NOT NULL,
-  UsuarioRol varchar(3) NOT NULL,
-  CalificadorEmail varchar(30) NOT NULL,
-  CalificadorRol varchar(3) NOT NULL,
+  UsuarioId int NOT NULL,
+  CalificadorId int NOT NULL,
   ViajeId int NOT NULL,
   Calificacion float(3) NOT NULL,
   EstadoRegistro boolean DEFAULT true,
   
   PRIMARY KEY (Id),
   
-  FOREIGN KEY (UsuarioEmail, UsuarioRol)
-	REFERENCES Usuarios(Email, Rol),
+  FOREIGN KEY (CalificadorId)
+	REFERENCES Usuarios(Id),
 
-  FOREIGN KEY (CalificadorEmail, CalificadorRol)
-	REFERENCES Usuarios(Email, Rol),
+  FOREIGN KEY (CalificadorId)
+	REFERENCES Usuarios(Id),
 
   FOREIGN KEY (ViajeId)
 	REFERENCES Viajes(Id)
   
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*
 
 INSERT INTO `Roles` (Id,Nombre,EstadoRegistro) VALUES("CON",'Conductor',1);
 INSERT INTO `Roles` (Id,Nombre,EstadoRegistro) VALUES("PAS",'Pasajero',1);
@@ -240,3 +240,4 @@ INSERT INTO PasajerosPorViaje (ViajeId,UsuarioEmail,EstadoRegistro,EstadoPasajer
 VALUES (13,'tobi@mail.com',1,'Pendiente');
 
 
+*/

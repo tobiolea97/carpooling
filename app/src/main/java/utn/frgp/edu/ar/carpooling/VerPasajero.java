@@ -44,7 +44,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
-    String NroViaje,EmailVerUsuario,RolVerUsuario,EstadoViaje;
+    String NroViaje,EmailVerUsuario,RolVerUsuario,EstadoViaje,IdVerUsuario,idUsuario;
     String nombreUsuarioLog, apellidoUsuarioLog, emailUsuarioLog, rolUsuarioLog;
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
@@ -68,6 +68,8 @@ public class VerPasajero extends AppCompatActivity {
         apellidoUsuarioLog = spSesion.getString("Apellido","No hay datos");
         emailUsuarioLog = spSesion.getString("Email","No hay datos");
         rolUsuarioLog = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuarioLog.equals("CON")){
             Rol="Conductor";
@@ -80,6 +82,7 @@ public class VerPasajero extends AppCompatActivity {
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         EmailVerUsuario=getIntent().getStringExtra("EmailVerUsuario");
+        IdVerUsuario=getIntent().getStringExtra("IdVerUsuario");
         RolVerUsuario=getIntent().getStringExtra("RolVerUsuario");
         EstadoViaje = getIntent().getStringExtra("EstadoViaje");
         Nombre=findViewById(R.id.TxtVpNombre);
@@ -244,7 +247,7 @@ public class VerPasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " CALL InfoParaVerPasajero('" + EmailVerUsuario + "'," + NroViaje + ",'" + emailUsuarioLog + "');";
+                query += " CALL InfoParaVerPasajero('" + IdVerUsuario + "'," + NroViaje + ",'" + idUsuario + "');";
 
                 return st.executeQuery(query);
 
@@ -318,7 +321,7 @@ public class VerPasajero extends AppCompatActivity {
                 query += " UPDATE 	PasajerosPorViaje vj";
                 query += "  	    SET";
                 query += " 		    EstadoPasajero='Rechazado'";
-                query += " 	Where	vj.UsuarioEmail='" + EmailVerUsuario + "' and vj.ViajeId='" + NroViaje + "'";
+                query += " 	Where	vj.UsuarioId='" + IdVerUsuario + "' and vj.ViajeId='" + NroViaje + "'";
 
 
                 int resultado = st.executeUpdate(query);
