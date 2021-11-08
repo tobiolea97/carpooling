@@ -302,3 +302,8 @@ INSERT INTO Viajes VALUES (1005,1,2,11,2,17,"2021-12-05 07:30",null,4,"En Espera
 
 -- VIAJE 1006 Tobias Olea
 INSERT INTO Viajes VALUES (1006,1,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera",1);
+
+
+
+-- SOLICITUDES
+INSERT INTO Solicitudes VALUES (1000,1,1,2,2,20,"2022-10-01 14:30",0,"En Espera",1);

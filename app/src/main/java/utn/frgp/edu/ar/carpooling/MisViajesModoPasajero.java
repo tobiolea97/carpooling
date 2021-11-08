@@ -26,7 +26,7 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 
 public class MisViajesModoPasajero extends AppCompatActivity {
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     GridView GrMisViajesModoPasajero;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,8 @@ public class MisViajesModoPasajero extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -89,30 +91,24 @@ public class MisViajesModoPasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " SELECT 	vj.FechaHoraInicio,";
-                query += "  	vj.Id,";
-                query += " 		    pr1.Nombre ProvinciaOrigen,";
-                query += "          ci1.Nombre CiudadOrigen,";
-                query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino,";
-                query += "          vj.FechaHoraFinalizacion,";
-                query += "          vj.CantidadPasajeros,";
-                query += "          vj.EstadoViaje,";
-                query += "          pv.EstadoPasajero,";
-                query += "          vj.ConductorEmail";
-                query += " FROM Viajes vj";
-                query += " LEFT JOIN Provincias pr1";
-                query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
-                query += " LEFT JOIN Provincias pr2";
-                query += " 	ON pr2.Id = vj.ProvinciaDestinoId";
-                query += " LEFT JOIN Ciudades ci1";
-                query += " 	ON ci1.Id = vj.CiudadOrigenId";
-                query += " LEFT JOIN Ciudades ci2";
-                query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += " INNER JOIN PasajerosPorViaje pv";
-                query += " 	ON vj.Id=pv.ViajeId";
-                query += " 	Where	pv.UsuarioEmail='" + emailUsuario + "'";
-                query += " ORDER BY pv.EstadoPasajero";
+                query += " SELECT   ";
+                query += "   vj.FechaHoraInicio,   ";
+                query += "   vj.Id,   ";
+                query += "   pr1.Nombre ProvinciaOrigen,   ";
+                query += "   ci1.Nombre CiudadOrigen,   ";
+                query += "   pr2.Nombre ProvinciaDestino,   ";
+                query += "   ci2.Nombre CiudadDestino,   ";
+                query += "   vj.CantidadAcompaniantes,   ";
+                query += "   vj.EstadoSolicitud,  ";
+                query += "   vj.PasajeroId   ";
+                query += " FROM   ";
+                query += "   Solicitudes vj   ";
+                query += "   LEFT JOIN Provincias pr1 ON pr1.Id = vj.ProvinciaOrigenId   ";
+                query += "   LEFT JOIN Provincias pr2 ON pr2.Id = vj.ProvinciaDestinoId   ";
+                query += "   LEFT JOIN Ciudades ci1 ON ci1.Id = vj.CiudadOrigenId   ";
+                query += "   LEFT JOIN Ciudades ci2 ON ci2.Id = vj.CiudadDestinoId  ";
+                query += " Where   ";
+                query += "   vj.PasajeroId = '" + idUsuario + "';  ";
 
                 return st.executeQuery(query);
             } catch (ClassNotFoundException | SQLException e) {
@@ -134,7 +130,7 @@ public class MisViajesModoPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado", resultados.getString("EstadoPasajero"));
+                    item.put("estado", resultados.getString("EstadoSolicitud"));
                     itemsGrilla.add(item);
                 }
 
