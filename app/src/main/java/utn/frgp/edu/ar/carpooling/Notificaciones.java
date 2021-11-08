@@ -1,5 +1,7 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
@@ -7,11 +9,14 @@ import androidx.core.app.NotificationManagerCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import static utn.frgp.edu.ar.carpooling.Home.NOTIFICACION_ID;
@@ -57,14 +62,59 @@ public class Notificaciones extends AppCompatActivity {
 
         NotificationManagerCompat notificationManagerCompat= NotificationManagerCompat.from(getApplicationContext());
         notificationManagerCompat.cancel(NOTIFICACION_ID);
+  ArrayList<String> itemListt= new ArrayList<String>();
+        itemListt.add("Item1"+"-P");
+        itemListt.add("Item2"+"-L");
+        itemListt.add("Item33"+"-P");
+/*String [] itemList= new String[]{
+"Item1",
+"Item2",
+"Item3",
+
+};*/
+       
+
+ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+        View view=super.getView(position, convertView, parent);
+        for (String o : itemListt){
+            String Texto="";
+            Texto=itemListt.get(position);
+            String[] parts = Texto.split("-");
+            String part2 = parts[1];
+
+            if(position==1){
+//System.out.println("pasa una vez");
+             //   view.setBackgroundColor(getResources().getColor(
+               //         android.R.color.holo_blue_dark
+                //));
+            }
+            System.out.println("2 pasa una vez");
+        }
+     //  if(/*position%2==1*/itemListt.toString().equals("Item1")){
+
+
+       // }else{
+
+         //   view.setBackgroundColor(getResources().getColor(
+           //         android.R.color.black
+          //  ));
+        //}*/
 
 
 
+return view;
+    }
+};
 
 
+        LvNotificacion.setAdapter(arrayAdapter);
 
-
-        new CargarNotificaciones().execute();
+      //  new CargarNotificaciones().execute();
     }
 
     @Override
