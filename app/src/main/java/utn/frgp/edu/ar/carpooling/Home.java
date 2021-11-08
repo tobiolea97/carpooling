@@ -71,7 +71,7 @@ public class Home extends AppCompatActivity {
             Rol="Pasajero";
         }
 
-        getSupportActionBar().setTitle("Home Conductor");
+        getSupportActionBar().setTitle(rolUsuario.equals("CON") ? "Home conductor" : "Home pasajero");
 
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
@@ -353,7 +353,7 @@ public class Home extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	*";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.UsuarioEmail='" + emailUsuario + "'and noti.UsuarioRol='"+rolUsuario+"'and noti.EstadoNotificacion='P'";
+                query += " 	Where	noti.UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 

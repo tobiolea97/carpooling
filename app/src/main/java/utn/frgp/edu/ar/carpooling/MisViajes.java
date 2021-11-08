@@ -228,8 +228,13 @@ public class MisViajes extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem currentOption = menu.findItem(R.id.misViajes);
-        currentOption.setVisible(false);
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        String rol = sp.getString("Rol","No hay datos");
+
+        if(sp.equals("CON")){
+            MenuItem currentOption = menu.findItem(R.id.misViajes);
+            currentOption.setVisible(false);
+        }
 
         return true;
     }
@@ -551,7 +556,7 @@ public class MisViajes extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
+        //new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
 
     }
 }
