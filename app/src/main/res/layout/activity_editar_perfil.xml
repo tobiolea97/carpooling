@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Registro">
+    tools:context=".EditarPerfil">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="137dp"
                 android:gravity="center"
-                android:text="@string/tituloRegistro"
+                android:text="Información personal"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -44,7 +44,7 @@
                 android:id="@+id/tvEditarPerfilNombre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/nombre"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -132,6 +132,81 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilTelefono" />
 
+
+            <TextView
+                android:id="@+id/tvEditarPerfilDNI"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ingreseDNI"
+                android:text="@string/dni"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.551"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilTelefono" />
+
+            <Button
+                android:id="@+id/btnEditarPerfilInformacionPersonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="192dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="36dp"
+                android:text="Actualizar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.26"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilErrorDNI" />
+
+            <EditText
+                android:id="@+id/etEditarPerfilDni"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/ingreseDNI"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.448"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilDNI" />
+
+            <TextView
+                android:id="@+id/tvEditarPerfilInformacionLogin"
+                android:layout_width="281dp"
+                android:layout_height="39dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="137dp"
+                android:gravity="center"
+                android:text="Información de login"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnEditarPerfilInformacionPersonal" />
+
+            <TextView
+                android:id="@+id/tvEditarPerfilEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilInformacionLogin" />
+
+            <EditText
+                android:id="@+id/etEditarPerfilEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/ingreseEmail"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilEmail" />
+
             <TextView
                 android:id="@+id/tvRegistroPassword"
                 android:layout_width="0dp"
@@ -141,7 +216,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilTelefono" />
+                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilEmail" />
 
             <EditText
                 android:id="@+id/etEditarPerfilPassword"
@@ -181,20 +256,47 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilReingresoPassword" />
 
             <Button
-                android:id="@+id/btnEditarPerfilInformacionPersonal"
+                android:id="@+id/btnEditarPerfilInformacionLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="192dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="36dp"
-                android:text="@string/registrarse"
+                android:text="Actualizar"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.26"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEditarPerfilErrorEmail" />
+
+            <TextView
+                android:id="@+id/tvEditarPerfilErrorDNI"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="40dp"
+                android:gravity="center"
+                android:textColor="@android:color/holo_red_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.482"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilDni" />
+
+            <TextView
+                android:id="@+id/tvEditarPerfilErrorEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="40dp"
+                android:gravity="center"
+                android:textColor="@android:color/holo_red_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.793"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etEditarPerfilRepetirPassword" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

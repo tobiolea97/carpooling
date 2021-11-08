@@ -3,9 +3,12 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -44,11 +47,68 @@ public class VerVIajeFinalizado extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
 
         new CargarViajeFinalizado().execute();
         new CargarPasajeros().execute();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
     private class CargarViajeFinalizado extends AsyncTask<Void,Integer, ResultSet> {
 

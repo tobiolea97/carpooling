@@ -45,7 +45,7 @@ public class NuevoViaje extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
-    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario, idUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
     //LOS LIST SON PARA PODER BUSCAR EL OBJETO CORRESPONDIENTE AL ITEM SELECCIONADO EN EL SPINNER
@@ -69,9 +69,9 @@ public class NuevoViaje extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (spEdicion.getString("modoEdicion", "false").equals("true")) {
+        if (spEdicion.getBoolean("modoEdicion", false)) {
             SharedPreferences.Editor editor = spEdicion.edit();
-            editor.putString("modoEdicion", "false");
+            editor.putBoolean("modoEdicion", false);
             editor.commit();
         }
     }
@@ -99,16 +99,35 @@ public class NuevoViaje extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        idUsuario = spSesion.getString("Id","No hay datos");
 
-        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
-        if (esModoEdicion.equals("true")) {
+        String Rol="";
+        int cantPasajerosMinima = 1;
+        int cantAsientosMaxima = 4;
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
             TextView tvTitulo = findViewById(R.id.txtViewTitulo);
             Button btCrearViaje = findViewById(R.id.btnCrearViaje);
             tvTitulo.setText("Editar Viaje");
             btCrearViaje.setText("Actualizar viaje");
+            fechaViaje.setEnabled(false);
             fechaViaje.setText(spEdicion.getString("fechaInicio",""));
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            spProvinciasOrigen.setEnabled(false);
+            spCiudadesOrigen.setEnabled(false);
+            spProvinciasDestino.setEnabled(false);
+            spCiudadesDestino.setEnabled(false);
+            if (spEdicion.getInt("cantPasajeros", 0) > cantPasajerosMinima)
+                cantPasajerosMinima = spEdicion.getInt("cantPasajeros", 0);
+                cantAsientosMaxima = spEdicion.getInt("cantAsientos", 4);
         }
 
         provDestSelecc = null;
@@ -116,8 +135,7 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje = null;
 
         ArrayList<String> listaCantPasajeros = new ArrayList<String>();
-
-        for(int i = 1; i<=4; i++){
+        for (int i = cantPasajerosMinima; i <= cantAsientosMaxima; i++) {
             listaCantPasajeros.add(String.valueOf(i));
         }
 
@@ -134,8 +152,15 @@ public class NuevoViaje extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
 
         return true;
     }
@@ -144,46 +169,68 @@ public class NuevoViaje extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
 
-        if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajes.class);
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.cerrarSesion) {
 
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
             editor.clear();
             editor.commit();
-
             finish();
-
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
 
         return super.onOptionsItemSelected(opcionMenu);
     }
+
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem misviajes = menu.findItem(R.id.misViajes);
-        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
-
-        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
-
-        if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
-            CrearViaje.setVisible(false);
-        }
-
-
+        MenuItem currentOption = menu.findItem(R.id.crearViaje);
+        currentOption.setVisible(false);
 
         return true;
     }
@@ -193,7 +240,7 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje = new Viaje();
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nuevoViaje.setEmailConductor( spSesion.getString("Email","No hay datos"));
+        nuevoViaje.setIdConductor( Integer.parseInt(idUsuario) );
         nuevoViaje.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
         nuevoViaje.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
         nuevoViaje.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
@@ -201,9 +248,9 @@ public class NuevoViaje extends AppCompatActivity {
         nuevoViaje.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevoViaje.setEstadoViaje("En Espera");
 
-        String esModoEdicion = spEdicion.getString("modoEdicion", "false");
-        if (esModoEdicion.equals("true")) {
-            nuevoViaje.setIdViaje(Integer.parseInt(spEdicion.getString("idViaje", "0")));
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
+            nuevoViaje.setIdViaje(spEdicion.getInt("idViaje", 0));
         }
 
         if(!Validadores.validarNacimiento(true,fechaViaje)) return;
@@ -239,7 +286,7 @@ public class NuevoViaje extends AppCompatActivity {
         if (hayViajesEnRango) {
             Toast.makeText(contexto, "Ya tiene un viaje pendiente en el rango horario +- 3hs para la misma fecha", Toast.LENGTH_LONG).show();
         } else {
-            if (esModoEdicion.equals("true")) new ActualizarViaje().execute();
+            if (esModoEdicion) new ActualizarViaje().execute();
             else new AltaNuevoViaje().execute();
         }
     }
@@ -411,7 +458,7 @@ public class NuevoViaje extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spProvinciasOrigen.setAdapter(adapter);
                 spProvinciasDestino.setAdapter(adapter);
-                // OBLIGADAMENTE TENGO QUE PONER UN VALOR POR DEFAULT SI NO ENCUETRO provinciasOrigen
+                // PARA EL 2do PARAMETRO DEL getString, TENGO QUE PONER OBLIGADAMENTE UN VALOR POR DEFAULT ("false") SI NO ENCUETRO provinciasOrigen
                 // ENTONCES APROVECHO ESO PARA CHEQUEAR QUE SI ES DISTINTO DE FALSE, SIGNIFICA QUE HAY DATO PARA provinciasOrigen
                 if (!spEdicion.getString("provinciaOrigen", "false").equals("false")) {
                     spProvinciasOrigen.setSelection(adapter.getPosition(spEdicion.getString("provinciaOrigen", "false")));
@@ -468,7 +515,7 @@ public class NuevoViaje extends AppCompatActivity {
                 String query = "";
 
                 query += "INSERT INTO Viajes";
-                query += "(ConductorEmail,";
+                query += "(ConductorId,";
                 query += "ProvinciaOrigenId,";
                 query += "CiudadOrigenId,";
                 query += "ProvinciaDestinoId,";
@@ -478,7 +525,7 @@ public class NuevoViaje extends AppCompatActivity {
                 query += "EstadoViaje)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + nuevoViaje.getEmailConductor() + "',";
+                query +=  "'" + idUsuario + "',";
                 query +=  "'" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
@@ -501,7 +548,8 @@ public class NuevoViaje extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El nuevo viaje ha sido creado!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -518,7 +566,7 @@ public class NuevoViaje extends AppCompatActivity {
 
                 String query = "";
                 query += "UPDATE Viajes SET ";
-                query += "ConductorEmail='" + nuevoViaje.getEmailConductor() + "',";
+                query += "ConductorId='" + idUsuario + "',";
                 query += "ProvinciaOrigenId='" + nuevoViaje.getProvOrigen().getIdProvincia()+ "',";
                 query += "CiudadOrigenId='" + nuevoViaje.getCiudadOrigen().getIdCiudad()+ "',";
                 query += "ProvinciaDestinoId='" + nuevoViaje.getProvDestino().getIdProvincia() + "',";
@@ -538,7 +586,10 @@ public class NuevoViaje extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
-            if (resultado) Toast.makeText(contexto, "El viaje fue actualizado correctametne", Toast.LENGTH_LONG).show();
+            if (resultado) {
+                Toast.makeText(contexto, "El viaje fue actualizado correctamente", Toast.LENGTH_LONG).show();
+                finish();
+            }
             else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
         }
     }

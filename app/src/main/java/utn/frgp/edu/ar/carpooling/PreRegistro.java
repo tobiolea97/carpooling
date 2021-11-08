@@ -43,9 +43,9 @@ public class PreRegistro extends AppCompatActivity {
         // Asignacion de variables
         contexto = this;
         spRol = (Spinner) findViewById(R.id.spPreRegistroRol);
-        btnContinuar = (Button) findViewById(R.id.btnRegistroContinuar);
-        etEmail = (EditText) findViewById(R.id.etPreRegistroEmail);
-        etDNI = (EditText) findViewById(R.id.etPreRegistroDni);
+        btnContinuar = (Button) findViewById(R.id.btnEditarPerfilInformacionPersonal);
+        etEmail = (EditText) findViewById(R.id.etEditarPerfilNombre);
+        etDNI = (EditText) findViewById(R.id.etEditarPerfilDni);
         tvError = (TextView) findViewById(R.id.tvPreRegistroError);
 
         etEmail.setText("tobiolea97@gmail.com");

@@ -111,12 +111,12 @@ public class Validadores {
 
     }
 
-    public static boolean validarPassword(boolean flag, EditText password) {
-        if(password.getText().toString().equals("")) {
+    public static boolean validarPassword(boolean flag, EditText password, boolean obligatorio) {
+        if(password.getText().toString().equals("") && obligatorio) {
             password.setError("Campo obligatorio");
             return false;
         }
-        if(password.getText().toString().length() < 8) {
+        if(password.getText().toString().length() < 8 && obligatorio) {
             password.setError("La contraseña debe tener al menos 8 caracteres");
             return false;
         }
@@ -124,12 +124,46 @@ public class Validadores {
             password.setError("Este campo admite un maximo de 20 characteres");
             return false;
         }
+        if(password.getText().toString().length() >= 20) {
+            password.setError("Este campo admite un maximo de 20 characteres");
+            return false;
+        }
+
+        boolean caracterNoValido = false;
+        int caracter = 0;
+        for(int i = 0; i<password.getText().toString().length();i++){
+
+           caracter = password.getText().toString().charAt(i);
+
+           if(caracter <47){
+               caracterNoValido = true;
+           }
+           else if( caracter > 57 &&caracter < 64){
+               caracterNoValido = true;
+           }
+           else if(caracter>90 && caracter<97){
+               caracterNoValido = true;
+           }
+           else if(caracter>122){
+               caracterNoValido = true;
+           }
+
+           if(caracter == 22 || caracter == 33 || caracter == 44 || caracter == 46 || caracter == 35 || caracter == 36 || caracter == 38){
+               caracterNoValido = false;
+           }
+        }
+
+        if(caracterNoValido==true){
+            password.setError("Este campo admite solo caracteres alfanumericos y _.,!#$&");
+            return false;
+        }
+
         password.setError(null);
         return flag;
     }
 
-    public static boolean validarReingresoPassword(boolean flag, EditText reingresoPassword, EditText password) {
-        if(reingresoPassword.getText().toString().equals("")) {
+    public static boolean validarReingresoPassword(boolean flag, EditText reingresoPassword, EditText password, boolean obligatorio) {
+        if(reingresoPassword.getText().toString().equals("") && obligatorio) {
             reingresoPassword.setError("Campo obligatorio");
             return false;
         }

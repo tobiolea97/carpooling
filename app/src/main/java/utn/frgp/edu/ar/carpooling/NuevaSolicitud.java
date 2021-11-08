@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -88,7 +91,14 @@ public class NuevaSolicitud extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
 
         provDestSelecc = null;
@@ -111,6 +121,56 @@ public class NuevaSolicitud extends AppCompatActivity {
         fechaViaje.requestFocus();
 
         new NuevaSolicitud.CargarSpinnersProvincias().execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+      /*  if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }*/
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
     }
 
     public void onClickFechaViaje(View view) {
@@ -139,7 +199,7 @@ public class NuevaSolicitud extends AppCompatActivity {
 
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nuevaSolicitud.setEmailConductor( spSesion.getString("Email","No hay datos"));
+        nuevaSolicitud.setIdConductor(Integer.parseInt(spSesion.getString("Id","No hay datos")));
         nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setCiudadOrigen(itemsCiudadesOrigen.get(spCiudadesOrigen.getSelectedItemPosition()));
         nuevaSolicitud.setProvDestino(itemsProvincias.get(spProvinciasDestino.getSelectedItemPosition()));
@@ -401,7 +461,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                 String query = "";
 
                 query += "INSERT INTO Solicitudes";
-                query += "(PasajeroEmail,";
+                query += "(PasajeroId,";
                 query += "ProvinciaOrigenId,";
                 query += "CiudadOrigenId,";
                 query += "ProvinciaDestinoId,";
@@ -411,7 +471,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                 query += "EstadoSolicitud)";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + nuevaSolicitud.getEmailConductor() + "',";
+                query +=  "'" + nuevaSolicitud.getIdConductor() + "',";
                 query +=  "'" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
                 query +=  "'" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
                 query +=  "'" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";

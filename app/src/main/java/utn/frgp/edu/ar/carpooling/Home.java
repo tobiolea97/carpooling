@@ -1,11 +1,20 @@
 package utn.frgp.edu.ar.carpooling;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +30,13 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 public class Home extends AppCompatActivity {
 
     TextView Info, cantidadCalificaciones;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     Context context;
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
+    private final static String CHANNEL_ID="NOTIFICACION";
+    public final static int NOTIFICACION_ID=0;
+    private PendingIntent pendingIntent;
     GridView grillaViajes;
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
     @Override
@@ -43,20 +55,30 @@ public class Home extends AppCompatActivity {
         cantidadCalificaciones.setText("");
         btnRedireccionarAMisViajes=findViewById(R.id.btnHomeRedireccionarAViajes);
         btnRedireccionarABusqueda=findViewById(R.id.btnHomeRedireccionarABusqueda);
-        Info = findViewById(R.id.tvPreRegistroTitulo);
+        Info = findViewById(R.id.tvEditarPerfilInformacionPersona);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        idUsuario = spSesion.getString("Id","No hay datos");
+
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(rolUsuario.equals("CON") ? "Home conductor" : "Home pasajero");
+
         if(rolUsuario.equals("CON")){
             btnRedireccionarAMisViajes.setText("Mis viajes");
             btnRedireccionarABusqueda.setText("Buscar solicitudes");
         }
         else{
-            btnRedireccionarAMisViajes.setText("Mis solicitudes");
+            btnRedireccionarAMisViajes.setText("Mis viajes");
             btnRedireccionarABusqueda.setText("Buscar viajes");
 
         }
@@ -66,14 +88,21 @@ public class Home extends AppCompatActivity {
         new Home.CargarCalificaciones().execute();
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
+
+        new Home.VerificarNotificacion().execute();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
 
-
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
 
         return true;
     }
@@ -82,24 +111,51 @@ public class Home extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
-        if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajes.class);
+
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.crearViaje) {
-            finish();
-            Intent intent = new Intent(this, NuevoViaje.class);
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.cerrarSesion) {
 
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
@@ -115,19 +171,8 @@ public class Home extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem misviajes = menu.findItem(R.id.misViajes);
-        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
-
-        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
-
-        
-
-        if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
-            CrearViaje.setVisible(false);
-        }
-
-
+        MenuItem miPerfil = menu.findItem(R.id.miperfil);
+        miPerfil.setVisible(false);
 
         return true;
     }
@@ -138,6 +183,7 @@ public class Home extends AppCompatActivity {
     }
 
     public void onClickBuscar (View view) {
+
         Intent intent= new Intent(context, Buscar.class);
         startActivity(intent);
     }
@@ -152,10 +198,7 @@ public class Home extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT AVG(Calificacion) as promedio FROM Calificaciones WHERE UsuarioEmail = '";
-                query += emailUsuario;
-                query += " ' AND UsuarioRol = '";
-                query += rolUsuario + "'";
+                query += "SELECT AVG(Calificacion) as promedio FROM Calificaciones WHERE UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -198,10 +241,7 @@ public class Home extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(Calificacion) as cantidad FROM Calificaciones WHERE UsuarioEmail = '";
-                query += emailUsuario;
-                query += " ' AND UsuarioRol = '";
-                query += rolUsuario + "'";
+                query += "SELECT COUNT(Calificacion) as cantidad FROM Calificaciones WHERE UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -256,12 +296,13 @@ public class Home extends AppCompatActivity {
                 query += " 	ON ci1.Id = vj.CiudadOrigenId";
                 query += " LEFT JOIN Ciudades ci2";
                 query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : "";
-                query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorEmail = '" + emailUsuario + "' AND" : "";
+                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND" : "";
+                query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorId = '" + idUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " AND FechaHoraInicio > now()";
                 query += " ORDER BY FechaHoraInicio ASC";
-                query += " LIMIT 3";
+                if(rolUsuario.equals("CON"))
+                    query += " LIMIT 3";
 
                 return st.executeQuery(query);
 
@@ -298,6 +339,95 @@ public class Home extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+
+
+    private class VerificarNotificacion extends AsyncTask<Void,Integer, ResultSet> {
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT 	*";
+                query += " FROM Notificaciones noti";
+                query += " 	Where	noti.UsuarioId = " + idUsuario;
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+
+                boolean verificacion=false;
+                while (resultados.next()) {
+                verificacion=true;
+
+
+                }
+
+
+
+               if(verificacion){
+                   setPendingIntent();
+                   CrearAlertaChannel();
+                   CrearAlerta();
+
+               }
+
+
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void setPendingIntent(){
+        Intent intent = new Intent(context,Notificaciones.class);
+        TaskStackBuilder stackBuilder= TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(Notificaciones.class);
+        stackBuilder.addNextIntent(intent);
+        pendingIntent= stackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);
+
+    }
+    private void CrearAlertaChannel(){
+     if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+         CharSequence name= "Notificacion";
+         NotificationChannel notificationChannel= new NotificationChannel(CHANNEL_ID,name, NotificationManager.IMPORTANCE_DEFAULT);
+         NotificationManager notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+         notificationManager.createNotificationChannel(notificationChannel);
+
+
+     }
+
+    }
+
+    private void CrearAlerta(){
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID);
+        builder.setSmallIcon(R.mipmap.car);
+        builder.setContentTitle("Carpooling");
+        builder.setContentText("Tienes una notificacion");
+        builder.setColor(Color.BLUE);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setLights(Color.MAGENTA,1000,1000);
+        builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManagerCompat notificationManagerCompat= NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.notify(NOTIFICACION_ID,builder.build());
+
     }
 
 }

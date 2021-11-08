@@ -13,6 +13,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".CancelarViajePasajero"
+            android:exported="true" />
+        <activity
+            android:name=".MisViajesModoPasajero"
+            android:exported="true" />
+        <activity
+            android:name=".EditarPerfil"
+            android:exported="true" />
+        <activity
+            android:name=".PeticionDeViaje"
+            android:exported="true" />
+        <activity
+            android:name=".Notificaciones"
+            android:exported="true"
+            android:parentActivityName=".Home">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home" />
+        </activity>
+        <activity
             android:name=".NuevaSolicitud"
             android:exported="true" />
         <activity

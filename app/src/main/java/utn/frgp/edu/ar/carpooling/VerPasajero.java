@@ -13,6 +13,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -42,7 +44,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
-    String NroViaje,EmailVerUsuario,RolVerUsuario,EstadoViaje;
+    String NroViaje,EmailVerUsuario,RolVerUsuario,EstadoViaje,IdVerUsuario,idUsuario;
     String nombreUsuarioLog, apellidoUsuarioLog, emailUsuarioLog, rolUsuarioLog;
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
@@ -66,11 +68,21 @@ public class VerPasajero extends AppCompatActivity {
         apellidoUsuarioLog = spSesion.getString("Apellido","No hay datos");
         emailUsuarioLog = spSesion.getString("Email","No hay datos");
         rolUsuarioLog = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuarioLog+" "+ apellidoUsuarioLog +" Rol: "+ rolUsuarioLog);
+        idUsuario = spSesion.getString("Id","No hay datos");
+
+        String Rol="";
+        if(rolUsuarioLog.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuarioLog+" "+ apellidoUsuarioLog+" Rol: "+Rol);
 
 
         NroViaje=getIntent().getStringExtra("NroViaje");
         EmailVerUsuario=getIntent().getStringExtra("EmailVerUsuario");
+        IdVerUsuario=getIntent().getStringExtra("IdVerUsuario");
         RolVerUsuario=getIntent().getStringExtra("RolVerUsuario");
         EstadoViaje = getIntent().getStringExtra("EstadoViaje");
         Nombre=findViewById(R.id.TxtVpNombre);
@@ -133,10 +145,6 @@ public class VerPasajero extends AppCompatActivity {
 
 
         new CargarDatos().execute();
-        new CargarCalificaciones().execute();
-        new ContarCalificaciones().execute();
-        new CargarViajeSeleccionado().execute();
-        new VerificarCalificacion().execute(); //VERIFICA SI YA FUE DADA UNA CALIFICACION PARA EL USUARIO
 
         if(EstadoViaje.equals("En Espera") || EstadoViaje.equals("Cancelado")){
             Rating.setIsIndicator(true);
@@ -168,18 +176,62 @@ public class VerPasajero extends AppCompatActivity {
             }*/
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+
+        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        if(id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+        if(id == R.id.misViajes) {
+            finish();
+            Intent intent = new Intent(this, MisViajes.class);
+            startActivity(intent);
+        }
+
+
+        if(id == R.id.crearViaje) {
+            finish();
+            Intent intent = new Intent(this, NuevoViaje.class);
+            startActivity(intent);
+        }
+        if(id == R.id.notificaciones) {
+            finish();
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void ClickDesAsignarPasajero(View view) throws ExecutionException, InterruptedException {
 
-
         new CancelarPasajero().execute();
-        Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-        pagVerViaje.putExtra("NroViaje",NroViaje);
-        pagVerViaje.putExtra("EstadoViaje", EstadoViaje);
-        startActivity(pagVerViaje);
-
-
+        
     }
 
     public void ClickVolver(View view){
@@ -195,16 +247,8 @@ public class VerPasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " SELECT Usuarios.nombre,";
-                query += "Usuarios.Apellido,";
-                query += "Usuarios.Telefono,";
-                query += "Usuarios.Dni,";
-                query += "Roles.Id as IdRol,";
-                query += "Roles.Nombre as NombreRol";
-                query += " FROM `Usuarios`";
-                query += " INNER JOIN Roles";
-                query += " ON Usuarios.Rol = Roles.Id";
-                query += " Where Usuarios.Email='" + EmailVerUsuario + "' AND Usuarios.Rol = '" + RolVerUsuario + "'" ;
+                query += " CALL InfoParaVerPasajero('" + IdVerUsuario + "'," + NroViaje + ",'" + idUsuario + "');";
+
                 return st.executeQuery(query);
 
             } catch (ClassNotFoundException | SQLException e) {
@@ -218,6 +262,9 @@ public class VerPasajero extends AppCompatActivity {
             super.onPostExecute(resultados);
             usuarioACalificar = new Usuario();
             try {
+                Float promedio = 0f;
+                Integer cantidad = null;
+                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
                 while (resultados.next()) {
 
                     usuarioACalificar.setNombre(resultados.getString("Nombre"));
@@ -228,143 +275,19 @@ public class VerPasajero extends AppCompatActivity {
                     r.setNombre(resultados.getString("NombreRol"));
                     usuarioACalificar.setRol(r);
                     usuarioACalificar.setDni(resultados.getString("Dni"));
+                    promedio = resultados.getFloat("Promedio");
+                    cantidad = resultados.getInt("cantidad");
+                    CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No Viajo con ningun conductor");
 
                     Nombre.setText(usuarioACalificar.getNombre() + " " + usuarioACalificar.getApellido());
                     Telefono.setText(usuarioACalificar.getTelefono());
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+                    Rating.setRating(promedio);
 
-    private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
+                    calificacionInicial=false;
 
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-
-                String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal Where cal.UsuarioEmail='" + EmailVerUsuario + "' AND UsuarioRol = '" + RolVerUsuario + "'";
-
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                Float promedio = null;
-                while (resultados.next()) {
-                    promedio = resultados.getFloat("promedio");
-                }
-
-                if(promedio == 0 ) return;
-
-                //Le agrego el promedio al rating para que pueda mostrarlo
-                Rating.setRating(promedio);
-
-                calificacionInicial=false;
-
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class ContarCalificaciones extends AsyncTask<Void,Integer,ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-
-                String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal Where cal.UsuarioEmail='" + EmailVerUsuario + "' AND UsuarioRol = '" + RolVerUsuario + "'";
-
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                Integer cantidad = null;
-                while (resultados.next()) {
-                    cantidad = resultados.getInt("cantidad");
-                }
-
-                CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " Conductores lo calificaron" : "No Viajo con ningun conductor");
-
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class CargarViajeSeleccionado extends AsyncTask<Void,Integer,ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-                String query = "";
-                query += " SELECT 	vj.FechaHoraInicio,";
-                query += "  	vj.Id,";
-                query += " 		    pr1.Nombre ProvinciaOrigen,";
-                query += "          ci1.Nombre CiudadOrigen,";
-                query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino";
-                query += " FROM Viajes vj";
-                query += " LEFT JOIN Provincias pr1";
-                query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
-                query += " LEFT JOIN Provincias pr2";
-                query += " 	ON pr2.Id = vj.ProvinciaDestinoId";
-                query += " LEFT JOIN Ciudades ci1";
-                query += " 	ON ci1.Id = vj.CiudadOrigenId";
-                query += " LEFT JOIN Ciudades ci2";
-                query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += " 	Where	vj.Id='" + NroViaje + "'";
-                query += " ORDER BY FechaHoraInicio ASC";
-
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
-
-                while (resultados.next()) {
+                    if(resultados.getFloat("IdCalificacion") > 0 ) {
+                        Rating.setIsIndicator(true);
+                    }
 
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));
@@ -372,21 +295,19 @@ public class VerPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+
                     itemsGrilla.add(item);
                 }
-
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaVerPasajero.setAdapter(simpleAdapter);
-
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 
     private class CancelarPasajero extends AsyncTask<Void,Integer,Boolean> {
 
@@ -400,7 +321,7 @@ public class VerPasajero extends AppCompatActivity {
                 query += " UPDATE 	PasajerosPorViaje vj";
                 query += "  	    SET";
                 query += " 		    EstadoPasajero='Rechazado'";
-                query += " 	Where	vj.UsuarioEmail='" + EmailVerUsuario + "' and vj.ViajeId='" + NroViaje + "'";
+                query += " 	Where	vj.UsuarioId='" + IdVerUsuario + "' and vj.ViajeId='" + NroViaje + "'";
 
 
                 int resultado = st.executeUpdate(query);
@@ -424,8 +345,7 @@ public class VerPasajero extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailVerUsuario);
-                Noti.setUsuarioRolId(RolVerUsuario);
+                Noti.setUsuarioId(Integer.parseInt(IdVerUsuario));
                 Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
@@ -437,6 +357,7 @@ public class VerPasajero extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Toast.makeText(contexto, "El  Pasajero a sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -454,18 +375,16 @@ public class VerPasajero extends AppCompatActivity {
                 Statement st = con.createStatement();
                 String query = "";
                 query += "INSERT INTO `Calificaciones` ";
-                query += "(UsuarioEmail, ";
-                query += "UsuarioRol, ";
-                query += "CalificadorEmail, ";
-                query += "CalificadorRol, ";
+                query += "(UsuarioId, ";
+                //query += "UsuarioRol, ";
+                query += "CalificadorId, ";
+                //query += "CalificadorRol, ";
                 query += "ViajeId, ";
                 query += "Calificacion) ";
                 query += "VALUES";
                 query += "(";
-                query +=  "'" + EmailVerUsuario+ "',";
-                query +=  "'" + RolVerUsuario+ "',";
-                query +=  "'" + emailUsuarioLog+ "',";
-                query +=  "'" + rolUsuarioLog+ "',";
+                query +=  "'" + IdVerUsuario + "',";
+                query +=  "'" + idUsuario + "',";
                 query +=  "'" + NroViaje+ "',";
                 query +=  "'" + CalificacionDada+ "'";
                 query += ")";
@@ -484,6 +403,7 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
@@ -496,12 +416,18 @@ public class VerPasajero extends AppCompatActivity {
 
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioEmail(EmailVerUsuario);
-                Noti.setUsuarioRolId(RolVerUsuario);
+                Noti.setUsuarioId(Integer.parseInt(IdVerUsuario));
                 Noti.setMensaje("El usuario " + nombreUsuarioLog + " " + apellidoUsuarioLog + "te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
 
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Rating.setIsIndicator(true);
                 Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
             }else{
@@ -509,42 +435,5 @@ public class VerPasajero extends AppCompatActivity {
             }
         }
     }
-
-    private class VerificarCalificacion extends AsyncTask<Void,Integer,ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-
-                String query = "";
-                query += "SELECT Id FROM Calificaciones WHERE UsuarioEmail = '" + EmailVerUsuario + "' AND UsuarioRol = '" + RolVerUsuario + "' AND CalificadorEmail = '" + emailUsuarioLog +"' AND CalificadorRol = '" + rolUsuarioLog + "'";
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-
-                while (resultados.next()) {
-                    Rating.setIsIndicator(true);
-                }
-
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 }

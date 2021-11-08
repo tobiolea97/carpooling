@@ -29,7 +29,7 @@ public class MisViajes extends AppCompatActivity {
     Spinner spFiltroCiudDestino;
     Spinner spFiltroEstado;
     GridView grillaViajes;
-    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario, idUsuario;
     Context contexto;
     String filterDate = "";
     List<Provincia> itemsProvincias;
@@ -51,7 +51,17 @@ public class MisViajes extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+rolUsuario);
+        idUsuario = spSesion.getString("Id","No hay datos");
+
+        String Rol="";
+        if(rolUsuario.equals("CON")){
+            Rol="Conductor";
+        }else{
+            Rol="Pasajero";
+        }
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -67,7 +77,7 @@ public class MisViajes extends AppCompatActivity {
 
                 String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
-               Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
+                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
                 pagVerViaje.putExtra("NroViaje",part3);
                 pagVerViaje.putExtra("EstadoViaje", estadoViaje);
                 startActivity(pagVerViaje);
@@ -141,7 +151,16 @@ public class MisViajes extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
+
         return true;
     }
 
@@ -149,50 +168,84 @@ public class MisViajes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
 
-        if(id == R.id.crearViaje) {
-            finish();
-            Intent intent = new Intent(this, NuevoViaje.class);
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.cerrarSesion) {
+
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
             editor.clear();
             editor.commit();
-
             finish();
-
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
 
         return super.onOptionsItemSelected(opcionMenu);
     }
+
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem misviajes = menu.findItem(R.id.misViajes);
-        MenuItem CrearViaje = menu.findItem(R.id.crearViaje);
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        String rol = sp.getString("Rol","No hay datos");
 
-        //Cuando estemos de pasajeros le agregamos mas pero esta es la forma en el cual se puede ocultar
-
-        if(!rolUsuario.equals("CON")){
-            misviajes.setVisible(false);
-            CrearViaje.setVisible(false);
+        if(sp.equals("CON")){
+            MenuItem currentOption = menu.findItem(R.id.misViajes);
+            currentOption.setVisible(false);
         }
-
-
 
         return true;
     }
 
     public void ClickAgregarNuevoViaje(View view){
+
+        SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putBoolean("modoEdicion", false);
+        editor.commit();
+
         Intent i = new Intent(this,NuevoViaje.class);
         startActivity(i);
     }
@@ -336,7 +389,7 @@ public class MisViajes extends AppCompatActivity {
         query += " 	ON ci1.Id = vj.CiudadOrigenId";
         query += " LEFT JOIN Ciudades ci2";
         query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioEmail = '" + emailUsuario + "' AND" : " WHERE vj.ConductorEmail = '" + emailUsuario + "'";
+        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' " : " WHERE vj.ConductorId = '" + idUsuario + "' ";
 
         if (!filtros.isEmpty()) {
             if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {
@@ -503,7 +556,7 @@ public class MisViajes extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
+        //new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
 
     }
 }
