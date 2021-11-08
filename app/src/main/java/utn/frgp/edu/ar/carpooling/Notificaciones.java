@@ -66,24 +66,25 @@ public class Notificaciones extends AppCompatActivity {
         notificationManagerCompat.cancel(NOTIFICACION_ID);
 
 
-        /*
+
   ArrayList<String> itemListt= new ArrayList<String>();
         itemListt.add("Item1"+"-P");
         itemListt.add("Item2"+"-L");
         itemListt.add("Item33"+"-P");
-/*String [] itemList= new String[]{
+        itemListt.add("Item333"+"-P");
+String [] itemList= new String[]{
 "Item1",
 "Item2",
 "Item3",
 
-};*/
+};
 
 
-//ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
+ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
 
-  //  @NonNull
-    //@Override
-   /* public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    @NonNull
+    @Override
+   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         View view=super.getView(position, convertView, parent);
         for (String o : itemListt){
@@ -92,35 +93,35 @@ public class Notificaciones extends AppCompatActivity {
             String[] parts = Texto.split("-");
             String part2 = parts[1];
 
-            if(position==1){
-//System.out.println("pasa una vez");
-             //   view.setBackgroundColor(getResources().getColor(
-               //         android.R.color.holo_blue_dark
-                //));
+            if(itemListt.get(position).contains("L")){
+System.out.println("pasa una vez");
+                view.setBackgroundColor(getResources().getColor(
+                        android.R.color.holo_blue_dark
+                ));
             }
             System.out.println("2 pasa una vez");
         }
-     //  if(/*position%2==1*///itemListt.toString().equals("Item1")){
+      /* if(){
 
 
-       // }else{
+        }else{
 
-         //   view.setBackgroundColor(getResources().getColor(
-           //         android.R.color.black
-          //  ));
-        //}*/
-
-
-
-//return view;
-  //  }
-//};
+            view.setBackgroundColor(getResources().getColor(
+                    android.R.color.black
+            ));
+        }*/
 
 
-//        LvNotificacion.setAdapter(arrayAdapter);
 
-        new CargarNotificaciones().execute();
-        new CargarNotificacionesnoLeidos().execute();
+return view;
+    }
+};
+
+
+        LvNotificacionLeidos.setAdapter(arrayAdapter);
+
+     //  new CargarNotificaciones().execute();
+       // new CargarNotificacionesnoLeidos().execute();
     }
 
     @Override
