@@ -341,8 +341,6 @@ public class Home extends AppCompatActivity {
         }
     }
 
-
-
     private class VerificarNotificacion extends AsyncTask<Void,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(Void... voids) {
