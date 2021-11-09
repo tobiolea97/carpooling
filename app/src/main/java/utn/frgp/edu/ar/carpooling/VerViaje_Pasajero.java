@@ -1,16 +1,22 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,10 +27,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
+import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
 import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
+import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class VerViaje_Pasajero extends AppCompatActivity {
 
@@ -36,7 +45,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
     TextView Nombre,Telefono,CantidadCalificaciones;
     RatingBar Rating;
     GridView grillaVerViaje;
-    Button botonDesAsignarUsuario;
+    Button botonQuieroUnirme;
     Button botonVolver;
 
     float CalificacionDada;
@@ -69,78 +78,130 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         Rating=findViewById(R.id.RBVpPasajero);
         CantidadCalificaciones=findViewById(R.id.TxtVPViajocon);
         grillaVerViaje=(GridView) findViewById(R.id.GrVpViaje);
-        botonDesAsignarUsuario =findViewById(R.id.BtnVpCancelar);
+        botonQuieroUnirme =findViewById(R.id.BtnVpQuieroUnirme);
         botonVolver = findViewById(R.id.btnVpVolver);
 
-        //new CargarViajeSeleccionado().execute();
+        calificacionInicial = true;
+        CalificacionDada = 0;
+
+        String pantallaPrevia = getIntent().getStringExtra("pPantallaPrev");
+
+        if(pantallaPrevia.equals("pBuscar")){
+            Rating.setIsIndicator(true);
+        }
+        else{
+            if(EstadoViaje.equals("Finalizado")){
+                botonQuieroUnirme.setVisibility(View.INVISIBLE);
+            }
+            if(EstadoViaje.equals("En Espera")){
+                Rating.setIsIndicator(true);
+                botonQuieroUnirme.setText("Quiero Abandonar el viaje");
+            }
+            if(EstadoViaje.equals("Cancelado")){
+                Rating.setIsIndicator(true);
+                botonQuieroUnirme.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        Rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                float nroEstrellas=0;
+                String calificacion= String.valueOf(rating);
+
+                if(calificacion.substring(1).equals(".0")){
+                    calificacion = calificacion.substring(0,1);
+                }
+
+                AlertDialog.Builder vtnConfirmacion = new AlertDialog.Builder(contexto);
+                vtnConfirmacion.setMessage("Esta seguro que quiere calificar al pasajero con "+ calificacion + " estrellas?");
+                vtnConfirmacion.setCancelable(false);
+                vtnConfirmacion.setTitle("Confirmacion de Calificacion");
+
+                vtnConfirmacion.setPositiveButton("Si",new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String calificacion= String.valueOf(rating);
+                        if(calificacion.substring(1).equals(".0")){
+                            calificacion = calificacion.substring(0,1);
+                        }
+                        CalificacionDada = Float.valueOf(calificacion);
+                        new CalificarUsuario().execute();
+
+                    }
+                });
+
+                vtnConfirmacion.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                if(calificacionInicial == false){
+                    AlertDialog alerta = vtnConfirmacion.create();
+                    alerta.show();
+                }
+
+            }
+        });
+
         new CargarDatos().execute();
     }
 
-    private class CargarViajeSeleccionado extends AsyncTask<Void,Integer, ResultSet> {
+    public void onClickQuieroUnirme(View view){
+        AlertDialog.Builder vtnConfirmacion = new AlertDialog.Builder(contexto);
 
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-                String query = "";
-                query += " SELECT 	vj.FechaHoraInicio,";
-                query += "  	vj.Id,";
-                //query += "  	vj.ConductorId,";
-                query += " 		    pr1.Nombre ProvinciaOrigen,";
-                query += "          ci1.Nombre CiudadOrigen,";
-                query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino,";
-                query += "          vj.FechaHoraFinalizacion,";
-                query += "          vj.CantidadPasajeros,";
-                query += "          vj.EstadoViaje";
-                query += " FROM Viajes vj";
-                query += " LEFT JOIN Provincias pr1";
-                query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
-                query += " LEFT JOIN Provincias pr2";
-                query += " 	ON pr2.Id = vj.ProvinciaDestinoId";
-                query += " LEFT JOIN Ciudades ci1";
-                query += " 	ON ci1.Id = vj.CiudadOrigenId";
-                query += " LEFT JOIN Ciudades ci2";
-                query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += " 	Where	vj.Id='" + NroViaje + "'";
-                query += " ORDER BY FechaHoraInicio ASC";
+        if(botonQuieroUnirme.getText().equals("Quiero unirme al viaje")){
+            vtnConfirmacion.setMessage("Esta seguro que quiere enviar una peticion para unirse al viaje?");
+            vtnConfirmacion.setCancelable(false);
+            vtnConfirmacion.setTitle("Confirmacion de Asignacion a viaje");
 
-                return st.executeQuery(query);
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
+            vtnConfirmacion.setPositiveButton("Si",new DialogInterface.OnClickListener(){
 
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
-
-                while (resultados.next()) {
-                    Map<String, String> item = new HashMap<String, String>();
-                    item.put("NroViaje", resultados.getString("Id"));
-                    item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
-                    item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
-                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
-                    item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado", resultados.getString("EstadoViaje"));
-                    itemsGrilla.add(item);
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new GenerarPeticionViaje().execute();
                 }
+            });
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
-                SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
-                grillaVerViaje.setAdapter(simpleAdapter);
-
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            vtnConfirmacion.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
         }
+        else{
+            vtnConfirmacion.setMessage("Esta seguro que quiere abandonar el viaje? (No podrá volver a ser incluido)");
+            vtnConfirmacion.setCancelable(false);
+            vtnConfirmacion.setTitle("Confirmacion de Abandono de viaje");
+
+            vtnConfirmacion.setPositiveButton("Si",new DialogInterface.OnClickListener(){
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new CancelarPasajero().execute();
+                }
+            });
+
+            vtnConfirmacion.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+
+        AlertDialog alerta = vtnConfirmacion.create();
+        alerta.show();
+    }
+
+    public void ClickVolver(View view){
+        finish();
     }
 
     private class CargarDatos extends AsyncTask<Void,Integer, ResultSet> {
@@ -213,6 +274,183 @@ public class VerViaje_Pasajero extends AppCompatActivity {
             }
             catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class CalificarUsuario extends AsyncTask<Void,Integer,Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += "INSERT INTO `Calificaciones` ";
+                query += "(UsuarioId, ";
+                //query += "UsuarioRol, ";
+                query += "CalificadorId, ";
+                //query += "CalificadorRol, ";
+                query += "ViajeId, ";
+                query += "Calificacion) ";
+                query += "VALUES";
+                query += "(";
+                query +=  "'" + idUsuarioViaje + "',";
+                query +=  "'" + idUsuarioLog + "',";
+                query +=  "'" + NroViaje+ "',";
+                query +=  "'" + CalificacionDada+ "'";
+                query += ")";
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+
+                String calificacion= String.valueOf(CalificacionDada);
+                if(calificacion.substring(1).equals(".0")){
+                    calificacion = calificacion.substring(0,1);
+                }
+
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
+                Noti.setMensaje("El usuario " + nombreUsuario + " " + apellidoUsuario + "te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Rating.setIsIndicator(true);
+                Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(contexto, "No se pudo calificar al usuario intente nuevamente.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class GenerarPeticionViaje extends AsyncTask<Void,Integer,Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += "INSERT INTO `PasajerosPorViaje` ";
+                query += "(ViajeId, ";
+                query += "UsuarioId, ";
+                query += "EstadoPasajero, ";
+                query += "cantAcompañantes) ";
+                query += "VALUES";
+                query += "(";
+                query +=  "'" + NroViaje + "',";
+                query +=  "'" + idUsuarioLog + "',";
+                query +=  "'Pendiente',";
+                query +=  "'0'";
+                query += ")";
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto,"Se generó correctamente la peticion. Te avisaremos cuando el conductor te conteste.", Toast.LENGTH_LONG).show();
+                botonQuieroUnirme.setEnabled(false);
+            }else{
+                Toast.makeText(contexto, "No se pudo generar la peticion intente nuevamente.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class CancelarPasajero extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	PasajerosPorViaje vj";
+                query += "  	    SET";
+                query += " 		    EstadoPasajero='Rechazado'";
+                query += " 	Where	vj.UsuarioId='" + idUsuarioLog + "' and vj.ViajeId='" + NroViaje + "'";
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioLog));
+                Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(contexto, "Has sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                finish();
+            }else{
+                Toast.makeText(contexto, "No se pudo desasignar del viaje intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
