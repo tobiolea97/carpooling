@@ -215,8 +215,6 @@ public class Ver_Busqueda extends AppCompatActivity {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 CantAsientos.setAdapter(adapter);
-
-
             }
             catch (Exception e) {
                 e.printStackTrace();

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -53,24 +54,33 @@ public class MisViajesModoPasajero extends AppCompatActivity {
         GrMisViajesModoPasajero.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String nroViaje = ((TextView)view.findViewById(R.id.tvGridItemViajeNroViaje)).getText().toString();
+                String estadoViaje = ((TextView)view.findViewById(R.id.tvGridItemEstadoViaje)).getText().toString();
+                String origenHora = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString();
+                String origenFecha = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString();
+                String origenProvinciaCiudad = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigen)).getText().toString();
+                String destinoProvinciaCiudad = ((TextView)view.findViewById(R.id.tvGridItemViajeDestino)).getText().toString();
 
-
-                String Texto="";
-                Texto=adapterView.getItemAtPosition(position).toString();
-
-                String[] parts = Texto.split("NroViaje=");
-                String part2 = parts[1];
-
-                //Para obtener el id del viaje
-                String[] partspt2 = part2.split(",");
-                String part3 = partspt2[0]; // 123
-
-                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
                 if(estadoViaje.equals("Aceptado")||estadoViaje.equals("Pendiente")) {
                     Intent PagCancelarViaje = new Intent(contexto, CancelarViajePasajero.class);
-                    PagCancelarViaje.putExtra("NroViaje", part3);
+                    PagCancelarViaje.putExtra("NroViaje", nroViaje);
                     PagCancelarViaje.putExtra("EstadoViaje", estadoViaje);
                     startActivity(PagCancelarViaje);
+                } else if (estadoViaje.equals("En Espera")) {
+                    SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("fechaInicio", origenFecha);
+                    editor.putString("horaInicio", origenHora);
+                    editor.putString("ciudadOrigen", origenProvinciaCiudad.split(",")[0].trim());
+                    editor.putString("provinciaOrigen", origenProvinciaCiudad.split(",")[1].trim());
+                    editor.putString("ciudadDestino", destinoProvinciaCiudad.split(",")[0].trim());
+                    editor.putString("provinciaDestino", destinoProvinciaCiudad.split(",")[1].trim());
+                    editor.putInt("idViaje", Integer.parseInt(nroViaje));
+                    editor.putInt("cantPasajeros", 2);
+                    editor.putBoolean("modoEdicion", true);
+                    editor.commit();
+                    Intent pagEditarSolicitud = new Intent(contexto, NuevaSolicitud.class);
+                    startActivity(pagEditarSolicitud);
                 }
 
                 //Para viaje finalizado
@@ -122,7 +132,6 @@ public class MisViajesModoPasajero extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
-
                 while (resultados.next()) {
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));

@@ -258,8 +258,6 @@ public class Buscar extends AppCompatActivity {
             }
         });
 
-
-
         crearFiltroDialog();
 
         if(rolUsuario.equals("PAS")){
