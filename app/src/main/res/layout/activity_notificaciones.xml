@@ -22,7 +22,7 @@
                 android:layout_width="161dp"
                 android:layout_height="31dp"
                 android:layout_marginStart="104dp"
-                android:text="Mensajes Leido"
+                android:text="MENSAJERIA"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="7dp" />
 

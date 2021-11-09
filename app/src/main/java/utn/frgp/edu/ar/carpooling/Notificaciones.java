@@ -216,15 +216,15 @@ return view;
             super.onPostExecute(resultados);
             try {
                 ArrayList<String> Mensajes= new ArrayList<String>();
+                ArrayList<String> EstadoNotificacion= new ArrayList<String>();
 
 
                 while (resultados.next()) {
 
-                    Mensajes.add(resultados.getString("Mensaje")+" "+"["+resultados.getString("EstadoNotificacion")+"]");
-                    System.out.println(resultados.getString("EstadoNotificacion")+"sadasdsa");
+                    //Mensajes.add(resultados.getString("Mensaje")+" "+"["+resultados.getString("EstadoNotificacion")+"]");
+                    Mensajes.add(resultados.getString("Mensaje"));
+                    EstadoNotificacion.add(resultados.getString("EstadoNotificacion"));
                 }
-
-
 
                 ArrayAdapter<String> adapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,Mensajes){
                     @NonNull
@@ -232,7 +232,8 @@ return view;
                     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                         View view= super.getView(position, convertView, parent);
                         for (String o : Mensajes){
-                            if(Mensajes.get(position).contains("[L]")){
+                            EstadoNotificacion.get(position);
+                            if(EstadoNotificacion.get(position).contains("L")){
                                 view.setBackgroundColor(getResources().getColor(
                                         android.R.color.holo_green_light
                                 ));
