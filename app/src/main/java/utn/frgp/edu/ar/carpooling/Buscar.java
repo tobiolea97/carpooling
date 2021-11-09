@@ -258,8 +258,6 @@ public class Buscar extends AppCompatActivity {
             }
         });
 
-
-
         crearFiltroDialog();
 
         if(rolUsuario.equals("PAS")){
@@ -575,7 +573,7 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
                 query += " LEFT JOIN Usuarios us ";
                 query += " 	ON vj.PasajeroId = us.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoSolicitud='En Espera'";
+                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoSolicitud='Pendiente'";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 

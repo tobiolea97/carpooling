@@ -14,12 +14,7 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,6 +44,7 @@ public class NuevaSolicitud extends AppCompatActivity {
     private Spinner spCiudadesOrigen;
     private Spinner spCiudadesDestino;
     private Spinner spCantPasajeros;
+    private SharedPreferences spEdicion;
     String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario;
 
     //LOS ARRAYS LIST SON PARA MOSTRAR LOS DATOS EN EL SPINNER
@@ -86,6 +82,7 @@ public class NuevaSolicitud extends AppCompatActivity {
         spCiudadesDestino= (Spinner) findViewById(R.id.spCiudadDestino);
 
         contexto = this;
+        spEdicion = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre", "No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
@@ -98,8 +95,17 @@ public class NuevaSolicitud extends AppCompatActivity {
             Rol="Pasajero";
         }
 
-        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
+            TextView tvTitulo = findViewById(R.id.txtViewTitulo);
+            Button btCrearViaje = findViewById(R.id.btnCrearViaje);
+            tvTitulo.setText("Editar Solicitud");
+            btCrearViaje.setText("Actualizar solicitud");
+            fechaViaje.setText(spEdicion.getString("fechaInicio",""));
+            horaViaje.setText(spEdicion.getString("horaInicio",""));
+        }
 
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
 
         provDestSelecc = null;
         provOrigSelecc = null;
@@ -121,6 +127,16 @@ public class NuevaSolicitud extends AppCompatActivity {
         fechaViaje.requestFocus();
 
         new NuevaSolicitud.CargarSpinnersProvincias().execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (spEdicion.getBoolean("modoEdicion", false)) {
+            SharedPreferences.Editor editor = spEdicion.edit();
+            editor.putBoolean("modoEdicion", false);
+            editor.commit();
+        }
     }
 
     @Override
@@ -194,7 +210,6 @@ public class NuevaSolicitud extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClickCrearSolicitud(View view) throws ExecutionException, InterruptedException {
-
         nuevaSolicitud = new Viaje();
 
 
@@ -206,6 +221,11 @@ public class NuevaSolicitud extends AppCompatActivity {
         nuevaSolicitud.setCiudadDestino(itemsCiudadesDestino.get(spCiudadesDestino.getSelectedItemPosition()));
         nuevaSolicitud.setCantPasajeros(Integer.parseInt(spCantPasajeros.getSelectedItem().toString()));
         nuevaSolicitud.setEstadoViaje("Pendiente");
+
+        boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
+        if (esModoEdicion) {
+            nuevaSolicitud.setIdViaje(spEdicion.getInt("idViaje", 0));
+        }
 
 
         if(!Validadores.validarNacimiento(true,fechaViaje)){
@@ -260,7 +280,8 @@ public class NuevaSolicitud extends AppCompatActivity {
             return;
         }
 
-        new NuevaSolicitud.AltaNuevaSolicitud().execute();
+        if (esModoEdicion) new ActualizarSolicitud().execute();
+        else new AltaNuevaSolicitud().execute();
 
     }
 
@@ -310,7 +331,10 @@ public class NuevaSolicitud extends AppCompatActivity {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCiudadesOrigen);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCiudadesOrigen.setAdapter(adapter);
-
+                if (spEdicion.getBoolean("modoEdicion", false)) {
+                    spCiudadesOrigen.setSelection(adapter.getPosition(spEdicion.getString("ciudadOrigen", "")));
+                    spCiudadesDestino.setSelection(adapter.getPosition(spEdicion.getString("ciudadDestino", "")));
+                }
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -410,6 +434,10 @@ public class NuevaSolicitud extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spProvinciasOrigen.setAdapter(adapter);
                 spProvinciasDestino.setAdapter(adapter);
+                if (spEdicion.getBoolean("modoEdicion", false)) {
+                    spProvinciasOrigen.setSelection(adapter.getPosition(spEdicion.getString("provinciaOrigen", "")));
+                    spProvinciasDestino.setSelection(adapter.getPosition(spEdicion.getString("provinciaDestino", "")));
+                }
 
                 spProvinciasOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -440,8 +468,6 @@ public class NuevaSolicitud extends AppCompatActivity {
 
                     }
                 });
-
-
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -503,9 +529,48 @@ public class NuevaSolicitud extends AppCompatActivity {
             super.onPostExecute(resultado);
             if(resultado){
                 Toast.makeText(contexto, "La nueva solicitud a sido creada!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo generar la nuevo solicitud, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private class ActualizarSolicitud extends AsyncTask<Void,Integer,Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "";
+                query += "UPDATE Viajes SET ";
+                query += "PasajeroId='" + nuevaSolicitud.getIdViaje() + "',";
+                query += "ProvinciaOrigenId='" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
+                query += "CiudadOrigenId='" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
+                query += "ProvinciaDestinoId='" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";
+                query += "CiudadDestinoId='" + nuevaSolicitud.getCiudadDestino().getIdCiudad() + "',";
+                query += "FechaHoraInicio='" + nuevaSolicitud.getFechaHoraInicio() + "',";
+                query += "CantidadAcompaniantes='" + nuevaSolicitud.getCantPasajeros() + "',";
+                query += "EstadoSolicitud='" + nuevaSolicitud.getEstadoViaje() + "'";
+                query += " WHERE Id = " + nuevaSolicitud.getIdViaje();
+
+                int resultado = st.executeUpdate(query);
+                return resultado > 0;
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if (resultado) {
+                Toast.makeText(contexto, "El viaje fue actualizado correctamente", Toast.LENGTH_LONG).show();
+                finish();
+            }
+            else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
         }
     }
 }

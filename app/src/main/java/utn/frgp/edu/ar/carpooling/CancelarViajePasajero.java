@@ -58,10 +58,6 @@ public class CancelarViajePasajero extends AppCompatActivity {
             }
         });
 
-
-
-
-
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");

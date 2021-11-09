@@ -21,43 +21,21 @@
                 android:id="@+id/textView27"
                 android:layout_width="161dp"
                 android:layout_height="31dp"
-                android:layout_marginStart="108dp"
-                android:layout_marginTop="16dp"
-                android:text="Mensajes Leido"
+                android:layout_marginStart="104dp"
+                android:text="MENSAJERIA"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/LvNotificaciones" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="219dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="108dp"
-                android:layout_marginTop="12dp"
-                android:text="Mensajes No Leidos"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                tools:layout_editor_absoluteY="7dp" />
 
             <ListView
 
                 android:id="@+id/LvNotificacionesLeidos"
-                android:layout_width="405dp"
-                android:layout_height="251dp"
-                android:layout_marginTop="76dp"
+                android:layout_width="391dp"
+                android:layout_height="628dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/LvNotificaciones" />
+                app:layout_constraintTop_toBottomOf="@+id/textView27" />
 
-            <ListView
-                android:id="@+id/LvNotificaciones"
-                android:layout_width="400dp"
-                android:layout_height="302dp"
-
-                android:layout_marginTop="48dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.777"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

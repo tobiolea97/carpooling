@@ -341,8 +341,6 @@ public class Home extends AppCompatActivity {
         }
     }
 
-
-
     private class VerificarNotificacion extends AsyncTask<Void,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(Void... voids) {
@@ -353,7 +351,7 @@ public class Home extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	*";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.UsuarioId = " + idUsuario;
+                query += " 	Where noti.EstadoNotificacion='P'and noti.UsuarioId = " + idUsuario;
 
                 return st.executeQuery(query);
 

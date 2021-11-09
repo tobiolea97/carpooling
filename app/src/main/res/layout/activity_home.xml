@@ -108,8 +108,8 @@
 
             <GridView
                 android:id="@+id/gvHomeProximosVIajes"
-                android:layout_width="389dp"
-                android:layout_height="155dp"
+                android:layout_width="0dp"
+                android:layout_height="340dp"
                 android:layout_margin="10sp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
