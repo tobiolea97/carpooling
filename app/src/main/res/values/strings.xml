@@ -57,4 +57,9 @@
     <string name="TituloNuevaSolicitud">Nueva Solicitud</string>
     <string name="CrearSolicitud">Crear Solicitud</string>
 
+
+    <!-- PANTALLA VER VIAJE PASAJERO -->
+    <string name="TxtViewOfreceViaje">Viaje ofrecido</string>
+    <string name="BtnPeticionViaje">Quiero unirme al viaje</string>
+
 </resources>
