@@ -59,8 +59,10 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         dniUsuario = spSesion.getString("Dni","No hay datos");
         idUsuarioLog = spSesion.getString("Id","No hay datos");
 
+
         NroViaje=getIntent().getStringExtra("NroViaje");
         EstadoViaje=getIntent().getStringExtra("EstadoViaje");
+        idUsuarioViaje = getIntent().getStringExtra("ConductorId");
 
         Nombre=findViewById(R.id.TxtVpNombre);
         Telefono=findViewById(R.id.TxtVpNumero);
@@ -70,8 +72,8 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         botonDesAsignarUsuario =findViewById(R.id.BtnVpCancelar);
         botonVolver = findViewById(R.id.btnVpVolver);
 
-        new CargarViajeSeleccionado().execute();
-
+        //new CargarViajeSeleccionado().execute();
+        new CargarDatos().execute();
     }
 
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer, ResultSet> {
@@ -85,7 +87,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	vj.FechaHoraInicio,";
                 query += "  	vj.Id,";
-                query += "  	vj.ConductorId,";
+                //query += "  	vj.ConductorId,";
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
@@ -126,7 +128,6 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado", resultados.getString("EstadoViaje"));
-                    idUsuarioViaje = resultados.getString("ConductorId");
                     itemsGrilla.add(item);
                 }
 
@@ -192,9 +193,22 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     if(resultados.getFloat("IdCalificacion") > 0 ) {
                         Rating.setIsIndicator(true);
                     }
+
+                    Map<String, String> item = new HashMap<String, String>();
+                    item.put("NroViaje", resultados.getString("Id"));
+                    item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
+                    item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
+                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
+                    item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado", resultados.getString("EstadoViaje"));
+
+                    itemsGrilla.add(item);
                 }
 
-                new CargarDatos().execute();
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
+                grillaVerViaje.setAdapter(simpleAdapter);
 
             }
             catch (Exception e) {
