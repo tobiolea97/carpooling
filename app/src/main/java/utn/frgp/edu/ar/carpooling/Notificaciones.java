@@ -36,7 +36,6 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class Notificaciones extends AppCompatActivity {
     ListView LvNotificacionLeidos;
-    ListView LvNotificacionNoLeidos;
     Context contexto;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     @Override
@@ -45,7 +44,6 @@ public class Notificaciones extends AppCompatActivity {
         setContentView(R.layout.activity_notificaciones);
         contexto = this;
         LvNotificacionLeidos=findViewById(R.id.LvNotificacionesLeidos);
-        LvNotificacionNoLeidos=findViewById(R.id.LvNotificaciones);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
@@ -66,22 +64,18 @@ public class Notificaciones extends AppCompatActivity {
         notificationManagerCompat.cancel(NOTIFICACION_ID);
 
 
-
+/*
   ArrayList<String> itemListt= new ArrayList<String>();
-        itemListt.add("Item1"+"-P");
-        itemListt.add("Item2"+"-L");
-        itemListt.add("Item33"+"-P");
-        itemListt.add("Item333"+"-P");
-String [] itemList= new String[]{
-"Item1",
-"Item2",
-"Item3",
+        itemListt.add("PatemL1"+"-P");
+        itemListt.add("PateLm2"+"-L");
+        itemListt.add("PAtLem33"+"-P");
+        itemListt.add("PALem333"+"-P");
 
-};
 
 
 ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -92,36 +86,24 @@ ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.li
             Texto=itemListt.get(position);
             String[] parts = Texto.split("-");
             String part2 = parts[1];
+            String part3 = parts[0];
 
-            if(itemListt.get(position).contains("L")){
-System.out.println("pasa una vez");
+            if(itemListt.get(position).contains("-P")){
+                itemListt.removeIf(p -> p.startsWith("-P"));
                 view.setBackgroundColor(getResources().getColor(
                         android.R.color.holo_blue_dark
                 ));
             }
-            System.out.println("2 pasa una vez");
+
         }
-      /* if(){
-
-
-        }else{
-
-            view.setBackgroundColor(getResources().getColor(
-                    android.R.color.black
-            ));
-        }*/
-
-
-
 return view;
     }
-};
+};*/
 
+       // LvNotificacionLeidos.setAdapter(arrayAdapter);
 
-        LvNotificacionLeidos.setAdapter(arrayAdapter);
+       new CargarNotificaciones().execute();
 
-     //  new CargarNotificaciones().execute();
-       // new CargarNotificacionesnoLeidos().execute();
     }
 
     @Override
@@ -217,9 +199,9 @@ return view;
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " SELECT 	noti.Mensaje";
+                query += " SELECT 	noti.Mensaje,noti.EstadoNotificacion";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.EstadoNotificacion='L' and noti.UsuarioId=" + idUsuario;
+                query += " 	Where  noti.UsuarioId=" + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -238,71 +220,50 @@ return view;
 
                 while (resultados.next()) {
 
-                    Mensajes.add(resultados.getString("Mensaje"));
-
+                    Mensajes.add(resultados.getString("Mensaje")+" "+"["+resultados.getString("EstadoNotificacion")+"]");
+                    System.out.println(resultados.getString("EstadoNotificacion")+"sadasdsa");
                 }
 
 
 
-                ArrayAdapter<String> adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Mensajes);
+                ArrayAdapter<String> adapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,Mensajes){
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        View view= super.getView(position, convertView, parent);
+                        for (String o : Mensajes){
+                            if(Mensajes.get(position).contains("[L]")){
+                                view.setBackgroundColor(getResources().getColor(
+                                        android.R.color.holo_green_light
+                                ));
+
+                            }else{
+                                view.setBackgroundColor(getResources().getColor(
+                                        android.R.color.holo_red_light
+                                ));
+                            }
+                        }
+
+                        return view;
+                    }
+
+                };
+
+
+
+
                 LvNotificacionLeidos.setAdapter(adapter);
-
-
-
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private class CargarNotificacionesnoLeidos extends AsyncTask<Void,Integer, ResultSet> {
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-                String query = "";
-                query += " SELECT 	noti.Mensaje";
-                query += " FROM Notificaciones noti";
-                query += " 	Where	noti.EstadoNotificacion='P' and noti.UsuarioId=" + idUsuario;
-
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                ArrayList<String> Mensajes= new ArrayList<String>();
-
-
-                while (resultados.next()) {
-
-                    Mensajes.add(resultados.getString("Mensaje"));
-
-                }
-
-
-
-                ArrayAdapter<String> adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Mensajes);
-                LvNotificacionNoLeidos.setAdapter(adapter);
-
                 new MensajeLeido().execute();
 
+
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+
     private class MensajeLeido extends AsyncTask<Void,Integer,Boolean> {
 
         @Override
