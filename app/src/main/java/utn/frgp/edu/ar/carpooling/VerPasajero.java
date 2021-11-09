@@ -1,7 +1,5 @@
 package utn.frgp.edu.ar.carpooling;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +26,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +37,6 @@ import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
 import utn.frgp.edu.ar.carpooling.entities.Rol;
 import utn.frgp.edu.ar.carpooling.entities.Usuario;
 import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
-import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 
 public class VerPasajero extends AppCompatActivity {
     Context contexto;
@@ -90,7 +86,7 @@ public class VerPasajero extends AppCompatActivity {
         Rating=findViewById(R.id.RBVpPasajero);
         CantidadCalificaciones=findViewById(R.id.TxtVPViajocon);
         grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
-        botonDesAsignarUsuario =findViewById(R.id.BtnVpCancelar);
+        botonDesAsignarUsuario =findViewById(R.id.BtnVpQuieroUnirme);
         botonVolver = findViewById(R.id.btnVpVolver);
         viajaConVos = findViewById(R.id.textView16);
 

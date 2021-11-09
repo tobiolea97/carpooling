@@ -43,7 +43,7 @@ public class Buscar extends AppCompatActivity {
 
     AlertDialog filtroDialog, filtroDialog2;
     View dialogFragmentView, dialogFragmentView1;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, dniUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, dniUsuario,idUsuarioLog;
     GridView grillaViajes;
     Context context;
     TextView filtroRecorrido, filtroRecorridoDestino, filtroFecha, filtroFechaQuery;
@@ -153,6 +153,7 @@ public class Buscar extends AppCompatActivity {
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         dniUsuario = spSesion.getString("Dni","No hay datos");
+        idUsuarioLog = spSesion.getString("Id","No hay datos");
 
         String Rol="";
         if(rolUsuario.equals("CON")){
@@ -251,6 +252,9 @@ public class Buscar extends AppCompatActivity {
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
 
                     String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+
+                    pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
+                    pagPeticionViaje.putExtra("pPantallaPrev", "pBuscar");
                     startActivity(pagPeticionViaje);
 
                 }
@@ -642,9 +646,8 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " LEFT JOIN Usuarios us ";
-                query += " 	ON vj.ConductorId = us.Id ";
-                query += " WHERE (vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1) AND us.Dni <> '" + dniUsuario + "'";
+                query += " WHERE (vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1) AND (vj.ConductorId <> '" + idUsuarioLog + "'" + " AND vj.EstadoViaje = 'En Espera')";
+                query += " AND vj.Id NOT IN (SELECT ViajeId FROM `PasajerosPorViaje` WHERE UsuarioId = '" + idUsuarioLog + "') ";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 

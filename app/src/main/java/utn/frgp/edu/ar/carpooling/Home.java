@@ -90,6 +90,44 @@ public class Home extends AppCompatActivity {
         new Home.CargarProximosViajes().execute();
 
         new Home.VerificarNotificacion().execute();
+
+        grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                String Texto="";
+                Texto=adapterView.getItemAtPosition(position).toString();
+                String[] parts = Texto.split("NroViaje=");
+                String part2 = parts[1];
+
+                //Para obtener el id del viaje
+                String[] partspt2 = part2.split(",");
+                String part3 = partspt2[0]; // 123
+
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+
+                if(rolUsuario.equals("CON")){
+                        /*Intent pagVerBusqueda= new Intent(context,Ver_Busqueda.class);
+                        pagVerBusqueda.putExtra("NroViaje",part3);
+                        pagVerBusqueda.putExtra("EstadoViaje", estadoViaje);
+                        startActivity(pagVerBusqueda);*/
+                }
+                else{
+                    Intent pagPeticionViaje= new Intent(context,VerViaje_Pasajero.class);
+                    pagPeticionViaje.putExtra("NroViaje",part3);
+                    pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
+
+                    String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+
+                    pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
+                    pagPeticionViaje.putExtra("pPantallaPrev", "pGeneral");
+                    startActivity(pagPeticionViaje);
+
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -281,6 +319,7 @@ public class Home extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	vj.FechaHoraInicio,";
                 query += "  	vj.Id,";
+                query += "      vj.ConductorId,";
                 query += " 		    pr1.Nombre ProvinciaOrigen,";
                 query += "          ci1.Nombre CiudadOrigen,";
                 query += "          pr2.Nombre ProvinciaDestino,";
@@ -296,7 +335,7 @@ public class Home extends AppCompatActivity {
                 query += " 	ON ci1.Id = vj.CiudadOrigenId";
                 query += " LEFT JOIN Ciudades ci2";
                 query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND" : "";
+                query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' AND ppv.EstadoPasajero = 'Aceptado' AND" : "";
                 query += rolUsuario.equals("CON") ? " WHERE 	vj.ConductorId = '" + idUsuario + "' AND" : "";
                 query += " 		vj.EstadoViaje IN ('1','En Espera')";
                 query += " AND FechaHoraInicio > now()";
@@ -326,10 +365,11 @@ public class Home extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado", resultados.getString("EstadoViaje"));
+                    item.put("ConductorId", resultados.getString("ConductorId"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado","ConductorId"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(context, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
