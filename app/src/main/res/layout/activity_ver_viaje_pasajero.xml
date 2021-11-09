@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VerPasajero">
+    tools:context=".VerViaje_Pasajero">
 
     <Button
         android:id="@+id/btnVpVolver"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="92dp"
         android:layout_marginEnd="120dp"
         android:onClick="ClickVolver"
         android:text="@string/Volver"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.446"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BtnVpQuieroUnirme" />
+        app:layout_constraintTop_toBottomOf="@+id/GrVpViaje" />
 
     <TextView
         android:id="@+id/TxtVPViajocon"
@@ -41,7 +41,7 @@
         android:layout_marginTop="44dp"
         android:layout_marginEnd="80dp"
         android:gravity="center"
-        android:text="Viaja con vos"
+        android:text="@string/TxtViewOfreceViaje"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TxtVPViajocon" />
@@ -53,8 +53,8 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="80dp"
-        android:onClick="ClickDesAsignarPasajero"
-        android:text="@string/DesasignarPasajero"
+        android:onClick="onClickQuieroUnirme"
+        android:text="@string/BtnPeticionViaje"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.421"
         app:layout_constraintStart_toStartOf="parent"

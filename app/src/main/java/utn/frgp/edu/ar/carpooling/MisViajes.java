@@ -37,6 +37,7 @@ public class MisViajes extends AppCompatActivity {
     Provincia provDestSelecc;
     ArrayList<String> listaCiudadesOrigen;
     List<Ciudad> itemsCiudadesOrigen;
+    boolean shouldExecuteOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class MisViajes extends AppCompatActivity {
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         idUsuario = spSesion.getString("Id","No hay datos");
+        shouldExecuteOnResume = false;
 
         String Rol="";
         if(rolUsuario.equals("CON")){
@@ -228,8 +230,13 @@ public class MisViajes extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem currentOption = menu.findItem(R.id.misViajes);
-        currentOption.setVisible(false);
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        String rol = sp.getString("Rol","No hay datos");
+
+        if(sp.equals("CON")){
+            MenuItem currentOption = menu.findItem(R.id.misViajes);
+            currentOption.setVisible(false);
+        }
 
         return true;
     }
@@ -551,7 +558,13 @@ public class MisViajes extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
+        if(shouldExecuteOnResume){
+            finish();
+            Intent pagVerViaje= new Intent(contexto,MisViajes.class);
+            startActivity(pagVerViaje);
+        } else{
+            shouldExecuteOnResume = true;
+        }
 
     }
 }

@@ -48,6 +48,7 @@ public class Ver_Busqueda extends AppCompatActivity {
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     String NroViaje,PasajeroEmail;
     String EstadoViaje;
+    Spinner cantidadAsientos;
     GridView grillaverbusqueda;
     RatingBar RbVerbusqueda;
     Button AceptarViaje;
@@ -66,6 +67,7 @@ public class Ver_Busqueda extends AppCompatActivity {
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         idUsuario = spSesion.getString("Id","No hay datos");
+        cantidadAsientos = findViewById(R.id.spinnerVerbusqueda);
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -215,8 +217,6 @@ public class Ver_Busqueda extends AppCompatActivity {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 CantAsientos.setAdapter(adapter);
-
-
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -296,6 +296,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                     );
 
                     viaj.setFechaHoraInicio(inicioViaje);
+                    viaj.setCantPasajeros(Integer.parseInt(cantidadAsientos.getSelectedItem().toString()));
                     //PasajeroEmail=resultados.getString("PasajeroEmail");
 
                 }

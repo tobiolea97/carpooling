@@ -1,5 +1,7 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
@@ -7,11 +9,14 @@ import androidx.core.app.NotificationManagerCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import static utn.frgp.edu.ar.carpooling.Home.NOTIFICACION_ID;
@@ -30,7 +35,7 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class Notificaciones extends AppCompatActivity {
-    ListView LvNotificacion;
+    ListView LvNotificacionLeidos;
     Context contexto;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     @Override
@@ -38,7 +43,7 @@ public class Notificaciones extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
         contexto = this;
-        LvNotificacion=findViewById(R.id.LvNotificaciones);
+        LvNotificacionLeidos=findViewById(R.id.LvNotificacionesLeidos);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
@@ -59,12 +64,46 @@ public class Notificaciones extends AppCompatActivity {
         notificationManagerCompat.cancel(NOTIFICACION_ID);
 
 
+/*
+  ArrayList<String> itemListt= new ArrayList<String>();
+        itemListt.add("PatemL1"+"-P");
+        itemListt.add("PateLm2"+"-L");
+        itemListt.add("PAtLem33"+"-P");
+        itemListt.add("PALem333"+"-P");
 
 
 
+ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @NonNull
+    @Override
+   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        new CargarNotificaciones().execute();
+        View view=super.getView(position, convertView, parent);
+        for (String o : itemListt){
+            String Texto="";
+            Texto=itemListt.get(position);
+            String[] parts = Texto.split("-");
+            String part2 = parts[1];
+            String part3 = parts[0];
+
+            if(itemListt.get(position).contains("-P")){
+                itemListt.removeIf(p -> p.startsWith("-P"));
+                view.setBackgroundColor(getResources().getColor(
+                        android.R.color.holo_blue_dark
+                ));
+            }
+
+        }
+return view;
+    }
+};*/
+
+       // LvNotificacionLeidos.setAdapter(arrayAdapter);
+
+       new CargarNotificaciones().execute();
+
     }
 
     @Override
@@ -160,9 +199,9 @@ public class Notificaciones extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " SELECT 	noti.Mensaje";
+                query += " SELECT 	noti.Mensaje,noti.EstadoNotificacion";
                 query += " FROM Notificaciones noti";
-                query += " 	Where	noti.UsuarioId=" + idUsuario;
+                query += " 	Where  noti.UsuarioId=" + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -177,20 +216,46 @@ public class Notificaciones extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 ArrayList<String> Mensajes= new ArrayList<String>();
+                ArrayList<String> EstadoNotificacion= new ArrayList<String>();
 
 
                 while (resultados.next()) {
 
+                    //Mensajes.add(resultados.getString("Mensaje")+" "+"["+resultados.getString("EstadoNotificacion")+"]");
                     Mensajes.add(resultados.getString("Mensaje"));
-
+                    EstadoNotificacion.add(resultados.getString("EstadoNotificacion"));
                 }
 
+                ArrayAdapter<String> adapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,Mensajes){
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        View view= super.getView(position, convertView, parent);
+                        for (String o : Mensajes){
+                            EstadoNotificacion.get(position);
+                            if(EstadoNotificacion.get(position).contains("L")){
+                                view.setBackgroundColor(getResources().getColor(
+                                        android.R.color.holo_green_light
+                                ));
+
+                            }else{
+                                view.setBackgroundColor(getResources().getColor(
+                                        android.R.color.holo_red_light
+                                ));
+                            }
+                        }
+
+                        return view;
+                    }
+
+                };
 
 
-                ArrayAdapter<String> adapter= new ArrayAdapter<>(contexto,R.layout.list_item_viajes,Mensajes);
-                LvNotificacion.setAdapter(adapter);
 
+
+                LvNotificacionLeidos.setAdapter(adapter);
                 new MensajeLeido().execute();
+
 
             }
             catch (Exception e) {
@@ -198,6 +263,8 @@ public class Notificaciones extends AppCompatActivity {
             }
         }
     }
+
+
     private class MensajeLeido extends AsyncTask<Void,Integer,Boolean> {
 
         @Override

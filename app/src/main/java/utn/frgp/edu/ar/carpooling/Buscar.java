@@ -43,7 +43,7 @@ public class Buscar extends AppCompatActivity {
 
     AlertDialog filtroDialog, filtroDialog2;
     View dialogFragmentView, dialogFragmentView1;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, dniUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, dniUsuario,idUsuarioLog;
     GridView grillaViajes;
     Context context;
     TextView filtroRecorrido, filtroRecorridoDestino, filtroFecha, filtroFechaQuery;
@@ -147,11 +147,13 @@ public class Buscar extends AppCompatActivity {
         setContentView(R.layout.activity_buscar);
 
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         dniUsuario = spSesion.getString("Dni","No hay datos");
+        idUsuarioLog = spSesion.getString("Id","No hay datos");
 
         String Rol="";
         if(rolUsuario.equals("CON")){
@@ -245,17 +247,20 @@ public class Buscar extends AppCompatActivity {
                 startActivity(pagVerBusqueda);
                 }
                 else{
-                    Intent pagPeticionViaje= new Intent(context,PeticionDeViaje.class);
+                    Intent pagPeticionViaje= new Intent(context,VerViaje_Pasajero.class);
                     pagPeticionViaje.putExtra("NroViaje",part3);
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
+
+                    String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+
+                    pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
+                    pagPeticionViaje.putExtra("pPantallaPrev", "pBuscar");
                     startActivity(pagPeticionViaje);
 
                 }
 
             }
         });
-
-
 
         crearFiltroDialog();
 
@@ -572,7 +577,7 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
                 query += " LEFT JOIN Usuarios us ";
                 query += " 	ON vj.PasajeroId = us.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoSolicitud='En Espera'";
+                query += " WHERE vj.FechaHoraInicio > now() AND us.Dni <> '" + dniUsuario + "' and vj.EstadoSolicitud='Pendiente'";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 
@@ -631,7 +636,7 @@ public class Buscar extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += " SELECT vj.Id, po.Nombre ProvinciaOrigen, co.Nombre CiudadOrigen, pd.Nombre ProvinciaDestino, cd.Nombre CiudadDestino, vj.FechaHoraInicio, vj.EstadoViaje ";
+                query += " SELECT vj.Id,vj.ConductorId, po.Nombre ProvinciaOrigen, co.Nombre CiudadOrigen, pd.Nombre ProvinciaDestino, cd.Nombre CiudadDestino, vj.FechaHoraInicio, vj.EstadoViaje ";
                 query += " FROM Viajes vj ";
                 query += " LEFT JOIN Provincias po ";
                 query += " 	ON vj.ProvinciaOrigenId = po.Id ";
@@ -641,7 +646,8 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " WHERE vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1";
+                query += " WHERE (vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1) AND (vj.ConductorId <> '" + idUsuarioLog + "'" + " AND vj.EstadoViaje = 'En Espera')";
+                query += " AND vj.Id NOT IN (SELECT ViajeId FROM `PasajerosPorViaje` WHERE UsuarioId = '" + idUsuarioLog + "') ";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";
 
@@ -669,10 +675,11 @@ public class Buscar extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado",resultados.getString("EstadoViaje"));
+                    item.put("ConductorId", resultados.getString("ConductorId"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado","ConductorId"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(context, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);

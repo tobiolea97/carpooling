@@ -304,59 +304,6 @@ INSERT INTO Viajes VALUES (1005,1,2,11,2,17,"2021-12-05 07:30",null,4,"En Espera
 INSERT INTO Viajes VALUES (1006,1,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera",1);
 
 
-INSERT INTO Viajes VALUES (1001,1,1,2,2,20,"2021-10-12 15:30",null,4,"Finalizado",1);
-INSERT INTO Viajes (Id, ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (1002,1,1,1,1,2,"2021-11-12 14:30",null,4,"En Espera",1);
-INSERT INTO Viajes (Id, ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (1003,1,1,2,1,1,"2021-11-15 14:45",null,4,"En Espera",1);
-INSERT INTO Viajes (Id, ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (1004,1,1,2,3,25,"2021-11-27 07:45",null,4,"En Espera",1);
-INSERT INTO Viajes (Id, ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (1005,1,3,25,1,3,"2021-11-29 05:00",null,4,"En Espera",1);
-INSERT INTO Viajes (Id, ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (1006,1,1,5,5,37,"2021-12-01 10:00",null,4,"En Espera",1);
 
-
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (2,101,1004,103,1013,"2021-12-15 12:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (2,103,1013,101,1004,"2021-12-17 07:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (2,101,1004,103,1013,"2021-12-31 05:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (2,103,1013,101,1004,"2022-01-05 07:30",null,4,"En Espera",1);
-    
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (3,101,1004,103,1013,"2021-12-15 12:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (3,103,1013,101,1004,"2021-12-17 07:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (3,101,1004,103,1013,"2021-12-31 05:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (3,103,1013,101,1004,"2022-01-05 07:30",null,4,"En Espera",1);
-    
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (4,101,1004,103,1013,"2021-12-15 12:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (4,103,1013,101,1004,"2021-12-17 07:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (4,101,1004,103,1013,"2021-12-31 05:30",null,4,"En Espera",1);
-INSERT INTO Viajes (ConductorId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,FechaHoraFinalizacion,CantidadPasajeros,EstadoViaje,EstadoRegistro)
-	VALUES (4,103,1013,101,1004,"2022-01-05 07:30",null,4,"En Espera",1);
-    
-    
-DELETE FROM PasajerosPorViaje WHERE ViajeId > 0;
-INSERT INTO PasajerosPorViaje (ViajeId,UsuarioId,EstadoRegistro,EstadoPasajero)
-	VALUES (1,5,1,"Pendiente");
-INSERT INTO PasajerosPorViaje (ViajeId,UsuarioId,EstadoRegistro,EstadoPasajero)
-	VALUES (1,6,1,"Pendiente");
-INSERT INTO PasajerosPorViaje (ViajeId,UsuarioId,EstadoRegistro,EstadoPasajero)
-	VALUES (1,7,1,"Pendiente");
-INSERT INTO PasajerosPorViaje (ViajeId,UsuarioId,EstadoRegistro,EstadoPasajero)
-	VALUES (1,8,1,"Pendiente");
-    
-INSERT INTO Solicitudes (PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
-	VALUES (5,101,1004,103,1013,"2021-12-15 12:30",1,"En Espera",1);
-    
-INSERT INTO Solicitudes (PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
-	VALUES (6,101,1004,103,1013,"2021-12-15 12:30",1,"En Espera",1);
+-- SOLICITUDES
+INSERT INTO Solicitudes VALUES (1000,1,1,2,2,20,"2022-10-01 14:30",0,"En Espera",1);

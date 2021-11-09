@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,7 +27,7 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 
 public class MisViajesModoPasajero extends AppCompatActivity {
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     GridView GrMisViajesModoPasajero;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,8 @@ public class MisViajesModoPasajero extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -51,24 +54,33 @@ public class MisViajesModoPasajero extends AppCompatActivity {
         GrMisViajesModoPasajero.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String nroViaje = ((TextView)view.findViewById(R.id.tvGridItemViajeNroViaje)).getText().toString();
+                String estadoViaje = ((TextView)view.findViewById(R.id.tvGridItemEstadoViaje)).getText().toString();
+                String origenHora = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString();
+                String origenFecha = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString();
+                String origenProvinciaCiudad = ((TextView)view.findViewById(R.id.tvGridItemViajeOrigen)).getText().toString();
+                String destinoProvinciaCiudad = ((TextView)view.findViewById(R.id.tvGridItemViajeDestino)).getText().toString();
 
-
-                String Texto="";
-                Texto=adapterView.getItemAtPosition(position).toString();
-
-                String[] parts = Texto.split("NroViaje=");
-                String part2 = parts[1];
-
-                //Para obtener el id del viaje
-                String[] partspt2 = part2.split(",");
-                String part3 = partspt2[0]; // 123
-
-                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
                 if(estadoViaje.equals("Aceptado")||estadoViaje.equals("Pendiente")) {
                     Intent PagCancelarViaje = new Intent(contexto, CancelarViajePasajero.class);
-                    PagCancelarViaje.putExtra("NroViaje", part3);
+                    PagCancelarViaje.putExtra("NroViaje", nroViaje);
                     PagCancelarViaje.putExtra("EstadoViaje", estadoViaje);
                     startActivity(PagCancelarViaje);
+                } else if (estadoViaje.equals("En Espera")) {
+                    SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("fechaInicio", origenFecha);
+                    editor.putString("horaInicio", origenHora);
+                    editor.putString("ciudadOrigen", origenProvinciaCiudad.split(",")[0].trim());
+                    editor.putString("provinciaOrigen", origenProvinciaCiudad.split(",")[1].trim());
+                    editor.putString("ciudadDestino", destinoProvinciaCiudad.split(",")[0].trim());
+                    editor.putString("provinciaDestino", destinoProvinciaCiudad.split(",")[1].trim());
+                    editor.putInt("idViaje", Integer.parseInt(nroViaje));
+                    editor.putInt("cantPasajeros", 2);
+                    editor.putBoolean("modoEdicion", true);
+                    editor.commit();
+                    Intent pagEditarSolicitud = new Intent(contexto, NuevaSolicitud.class);
+                    startActivity(pagEditarSolicitud);
                 }
 
                 //Para viaje finalizado
@@ -89,30 +101,24 @@ public class MisViajesModoPasajero extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += " SELECT 	vj.FechaHoraInicio,";
-                query += "  	vj.Id,";
-                query += " 		    pr1.Nombre ProvinciaOrigen,";
-                query += "          ci1.Nombre CiudadOrigen,";
-                query += "          pr2.Nombre ProvinciaDestino,";
-                query += "          ci2.Nombre CiudadDestino,";
-                query += "          vj.FechaHoraFinalizacion,";
-                query += "          vj.CantidadPasajeros,";
-                query += "          vj.EstadoViaje,";
-                query += "          pv.EstadoPasajero,";
-                query += "          vj.ConductorEmail";
-                query += " FROM Viajes vj";
-                query += " LEFT JOIN Provincias pr1";
-                query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
-                query += " LEFT JOIN Provincias pr2";
-                query += " 	ON pr2.Id = vj.ProvinciaDestinoId";
-                query += " LEFT JOIN Ciudades ci1";
-                query += " 	ON ci1.Id = vj.CiudadOrigenId";
-                query += " LEFT JOIN Ciudades ci2";
-                query += " 	ON ci2.Id = vj.CiudadDestinoId";
-                query += " INNER JOIN PasajerosPorViaje pv";
-                query += " 	ON vj.Id=pv.ViajeId";
-                query += " 	Where	pv.UsuarioEmail='" + emailUsuario + "'";
-                query += " ORDER BY pv.EstadoPasajero";
+                query += " SELECT   ";
+                query += "   vj.FechaHoraInicio,   ";
+                query += "   vj.Id,   ";
+                query += "   pr1.Nombre ProvinciaOrigen,   ";
+                query += "   ci1.Nombre CiudadOrigen,   ";
+                query += "   pr2.Nombre ProvinciaDestino,   ";
+                query += "   ci2.Nombre CiudadDestino,   ";
+                query += "   vj.CantidadAcompaniantes,   ";
+                query += "   vj.EstadoSolicitud,  ";
+                query += "   vj.PasajeroId   ";
+                query += " FROM   ";
+                query += "   Solicitudes vj   ";
+                query += "   LEFT JOIN Provincias pr1 ON pr1.Id = vj.ProvinciaOrigenId   ";
+                query += "   LEFT JOIN Provincias pr2 ON pr2.Id = vj.ProvinciaDestinoId   ";
+                query += "   LEFT JOIN Ciudades ci1 ON ci1.Id = vj.CiudadOrigenId   ";
+                query += "   LEFT JOIN Ciudades ci2 ON ci2.Id = vj.CiudadDestinoId  ";
+                query += " Where   ";
+                query += "   vj.PasajeroId = '" + idUsuario + "';  ";
 
                 return st.executeQuery(query);
             } catch (ClassNotFoundException | SQLException e) {
@@ -126,7 +132,6 @@ public class MisViajesModoPasajero extends AppCompatActivity {
             super.onPostExecute(resultados);
             try {
                 List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
-
                 while (resultados.next()) {
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));
@@ -134,7 +139,7 @@ public class MisViajesModoPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado", resultados.getString("EstadoPasajero"));
+                    item.put("estado", resultados.getString("EstadoSolicitud"));
                     itemsGrilla.add(item);
                 }
 

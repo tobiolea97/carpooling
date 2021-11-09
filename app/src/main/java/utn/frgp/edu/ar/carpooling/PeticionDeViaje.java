@@ -34,7 +34,7 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
 public class PeticionDeViaje extends AppCompatActivity {
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
     GridView GrViajeSolicitado;
     String EmailConductor, IdConductor;
     String NroViaje,EstadoViaje;
@@ -63,6 +63,8 @@ public class PeticionDeViaje extends AppCompatActivity {
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
+        idUsuario = spSesion.getString("Id","No hay datos");
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -215,7 +217,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
                 String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + IdConductor + "'";
+                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Id=cal.UsuarioId  Where	usu.Id='" + IdConductor + "'";
 
 
                 return st.executeQuery(query);
@@ -263,7 +265,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Email=cal.UsuarioEmail  Where	usu.Id='" + IdConductor + "'";
+                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Id=cal.UsuarioId  Where	usu.Id='" + IdConductor + "'";
 
 
                 return st.executeQuery(query);
@@ -304,7 +306,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	pv.ViajeId";
                 query += " FROM PasajerosPorViaje pv";
-                query += " 	Where	pv.EstadoPasajero='Pendiente' and pv.ViajeId='" + NroViaje + "' and pv.UsuarioEmail='"+emailUsuario+"'";
+                query += " 	Where	pv.EstadoPasajero='Pendiente' and pv.ViajeId='" + NroViaje + "' and pv.UsuarioId='" + idUsuario + "'";
                 return st.executeQuery(query);
 
             } catch (ClassNotFoundException | SQLException e) {
@@ -346,7 +348,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 String query = "";
                 query += "INSERT INTO `PasajerosPorViaje`";
                 query += "(ViajeId,";
-                query += "UsuarioEmail,";
+                query += "UsuarioEmail,"; // TODO - fix
                 query += "EstadoRegistro,";
                 query += "EstadoPasajero,";
                 query += "cantAcompañantes)";

@@ -20,20 +20,25 @@
         <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.2" />
         <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/layout/list_item_viajes.xml" value="0.2296195652173913" />
         <entry key="..\:/Users/Fran/Desktop/Carpooling/app/src/main/res/menu/menu_conductor.xml" value="0.259375" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_buscar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.21875" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_nueva_solicitud.xml" value="0.33" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_nuevo_viaje.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_ver_busqueda.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.33" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/filtrar_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/fragment_filtrar_viajes_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/menu/menu_conductor.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Matias/Documents/Git Projects/Carpooling/app/src/main/res/menu/menu_pasajero.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/fullstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/halfstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_crear_viaje.xml" value="0.25" />
-        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.1140625" />
+        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.13" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.18" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.25" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_nueva_solicitud.xml" value="0.1140625" />
@@ -42,19 +47,21 @@
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_registro.xml" value="0.21" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_pasajero.xml" value="0.196875" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viaje_finalizado.xml" value="0.196875" />
+        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viaje_pasajero.xml" value="0.25" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.196875" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/fragment_crear_viaje.xml" value="0.1" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.33" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/list_item_viajes.xml" value="0.1" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/drawable/rounded.xml" value="0.3828125" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_buscar.xml" value="0.3875" />
-        <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_cancelar_viaje_pasajero.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_cancelar_viaje_pasajero.xml" value="0.33" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_editar_perfil.xml" value="0.33" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.33" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.4356333676622039" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_home_pasajero.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_main.xml" value="0.38153846153846155" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.4627039627039627" />
+        <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_mis_viajes_modo_pasajero.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_pre_registro.xml" value="0.38153846153846155" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_registro.xml" value="0.33" />
         <entry key="..\:/Users/tobio/AndroidStudioProjects/Carpooling/app/src/main/res/layout/activity_responder_solicitud.xml" value="0.3875" />
