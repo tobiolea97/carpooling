@@ -33,7 +33,7 @@
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/fullstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/drawable/halfstar_background.xml" value="0.1078125" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_crear_viaje.xml" value="0.25" />
-        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.1140625" />
+        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home.xml" value="0.17" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_home_conductor.xml" value="0.18" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_mis_viajes.xml" value="0.25" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_nueva_solicitud.xml" value="0.1140625" />
@@ -42,6 +42,7 @@
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_registro.xml" value="0.21" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_pasajero.xml" value="0.196875" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viaje_finalizado.xml" value="0.196875" />
+        <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viaje_pasajero.xml" value="0.25" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/activity_ver_viajes.xml" value="0.196875" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/fragment_crear_viaje.xml" value="0.1" />
         <entry key="..\:/Users/jonathancosta/Desktop/Prog Avanz II tps/Carpooling/app/src/main/res/layout/grid_item_viaje.xml" value="0.33" />
