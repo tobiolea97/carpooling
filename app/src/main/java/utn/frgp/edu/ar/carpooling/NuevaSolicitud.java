@@ -210,7 +210,6 @@ public class NuevaSolicitud extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClickCrearSolicitud(View view) throws ExecutionException, InterruptedException {
-
         nuevaSolicitud = new Viaje();
 
 
@@ -530,6 +529,7 @@ public class NuevaSolicitud extends AppCompatActivity {
             super.onPostExecute(resultado);
             if(resultado){
                 Toast.makeText(contexto, "La nueva solicitud a sido creada!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
                 Toast.makeText(contexto, "No se pudo generar la nuevo solicitud, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
