@@ -28,7 +28,7 @@ BEGIN
 	INTO @CantidadCalificaciones;
     
     -- VIAJE
-    SELECT  vj.FechaHoraInicio, vj.Id, pr1.Nombre ProvinciaOrigen, ci1.Nombre CiudadOrigen, pr2.Nombre ProvinciaDestino,  ci2.Nombre CiudadDestino 
+    SELECT  vj.FechaHoraInicio, vj.Id, pr1.Nombre ProvinciaOrigen, ci1.Nombre CiudadOrigen, pr2.Nombre ProvinciaDestino,  ci2.Nombre CiudadDestino, vj.EstadoViaje
 	FROM 
 	  Viajes vj 
 	  LEFT JOIN Provincias pr1 ON pr1.Id = vj.ProvinciaOrigenId 
@@ -38,7 +38,7 @@ BEGIN
 	WHERE
 	  vj.Id = viaje_id
       LIMIT 1
-	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD;
+	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD, @EstadoViaje;
     
     -- VERIFICAR CALIFICACION
     SELECT Id
@@ -61,6 +61,7 @@ BEGIN
             @CO CiudadOrigen,
             @PD ProvinciaDestino,
             @CD CiudadDestino,
-            @IdCalificacion IdCalificacion;
+            @IdCalificacion IdCalificacion,
+            @EstadoViaje EstadoViaje;
             
 END

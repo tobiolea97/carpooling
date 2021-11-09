@@ -25,7 +25,7 @@ BEGIN
 	INTO @CantidadCalificaciones;
     
     -- VIAJE
-    SELECT  vj.FechaHoraInicio, vj.Id, pr1.Nombre ProvinciaOrigen, ci1.Nombre CiudadOrigen, pr2.Nombre ProvinciaDestino,  ci2.Nombre CiudadDestino 
+    SELECT  vj.FechaHoraInicio, vj.Id, pr1.Nombre ProvinciaOrigen, ci1.Nombre CiudadOrigen, pr2.Nombre ProvinciaDestino,  ci2.Nombre CiudadDestino, vj.EstadoViaje
 	FROM 
 	  Viajes vj 
 	  LEFT JOIN Provincias pr1 ON pr1.Id = vj.ProvinciaOrigenId 
@@ -34,7 +34,7 @@ BEGIN
 	  LEFT JOIN Ciudades ci2 ON ci2.Id = vj.CiudadDestinoId 
 	WHERE
 	  vj.Id = viaje_id
-	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD;
+	INTO @FHInicio, @IdViaje, @PO, @CO, @PD, @CD, @EstadoViajes;
     
     -- LUGARES DISPONIBLES 
     SELECT CantidadPasajeros FROM Viajes WHERE Id = viaje_id INTO @CantidadAsientos;
@@ -61,6 +61,7 @@ BEGIN
             @CO CiudadOrigen,
             @PD ProvinciaDestino,
             @CD CiudadDestino,
-            @EspaciosDisponibles EspaciosDisponibles;
+            @EspaciosDisponibles EspaciosDisponibles,
+            @EstadoViajes EstadoViajes;
             
 END

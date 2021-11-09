@@ -46,7 +46,7 @@ public class VerPasajero extends AppCompatActivity {
     Context contexto;
     String NroViaje,EmailVerUsuario,RolVerUsuario,EstadoViaje,IdVerUsuario,idUsuario;
     String nombreUsuarioLog, apellidoUsuarioLog, emailUsuarioLog, rolUsuarioLog;
-    TextView Nombre,Telefono,CantidadCalificaciones;
+    TextView Nombre,Telefono,CantidadCalificaciones, viajaConVos;
     RatingBar Rating;
     GridView grillaVerPasajero;
     Button botonDesAsignarUsuario;
@@ -92,6 +92,7 @@ public class VerPasajero extends AppCompatActivity {
         grillaVerPasajero=(GridView) findViewById(R.id.GrVpViaje);
         botonDesAsignarUsuario =findViewById(R.id.BtnVpCancelar);
         botonVolver = findViewById(R.id.btnVpVolver);
+        viajaConVos = findViewById(R.id.textView16);
 
         botonVolver.setVisibility(View.VISIBLE);
         calificacionInicial = true;
@@ -151,10 +152,13 @@ public class VerPasajero extends AppCompatActivity {
         }
 
         if(EstadoViaje.equals("Cancelado") || rolUsuarioLog.equals("PAS")){
+            viajaConVos.setText("Viajaba con vos");
             botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
         }
 
         if(EstadoViaje.equals("Finalizado")){
+
+            viajaConVos.setText("Viajó con vos");
 
             botonDesAsignarUsuario.setVisibility(View.INVISIBLE);
             /*viajeNegImpl vNegImpl = new viajeNegImpl();
@@ -295,11 +299,12 @@ public class VerPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
+                    item.put("estado", resultados.getString("EstadoViaje"));
 
                     itemsGrilla.add(item);
                 }
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora, R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaVerPasajero.setAdapter(simpleAdapter);
             }
