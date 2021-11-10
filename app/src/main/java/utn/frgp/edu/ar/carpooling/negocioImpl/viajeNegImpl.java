@@ -30,7 +30,6 @@ public class viajeNegImpl implements viajeNeg {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int validarDatosViaje(Viaje v) {
-
         int valor = -1;
         if(v.getProvDestino().getIdProvincia() == v.getProvOrigen().getIdProvincia() &&
                 v.getCiudadDestino().getIdCiudad() == v.getCiudadOrigen().getIdCiudad()){
@@ -77,20 +76,26 @@ public class viajeNegImpl implements viajeNeg {
     @Override
     public boolean validarSolicitudEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
         objOrigViaje = obj;
-        boolean vBoleana = false;
+        boolean hayConflictoConViajes = false;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
         ResultSet resultado = new buscarSolicitudEnRangoTiempo().execute().get();
 
         try {
-            while (resultado.next()) {
-                vBoleana = true;
+            if (obj.getIdViaje() > 0) {
+                while (resultado.next()) {
+                    if (obj.getIdViaje() != resultado.getInt("Id")) hayConflictoConViajes = true;
+                }
+            } else {
+                while (resultado.next()) {
+                    hayConflictoConViajes = true;
+                }
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return vBoleana;
+        return hayConflictoConViajes;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -9,8 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -51,16 +53,17 @@ public class VerSolicitud extends AppCompatActivity {
         grillaverViaje = findViewById(R.id.GrVerSolicitud);
 
         new CargarSolicitudSeleccionada().execute();
+    }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        new CargarSolicitudSeleccionada().execute();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
-
         getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
-
-
-
         return true;
     }
 
@@ -78,8 +81,6 @@ public class VerSolicitud extends AppCompatActivity {
             Intent intent = new Intent(this, MisViajes.class);
             startActivity(intent);
         }
-
-
         if(id == R.id.crearViaje) {
             finish();
             Intent intent = new Intent(this, NuevoViaje.class);
@@ -103,6 +104,29 @@ public class VerSolicitud extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public void onClickEditarSolicitud (View view) {
+        String nroViaje = ((TextView)findViewById(R.id.tvGridItemViajeNroViaje)).getText().toString();
+        String origenHora = ((TextView)findViewById(R.id.tvGridItemViajeOrigenHora)).getText().toString();
+        String origenFecha = ((TextView)findViewById(R.id.tvGridItemViajeOrigenFecha)).getText().toString();
+        String origenProvinciaCiudad = ((TextView)findViewById(R.id.tvGridItemViajeOrigen)).getText().toString();
+        String destinoProvinciaCiudad = ((TextView)findViewById(R.id.tvGridItemViajeDestino)).getText().toString();
+
+        SharedPreferences sharedPreference = getSharedPreferences("DatosEdicion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString("fechaInicio", origenFecha);
+        editor.putString("horaInicio", origenHora);
+        editor.putString("ciudadOrigen", origenProvinciaCiudad.split(",")[0].trim());
+        editor.putString("provinciaOrigen", origenProvinciaCiudad.split(",")[1].trim());
+        editor.putString("ciudadDestino", destinoProvinciaCiudad.split(",")[0].trim());
+        editor.putString("provinciaDestino", destinoProvinciaCiudad.split(",")[1].trim());
+        editor.putInt("idViaje", Integer.parseInt(nroViaje));
+        editor.putInt("cantPasajeros", 2);
+        editor.putBoolean("modoEdicion", true);
+        editor.commit();
+        Intent pagEditarSolicitud = new Intent(contexto, NuevaSolicitud.class);
+        startActivity(pagEditarSolicitud);
     }
 
     private class CargarSolicitudSeleccionada extends AsyncTask<Void,Integer, ResultSet> {
@@ -169,5 +193,4 @@ public class VerSolicitud extends AppCompatActivity {
             }
         }
     }
-
 }
