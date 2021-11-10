@@ -223,7 +223,7 @@ public class Ver_Viajes extends AppCompatActivity {
 
         if(sp.getString("Rol","No hay datos").equals("PAS")) {
             if (id == R.id.misSolicitudes) {
-                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                Intent intent = new Intent(this, MisViajes.class);
                 startActivity(intent);
             }
 
