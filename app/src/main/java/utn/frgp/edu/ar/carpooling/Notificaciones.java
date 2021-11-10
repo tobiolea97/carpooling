@@ -3,10 +3,12 @@ package utn.frgp.edu.ar.carpooling;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,10 +19,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import static utn.frgp.edu.ar.carpooling.Home.NOTIFICACION_ID;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Connection;
@@ -37,13 +42,18 @@ import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 public class Notificaciones extends AppCompatActivity {
     ListView LvNotificacionLeidos;
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
+    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario,Mensaje;
+    TextView TxtNotienesMensajes;
+    ImageButton EliminarTodo;
+    boolean VerificacionMensaje;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
         contexto = this;
         LvNotificacionLeidos=findViewById(R.id.LvNotificacionesLeidos);
+        TxtNotienesMensajes=findViewById(R.id.TxtNotienesMensajes);
+        EliminarTodo=findViewById(R.id.IBeliminarTodo);
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre","No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
@@ -64,43 +74,36 @@ public class Notificaciones extends AppCompatActivity {
         notificationManagerCompat.cancel(NOTIFICACION_ID);
 
 
-/*
-  ArrayList<String> itemListt= new ArrayList<String>();
-        itemListt.add("PatemL1"+"-P");
-        itemListt.add("PateLm2"+"-L");
-        itemListt.add("PAtLem33"+"-P");
-        itemListt.add("PALem333"+"-P");
 
 
+        LvNotificacionLeidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(contexto,R.layout.list_item_viajes,itemListt){
+                AlertDialog.Builder alerta= new AlertDialog.Builder(Notificaciones.this);
+                 Mensaje=LvNotificacionLeidos.getItemAtPosition(i).toString();
+                alerta.setMessage(Mensaje)
+                        .setCancelable(false)
+                        .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                new EliminarNotificacion().execute();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            return;
+                            }
+                        });
+                        AlertDialog titulo= alerta.create();
+                        titulo.setTitle("Notificacion");
+                        titulo.show();
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @NonNull
-    @Override
-   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
-        View view=super.getView(position, convertView, parent);
-        for (String o : itemListt){
-            String Texto="";
-            Texto=itemListt.get(position);
-            String[] parts = Texto.split("-");
-            String part2 = parts[1];
-            String part3 = parts[0];
-
-            if(itemListt.get(position).contains("-P")){
-                itemListt.removeIf(p -> p.startsWith("-P"));
-                view.setBackgroundColor(getResources().getColor(
-                        android.R.color.holo_blue_dark
-                ));
             }
+        });
 
-        }
-return view;
-    }
-};*/
 
-       // LvNotificacionLeidos.setAdapter(arrayAdapter);
 
        new CargarNotificaciones().execute();
 
@@ -201,7 +204,7 @@ return view;
                 String query = "";
                 query += " SELECT 	noti.Mensaje,noti.EstadoNotificacion";
                 query += " FROM Notificaciones noti";
-                query += " 	Where  noti.UsuarioId=" + idUsuario;
+                query += " 	Where noti.EstadoRegistro=1 and  noti.UsuarioId=" + idUsuario;
 
                 return st.executeQuery(query);
 
@@ -217,10 +220,10 @@ return view;
             try {
                 ArrayList<String> Mensajes= new ArrayList<String>();
                 ArrayList<String> EstadoNotificacion= new ArrayList<String>();
-
+        boolean VerificacionMensaje=false;
 
                 while (resultados.next()) {
-
+                    VerificacionMensaje=true;
                     //Mensajes.add(resultados.getString("Mensaje")+" "+"["+resultados.getString("EstadoNotificacion")+"]");
                     Mensajes.add(resultados.getString("Mensaje"));
                     EstadoNotificacion.add(resultados.getString("EstadoNotificacion"));
@@ -250,8 +253,10 @@ return view;
 
                 };
 
+                if(VerificacionMensaje){
+                    TxtNotienesMensajes.setVisibility(View.INVISIBLE);
 
-
+                }else {TxtNotienesMensajes.setVisibility(View.VISIBLE);}
 
                 LvNotificacionLeidos.setAdapter(adapter);
                 new MensajeLeido().execute();
@@ -305,5 +310,123 @@ return view;
             }
         }
     }
+
+    private class EliminarNotificacion extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	Notificaciones noti";
+                query += "  	    SET";
+                query += " 		    EstadoRegistro='0'";
+                query += " 	Where noti.Mensaje='"+Mensaje+"' and noti.UsuarioId=" + idUsuario;
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El mensaje fue eliminado correctamente", Toast.LENGTH_SHORT).show();
+                new CargarNotificaciones().execute();
+            }else{
+                Toast.makeText(contexto, "El mensaje no se pudo eliminar correctamente", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void EliminarTodosLosMensajes(View view){
+
+        if(VerificacionMensaje){
+
+            AlertDialog.Builder EliminarLosMensajes= new AlertDialog.Builder(Notificaciones.this);
+            EliminarLosMensajes.setMessage("¿Estas seguro que quieres eliminar todas las notificaciones?")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new EliminarTodasLasNotificacion().execute();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            return;
+                        }
+                    });
+            AlertDialog titulo= EliminarLosMensajes.create();
+            titulo.setTitle("Notificacion");
+            titulo.show();
+
+
+        }else{
+            Toast.makeText(contexto, "No Tienes mensajes que eliminar.", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
+    }
+
+    private class EliminarTodasLasNotificacion extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	Notificaciones noti";
+                query += "  	    SET";
+                query += " 		    EstadoRegistro='0'";
+                query += " 	Where  noti.UsuarioId=" + idUsuario;
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "El mensaje fue eliminado correctamente", Toast.LENGTH_SHORT).show();
+                new CargarNotificaciones().execute();
+            }else{
+                Toast.makeText(contexto, "El mensaje no se pudo eliminar correctamente", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
 }
