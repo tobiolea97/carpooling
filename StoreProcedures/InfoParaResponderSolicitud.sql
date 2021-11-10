@@ -62,6 +62,6 @@ BEGIN
             @PD ProvinciaDestino,
             @CD CiudadDestino,
             @EspaciosDisponibles EspaciosDisponibles,
-            @EstadoViajes EstadoViajes;
+            @EstadoViajes EstadoViaje;
             
 END

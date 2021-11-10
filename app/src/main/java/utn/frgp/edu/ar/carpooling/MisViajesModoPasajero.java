@@ -73,51 +73,15 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if(rolUsuario.equals("CON")) {
-                    String Texto = "";
-                    Texto = adapterView.getItemAtPosition(position).toString();
 
-                    String[] parts = Texto.split("NroViaje=");
-                    String part2 = parts[1];
+                String Texto = "";
+                Texto = adapterView.getItemAtPosition(position).toString();
 
-                    //Para obtener el id del viaje
-                    String[] partspt2 = part2.split(",");
-                    String part3 = partspt2[0]; // 123
+                String nroViaje = Texto.split("NroSolicitud=")[1].replace("}","");
 
-                    String estadoViaje = Texto.split("estado=")[1].split(",")[0];
-
-                    Intent pagVerViaje = new Intent(contexto, Ver_Viajes.class);
-                    pagVerViaje.putExtra("NroViaje", part3);
-                    pagVerViaje.putExtra("EstadoViaje", estadoViaje);
-                    startActivity(pagVerViaje);
-                } else {
-                    String Texto = "";
-                    Texto = adapterView.getItemAtPosition(position).toString();
-
-                    String[] parts = Texto.split("NroViaje=");
-                    String part2 = parts[1];
-
-                    //Para obtener el id del viaje
-                    String[] partspt2 = part2.split(",");
-                    String part3 = partspt2[0]; // 123
-
-                    String estadoViaje = Texto.split("estado=")[1].split(",")[0];
-
-                    Intent pagVerViaje = new Intent(contexto, VerViaje_Pasajero.class);
-                    String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
-                    pagVerViaje.putExtra("NroViaje", part3);
-                    pagVerViaje.putExtra("EstadoViaje", estadoViaje);
-                    pagVerViaje.putExtra("ConductorId", idConductorViaje);
-                    pagVerViaje.putExtra("pPantallaPrev", "pGeneral");
-                    startActivity(pagVerViaje);
-                }
-
-
-                //Para viaje finalizado
-               /* Intent pagVerViajeFinalizado= new Intent(contexto,VerVIajeFinalizado.class);
-                pagVerViajeFinalizado.putExtra("NroViaje",part3);
-                startActivity(pagVerViajeFinalizado);
-                finish();*/
+                Intent pagVerViaje = new Intent(contexto, VerSolicitud.class);
+                pagVerViaje.putExtra("NroSolicitud", nroViaje);
+                startActivity(pagVerViaje);
             }
         });
         LayoutInflater inflater = this.getLayoutInflater();
@@ -177,11 +141,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
         ResetSpinnerCiudadesOrigen();
         ResetSpinnerCiudadesDestino();
 
-        if(rolUsuario.equals("CON")){
-            new CargarViajesFiltrados().execute(generateQuery(new HashMap<String, String>()));
-        }else{
-            new CargarSolicitudesFiltradas().execute(generateQuerySolicitud(new HashMap<String, String>()));
-        }
+        new CargarSolicitudesFiltradas().execute(generateQuerySolicitud(new HashMap<String, String>()));
 
         new CargarFiltroProvinciaSpinners().execute();
     }
@@ -223,7 +183,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
         if(sp.getString("Rol","No hay datos").equals("PAS")) {
             if (id == R.id.misSolicitudes) {
-                Intent intent = new Intent(this, MisViajes.class);
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
                 startActivity(intent);
             }
 
@@ -265,13 +225,8 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        String rol = sp.getString("Rol","No hay datos");
-
-        if(sp.equals("CON")){
-            MenuItem currentOption = menu.findItem(R.id.misViajes);
-            currentOption.setVisible(false);
-        }
+        //MenuItem currentOption = menu.findItem(R.id.misViajes);
+        //currentOption.setVisible(false);
 
         return true;
     }
@@ -303,11 +258,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                         filtros.put("ciudadDestino", spFiltroCiudDestino.getSelectedItem().toString());
                         filtros.put("estado", spFiltroEstado.getSelectedItem().toString());
 
-                        if(rolUsuario.equals("CON")){
-                            new CargarViajesFiltrados().execute(generateQuery(filtros));
-                        } else {
-                            new CargarSolicitudesFiltradas().execute(generateQuerySolicitud(filtros));
-                        }
+                        new CargarSolicitudesFiltradas().execute(generateQuerySolicitud(filtros));
 
                     }
                 })
@@ -333,32 +284,6 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
     }
 
-    private class CargarFiltroCiudadSpinners extends AsyncTask<String,Integer, ResultSet> {
-        @Override
-        protected ResultSet doInBackground(String... strings) {
-            return ejecutarQuery("SELECT Nombre FROM Ciudades");
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                List<String> ciudades = new ArrayList<String>();
-                ciudades.add("--NINGUNA--");
-
-                while (resultados.next()) { ciudades.add(resultados.getString("Nombre")); }
-
-                ArrayAdapter<String> adapterCiudades = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, ciudades);
-                adapterCiudades.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spFiltroCiudOrigen.setAdapter(adapterCiudades);
-                spFiltroCiudDestino.setAdapter(adapterCiudades);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private class CargarFiltroProvinciaSpinners extends AsyncTask<String,Integer, ResultSet> {
         @Override
         protected ResultSet doInBackground(String... strings) {
@@ -382,41 +307,6 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                 adapterProvincias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spFiltroProvOrigen.setAdapter(adapterProvincias);
                 spFiltroProvDestino.setAdapter(adapterProvincias);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class CargarViajesFiltrados extends AsyncTask<String,Integer, ResultSet> {
-        @Override
-        protected ResultSet doInBackground(String... queries) {
-            return ejecutarQuery(queries[0]);
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-                List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
-
-                while (resultados.next()) {
-                    Map<String, String> item = new HashMap<String, String>();
-                    item.put("NroViaje", resultados.getString("Id"));
-                    item.put("origen", resultados.getString("CiudadOrigen") + ", " + resultados.getString("ProvinciaOrigen"));
-                    item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
-                    item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
-                    item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado",resultados.getString("EstadoViaje"));
-                    item.put("ConductorId", resultados.getString("ConductorId"));
-                    itemsGrilla.add(item);
-                }
-
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado","ConductorId"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
-                SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
-                grillaViajes.setAdapter(simpleAdapter);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -456,50 +346,6 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private String generateQuery (HashMap<String, String> filtros) {
-        String query = "";
-        query += " SELECT 	vj.FechaHoraInicio,";
-        query += "  	vj.Id,";
-        query += "  	vj.ConductorId,";
-        query += " 		    pr1.Nombre ProvinciaOrigen,";
-        query += "          ci1.Nombre CiudadOrigen,";
-        query += "          pr2.Nombre ProvinciaDestino,";
-        query += "          ci2.Nombre CiudadDestino,";
-        query += "          vj.EstadoViaje";
-        query += " FROM Viajes vj";
-        query += rolUsuario.equals("PAS") ? " INNER JOIN PasajerosPorViaje ppv ON ppv.ViajeId = vj.Id" : "";
-        query += " LEFT JOIN Provincias pr1";
-        query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
-        query += " LEFT JOIN Provincias pr2";
-        query += " 	ON pr2.Id = vj.ProvinciaDestinoId";
-        query += " LEFT JOIN Ciudades ci1";
-        query += " 	ON ci1.Id = vj.CiudadOrigenId";
-        query += " LEFT JOIN Ciudades ci2";
-        query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += rolUsuario.equals("PAS") ? " WHERE ppv.UsuarioId = '" + idUsuario + "' " : " WHERE vj.ConductorId = '" + idUsuario + "' ";
-
-        if (!filtros.isEmpty()) {
-            if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {
-                query += " AND pr1.Nombre = '" + filtros.get("provinciaOrigen") + "'";
-            }
-            if (!filtros.get("provinciaDestino").equals("--NINGUNA--")) {
-                query += " AND pr2.Nombre = '" + filtros.get("provinciaDestino") + "'";
-            }
-            if (!filtros.get("ciudadOrigen").equals("--NINGUNA--")) {
-                query += " AND ci1.Nombre = '" + filtros.get("ciudadOrigen") + "'";
-            }
-            if (!filtros.get("ciudadDestino").equals("--NINGUNA--")) {
-                query += " AND ci2.Nombre = '" + filtros.get("ciudadDestino") + "'";
-            }
-            if (!filtros.get("estado").equals("--NINGUNO--")) {
-                query += " AND vj.EstadoViaje = '" + filtros.get("estado") + "'";
-            }
-        }
-        query += " ORDER BY FechaHoraInicio ASC";
-
-        return query;
     }
 
     private String generateQuerySolicitud (HashMap<String, String> filtros) {
@@ -689,7 +535,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
         if(shouldExecuteOnResume){
             finish();
-            Intent pagVerViaje= new Intent(contexto,MisViajes.class);
+            Intent pagVerViaje= new Intent(contexto,MisViajesModoPasajero.class);
             startActivity(pagVerViaje);
         } else{
             shouldExecuteOnResume = true;

@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Carpooling">
         <activity
+            android:name=".VerSolicitud"
+            android:exported="true" />
+        <activity
             android:name=".VerViaje_Pasajero"
             android:exported="true" />
         <activity

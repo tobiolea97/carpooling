@@ -48,7 +48,7 @@ public class PeticionDeViaje extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peticion_de_viaje);
-        contexto = this;
+        /*contexto = this;
         GrViajeSolicitado=findViewById(R.id.GrPeticionViaje);
         ratingBar=findViewById(R.id.ratingBarPeticion);
         Trasladoa=findViewById(R.id.TxtTrasladoPeticion);
@@ -87,7 +87,7 @@ public class PeticionDeViaje extends AppCompatActivity {
 
 
         new CargarViajeSeleccionado().execute();
-        new VerificarPeticion().execute();
+        new VerificarPeticion().execute();*/
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer, ResultSet> {
 
