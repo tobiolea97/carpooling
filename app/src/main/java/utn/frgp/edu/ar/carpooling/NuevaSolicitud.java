@@ -247,7 +247,6 @@ public class NuevaSolicitud extends AppCompatActivity {
     public void onClickCrearSolicitud(View view) throws ExecutionException, InterruptedException {
         nuevaSolicitud = new Viaje();
 
-
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nuevaSolicitud.setIdConductor(Integer.parseInt(spSesion.getString("Id","No hay datos")));
         nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
@@ -262,15 +261,9 @@ public class NuevaSolicitud extends AppCompatActivity {
             nuevaSolicitud.setIdViaje(spEdicion.getInt("idViaje", 0));
         }
 
-
-        if(!Validadores.validarNacimiento(true,fechaViaje)){
+        if (!Validadores.validarNacimiento(true,fechaViaje) || !Validadores.validarHoraViaje(true,horaViaje)) {
             return;
         }
-
-        if(!Validadores.validarHoraViaje(true,horaViaje)){
-            return;
-        }
-
 
         String separadorFecha = Pattern.quote("/");
         String separadorHora = Pattern.quote(":");
@@ -282,7 +275,7 @@ public class NuevaSolicitud extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevaSolicitud.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
+        nuevaSolicitud.setFechaHoraInicio(LocalDateTime.of(anio+2000,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
@@ -544,17 +537,9 @@ public class NuevaSolicitud extends AppCompatActivity {
                 query += ")";
 
                 int resultado = st.executeUpdate(query);
-
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
-
                 return false;
             }
         }
@@ -580,15 +565,13 @@ public class NuevaSolicitud extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "UPDATE Viajes SET ";
-                query += "PasajeroId='" + nuevaSolicitud.getIdViaje() + "',";
+                query += "UPDATE Solicitudes SET ";
                 query += "ProvinciaOrigenId='" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
                 query += "CiudadOrigenId='" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
                 query += "ProvinciaDestinoId='" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";
                 query += "CiudadDestinoId='" + nuevaSolicitud.getCiudadDestino().getIdCiudad() + "',";
                 query += "FechaHoraInicio='" + nuevaSolicitud.getFechaHoraInicio() + "',";
-                query += "CantidadAcompaniantes='" + nuevaSolicitud.getCantPasajeros() + "',";
-                query += "EstadoSolicitud='" + nuevaSolicitud.getEstadoViaje() + "'";
+                query += "CantidadAcompaniantes='" + nuevaSolicitud.getCantPasajeros() + "'";
                 query += " WHERE Id = " + nuevaSolicitud.getIdViaje();
 
                 int resultado = st.executeUpdate(query);
