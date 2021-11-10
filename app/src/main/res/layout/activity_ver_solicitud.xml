@@ -55,7 +55,7 @@
                 android:layout_marginEnd="64dp"
                 android:text="Editar Solicitud"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageButton7" />
+                app:layout_constraintTop_toBottomOf="@+id/btEditarSolicitud" />
 
             <ImageButton
                 android:id="@+id/imageButton5"
@@ -68,12 +68,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/GrVerSolicitud" />
 
             <ImageButton
-                android:id="@+id/imageButton7"
+                android:id="@+id/btEditarSolicitud"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="88dp"
                 android:background="@drawable/edit"
+                android:onClick="onClickEditarSolicitud"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/GrVerSolicitud" />
 
