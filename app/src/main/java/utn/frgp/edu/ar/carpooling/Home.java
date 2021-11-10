@@ -39,10 +39,13 @@ public class Home extends AppCompatActivity {
     private PendingIntent pendingIntent;
     GridView grillaViajes;
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
+    boolean shouldExecuteOnResume;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        shouldExecuteOnResume = false;
         setContentView(R.layout.activity_home);
         context = this;
         st1 = (ImageView) findViewById(R.id.ivHomeStar1);
@@ -117,7 +120,7 @@ public class Home extends AppCompatActivity {
                     pagPeticionViaje.putExtra("NroViaje",part3);
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
 
-                    String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+                    String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
 
                     pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
                     pagPeticionViaje.putExtra("pPantallaPrev", "pGeneral");
@@ -467,5 +470,20 @@ public class Home extends AppCompatActivity {
         notificationManagerCompat.notify(NOTIFICACION_ID,builder.build());
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(shouldExecuteOnResume){
+            finish();
+            Intent pagVerViaje= new Intent(context,Home.class);
+            startActivity(pagVerViaje);
+        } else{
+            shouldExecuteOnResume = true;
+        }
+
+    }
+
 
 }

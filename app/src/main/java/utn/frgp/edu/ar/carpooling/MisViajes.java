@@ -13,6 +13,8 @@ import android.view.*;
 import android.widget.*;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.sql.*;
 import java.util.*;
 
@@ -32,6 +34,7 @@ public class MisViajes extends AppCompatActivity {
     String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario, idUsuario;
     Context contexto;
     String filterDate = "";
+    FloatingActionButton botonNuevoViaje;
     List<Provincia> itemsProvincias;
     Provincia provOrigSelecc;
     Provincia provDestSelecc;
@@ -55,11 +58,14 @@ public class MisViajes extends AppCompatActivity {
         idUsuario = spSesion.getString("Id","No hay datos");
         shouldExecuteOnResume = false;
 
+        botonNuevoViaje = findViewById(R.id.floatingActionButton2);
+
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
         }else{
             Rol="Pasajero";
+            botonNuevoViaje.setVisibility(View.INVISIBLE);
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
@@ -67,22 +73,44 @@ public class MisViajes extends AppCompatActivity {
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String Texto="";
-                Texto=adapterView.getItemAtPosition(position).toString();
+                if(rolUsuario.equals("CON")) {
+                    String Texto = "";
+                    Texto = adapterView.getItemAtPosition(position).toString();
 
-                String[] parts = Texto.split("NroViaje=");
-                String part2 = parts[1];
+                    String[] parts = Texto.split("NroViaje=");
+                    String part2 = parts[1];
 
-                //Para obtener el id del viaje
-                String[] partspt2 = part2.split(",");
-                String part3 = partspt2[0]; // 123
+                    //Para obtener el id del viaje
+                    String[] partspt2 = part2.split(",");
+                    String part3 = partspt2[0]; // 123
 
-                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+                    String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
-                Intent pagVerViaje= new Intent(contexto,Ver_Viajes.class);
-                pagVerViaje.putExtra("NroViaje",part3);
-                pagVerViaje.putExtra("EstadoViaje", estadoViaje);
-                startActivity(pagVerViaje);
+                    Intent pagVerViaje = new Intent(contexto, Ver_Viajes.class);
+                    pagVerViaje.putExtra("NroViaje", part3);
+                    pagVerViaje.putExtra("EstadoViaje", estadoViaje);
+                    startActivity(pagVerViaje);
+                } else {
+                    String Texto = "";
+                    Texto = adapterView.getItemAtPosition(position).toString();
+
+                    String[] parts = Texto.split("NroViaje=");
+                    String part2 = parts[1];
+
+                    //Para obtener el id del viaje
+                    String[] partspt2 = part2.split(",");
+                    String part3 = partspt2[0]; // 123
+
+                    String estadoViaje = Texto.split("estado=")[1].split(",")[0];
+
+                    Intent pagVerViaje = new Intent(contexto, VerViaje_Pasajero.class);
+                    String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
+                    pagVerViaje.putExtra("NroViaje", part3);
+                    pagVerViaje.putExtra("EstadoViaje", estadoViaje);
+                    pagVerViaje.putExtra("ConductorId", idConductorViaje);
+                    pagVerViaje.putExtra("pPantallaPrev", "pGeneral");
+                    startActivity(pagVerViaje);
+                }
 
 
                 //Para viaje finalizado
@@ -99,6 +127,8 @@ public class MisViajes extends AppCompatActivity {
         spFiltroCiudOrigen = dialogFragmentView.findViewById(R.id.spFiltroCiudOrigen);
         spFiltroCiudDestino = dialogFragmentView.findViewById(R.id.spFiltroCiudDestino);
         spFiltroEstado = dialogFragmentView.findViewById(R.id.spFiltroEstado);
+
+
 
         spFiltroProvOrigen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -358,10 +388,11 @@ public class MisViajes extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado",resultados.getString("EstadoViaje"));
+                    item.put("ConductorId", resultados.getString("ConductorId"));
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado","ConductorId"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaViajes.setAdapter(simpleAdapter);
@@ -376,6 +407,7 @@ public class MisViajes extends AppCompatActivity {
         String query = "";
         query += " SELECT 	vj.FechaHoraInicio,";
         query += "  	vj.Id,";
+        query += "  	vj.ConductorId,";
         query += " 		    pr1.Nombre ProvinciaOrigen,";
         query += "          ci1.Nombre CiudadOrigen,";
         query += "          pr2.Nombre ProvinciaDestino,";

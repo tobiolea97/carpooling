@@ -113,7 +113,7 @@ public class NuevaSolicitud extends AppCompatActivity {
 
         ArrayList<String> listaCantPasajeros = new ArrayList<String>();
 
-        for(int i = 1; i<=4; i++){
+        for(int i = 0; i<=3; i++){
             listaCantPasajeros.add(String.valueOf(i));
         }
 

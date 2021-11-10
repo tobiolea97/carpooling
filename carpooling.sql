@@ -306,4 +306,15 @@ INSERT INTO Viajes VALUES (1006,1,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera
 
 
 -- SOLICITUDES
-INSERT INTO Solicitudes VALUES (1000,1,1,2,2,20,"2022-10-01 14:30",0,"En Espera",1);
+-- SOLICITUD 1000 Tobias Olea
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1000,5,2,13,4,31,'2022-05-12 13:00',1,"Pendiente",1);
+
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1001,5,4,38,2,17,'2022-01-01 05:00',1,"Pendiente",1);
+
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1002,5,2,11,4,31,'2022-02-11 06:00',1,"Pendiente",1);
+
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1002,5,4,312,11,,'2022-02-14 12:00',1,"Pendiente",1);
