@@ -24,6 +24,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class ResponderSolicitud extends AppCompatActivity {
     Button botoncancelar,botonaceptar;
     GridView grillaVerViaje;
     Usuario usuarioACalificar;
-    String nombreUsuario,apellidoUsuario,emailUsuario,rolUsuario,idUsuario;
+    String nombreUsuario,apellidoUsuario,emailUsuario,rolUsuario,idUsuario, fechaHoraInicioString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,18 +105,12 @@ public class ResponderSolicitud extends AppCompatActivity {
             }
         });
 
-
         new CargarDatos().execute();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
-
         getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
-
-
-
         return true;
     }
 
@@ -133,8 +128,6 @@ public class ResponderSolicitud extends AppCompatActivity {
             Intent intent = new Intent(this, MisViajes.class);
             startActivity(intent);
         }
-
-
         if(id == R.id.crearViaje) {
             finish();
             Intent intent = new Intent(this, NuevoViaje.class);
@@ -211,6 +204,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                     Rating.setRating(promedio);
 
                     Rating.setIsIndicator(true);
+                    fechaHoraInicioString = resultados.getString("FechaHoraInicio");
 
                     Map<String, String> item = new HashMap<String, String>();
                     item.put("NroViaje", resultados.getString("Id"));
@@ -233,7 +227,6 @@ public class ResponderSolicitud extends AppCompatActivity {
         }
     }
 
-
     private class RechazarPasajero extends AsyncTask<Void,Integer,Boolean> {
 
         @Override
@@ -248,15 +241,8 @@ public class ResponderSolicitud extends AppCompatActivity {
                 query += " 		    EstadoPasajero='Rechazado'";
                 query += " 	Where	vj.UsuarioId='" + IdSolicitante + "' and vj.ViajeId='" + NroViaje + "'";
 
-
                 int resultado = st.executeUpdate(query);
-
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -266,7 +252,7 @@ public class ResponderSolicitud extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
-            if(resultado){
+            if (resultado) {
 
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
@@ -276,15 +262,13 @@ public class ResponderSolicitud extends AppCompatActivity {
                 Noti.setEstado(1);
                 try {
                     NotiNeg.AñadirNotificacion(Noti);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
                 Toast.makeText(contexto, "La solicitud fue rechazada correctamente.", Toast.LENGTH_SHORT).show();
                 finish();
-            }else{
+            } else {
                 Toast.makeText(contexto, "No se pudo rechazar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -304,15 +288,8 @@ public class ResponderSolicitud extends AppCompatActivity {
                 query += " 		    EstadoPasajero='Aceptado'";
                 query += " 	Where	vj.UsuarioId = '" + IdSolicitante + "' and vj.ViajeId='" + NroViaje + "'";
 
-
                 int resultado = st.executeUpdate(query);
-
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -322,7 +299,7 @@ public class ResponderSolicitud extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
-            if(resultado){
+            if (resultado) {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdSolicitante));
@@ -331,15 +308,46 @@ public class ResponderSolicitud extends AppCompatActivity {
                 Noti.setEstado(1);
                 try {
                     NotiNeg.AñadirNotificacion(Noti);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
                 Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
+                new EliminarSolicitudesEnRangoOcupado().execute();
                 finish();
-            }else{
+            } else {
                 Toast.makeText(contexto, "No se pudo Aceptar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class EliminarSolicitudesEnRangoOcupado extends AsyncTask<Void, Integer, Integer> {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                int dia = Integer.parseInt(fechaHoraInicioString.substring(8, 10));
+                int mes = Integer.parseInt(fechaHoraInicioString.substring(5, 7));
+                int anio = Integer.parseInt(fechaHoraInicioString.substring(0, 4));
+                int hora = Integer.parseInt(fechaHoraInicioString.substring(11, 13));
+                int minuto = Integer.parseInt(fechaHoraInicioString.substring(14, 16));
+
+                LocalDateTime rangoFechaInicio, rangoFechaFin, fechaHoraInicial;
+                fechaHoraInicial = LocalDateTime.of(anio, mes, dia, hora, minuto);
+                rangoFechaInicio = fechaHoraInicial.plusHours(-3);
+                rangoFechaFin = fechaHoraInicial.plusHours(+3);
+
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+
+                String query = "UPDATE Solicitudes SET EstadoRegistro = 0";
+                query += " WHERE PasajeroId = " + IdSolicitante;
+                query += " AND (FechaHoraInicio BETWEEN '" + rangoFechaInicio + "' AND '" + rangoFechaFin + "')";
+
+                return st.executeUpdate(query);
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }
@@ -371,30 +379,16 @@ public class ResponderSolicitud extends AppCompatActivity {
         protected void onPostExecute(ResultSet resultados) {
             super.onPostExecute(resultados);
             try {
-
-
                 while (resultados.next()) {
-
                     Asientos=resultados.getString("CantidadPasajeros");
                     Pasajeros=resultados.getString("Pasajeros");
-
-
-
                 }
-            int resultado=(Integer.parseInt(Asientos)-Integer.parseInt(Pasajeros))-1;
-
-              if(resultado>=0&&resultado<=Integer.parseInt(Asientos)){
-                  new AceptarPasajero().execute();
-
-              }
-              else{
-                  Toast.makeText(contexto, "No se pudo Aceptar la solicitud  ya que la cantidad de asiento .", Toast.LENGTH_SHORT).show();
-
-              }
-
-
-
-
+                int resultado=(Integer.parseInt(Asientos)-Integer.parseInt(Pasajeros))-1;
+                if(resultado >= 0 && resultado <= Integer.parseInt(Asientos)){
+                    new AceptarPasajero().execute();
+                } else {
+                    Toast.makeText(contexto, "No se pudo Aceptar la solicitud  ya que la cantidad de asiento .", Toast.LENGTH_SHORT).show();
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
