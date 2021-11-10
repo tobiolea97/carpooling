@@ -183,7 +183,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
         if(sp.getString("Rol","No hay datos").equals("PAS")) {
             if (id == R.id.misSolicitudes) {
-                Intent intent = new Intent(this, MisViajes.class);
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
                 startActivity(intent);
             }
 
@@ -225,13 +225,8 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
 
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        String rol = sp.getString("Rol","No hay datos");
-
-        if(sp.equals("CON")){
-            MenuItem currentOption = menu.findItem(R.id.misViajes);
-            currentOption.setVisible(false);
-        }
+        //MenuItem currentOption = menu.findItem(R.id.misViajes);
+        //currentOption.setVisible(false);
 
         return true;
     }

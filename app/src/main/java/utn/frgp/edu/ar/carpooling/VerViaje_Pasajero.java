@@ -156,6 +156,8 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         dniUsuario = spSesion.getString("Dni","No hay datos");
         idUsuarioLog = spSesion.getString("Id","No hay datos");
 
+
+
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: " + rolUsuario);
 
 
