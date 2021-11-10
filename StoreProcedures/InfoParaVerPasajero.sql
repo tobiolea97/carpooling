@@ -1,4 +1,4 @@
-CREATE DEFINER=`sql10441832`@`%` PROCEDURE `InfoParaVerPasajero`(
+CREATE DEFINER=`sql10448827`@`%` PROCEDURE `InfoParaVerPasajero`(
 	IN pasajero_id INT,
     IN viaje_id INT,
     IN conductor_id INT
@@ -43,7 +43,7 @@ BEGIN
     -- VERIFICAR CALIFICACION
     SELECT Id
     FROM Calificaciones
-    WHERE 	UsuarioId = pasajero_id
+    WHERE 	CalificadorId = conductor_id AND ViajeId = viaje_id
     LIMIT 1
 	INTO @IdCalificacion;
     
