@@ -255,6 +255,7 @@ INSERT INTO `Usuarios` (`Email`,`Rol`,`Pass`,`Nombre`,`Apellido`,`Nacimiento`,`T
 DELETE FROM Calificaciones WHERE Id > 0;
 DELETE FROM PasajerosPorViaje WHERE UsuarioId > 0;
 DELETE FROM Viajes WHERE Id > 0;
+DELETE FROM Solicitudes WHERE Id > 0;
 -- VIAJE 1000 Tobias Olea
 INSERT INTO Viajes VALUES (1000,1,1,2,2,20,"2021-10-01 14:30",null,4,"Finalizado",1);
   -- Pasajeros del viaje 1000
@@ -303,18 +304,42 @@ INSERT INTO Viajes VALUES (1005,1,2,11,2,17,"2021-12-05 07:30",null,4,"En Espera
 -- VIAJE 1006 Tobias Olea
 INSERT INTO Viajes VALUES (1006,1,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera",1);
 
-
-
--- SOLICITUDES
--- SOLICITUD 1000 Tobias Olea
+-- SOLICITUDES Tobi Olea
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
 VALUES (1000,5,2,13,4,31,'2022-05-12 13:00',1,"Pendiente",1);
-
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
-VALUES (1001,5,4,38,2,17,'2022-01-01 05:00',1,"Pendiente",1);
-
+VALUES (1001,5,5,38,2,17,'2022-01-01 05:00',1,"Pendiente",1);
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
 VALUES (1002,5,2,11,4,31,'2022-02-11 06:00',1,"Pendiente",1);
-
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
-VALUES (1002,5,4,312,11,,'2022-02-14 12:00',1,"Pendiente",1);
+VALUES (1003,5,4,31,2,11,'2022-02-14 12:00',1,"Pendiente",1);
+
+-- SOLICITUDES Joni Costa
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1004,6,4,31,3,25,'2021-12-01 13:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1005,6,1,3,2,13,'2021-12-03 05:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1006,6,2,17,1,9,'2021-12-08 06:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1007,6,4,36,5,39,'2021-12-11 12:00',1,"Pendiente",1);
+
+-- SOLICITUDES Mati Alvarado
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1008,7,1,2,3,21,'2021-12-01 13:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1009,7,3,21,1,2,'2021-12-03 05:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1010,7,3,28,2,12,'2021-12-08 06:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1011,7,3,21,2,20,'2021-12-11 12:00',1,"Pendiente",1);
+
+-- SOLICITUDES Fran Sosa
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1012,8,5,37,5,40,'2021-12-01 13:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1013,8,4,31,5,40,'2021-12-01 13:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1014,8,5,40,5,37,'2021-12-01 13:00',1,"Pendiente",1);
+INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
+VALUES (1015,8,5,37,5,39,'2021-12-01 13:00',1,"Pendiente",1);

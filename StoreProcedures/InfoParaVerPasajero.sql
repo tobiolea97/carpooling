@@ -43,7 +43,7 @@ BEGIN
     -- VERIFICAR CALIFICACION
     SELECT Id
     FROM Calificaciones
-    WHERE 	CalificadorId = conductor_id AND ViajeId = viaje_id
+    WHERE 	UsuarioId = pasajero_id AND  CalificadorId = conductor_id AND ViajeId = viaje_id
     LIMIT 1
 	INTO @IdCalificacion;
     
