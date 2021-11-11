@@ -267,7 +267,7 @@ public class NuevoViaje extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio + 2000,mes,dia,hora,minuto));
+        nuevoViaje.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
@@ -514,6 +514,22 @@ public class NuevoViaje extends AppCompatActivity {
 
                 String query = "";
 
+
+                try {
+
+                    query = "CALL FechaActualEsMenor('" + nuevoViaje.getFechaHoraInicio()  + "');";
+                    ResultSet rs = st.executeQuery(query);
+                    rs.next();
+                    String resultado = rs.getString("Resultado");
+                    if(resultado.equals("FALSE")) {
+                        return false;
+                    }
+
+                } catch(Exception e) {
+
+                }
+
+                query = "";
                 query += "INSERT INTO Viajes";
                 query += "(ConductorId,";
                 query += "ProvinciaOrigenId,";

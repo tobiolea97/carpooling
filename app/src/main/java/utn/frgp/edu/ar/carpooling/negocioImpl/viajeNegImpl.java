@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +38,7 @@ public class viajeNegImpl implements viajeNeg {
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA! JONNA
-        if(v.getFechaHoraInicio().compareTo(LocalDateTime.now())<0){
+        if(v.getFechaHoraInicio().compareTo(LocalDateTime.now(ZoneId.of("UTC-3")))<0){
             valor = EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal();
         }
         
