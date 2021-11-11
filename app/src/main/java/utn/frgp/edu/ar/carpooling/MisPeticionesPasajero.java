@@ -31,10 +31,15 @@ public class MisPeticionesPasajero extends AppCompatActivity {
     GridView GrillaPeticiones;
     Context contexto;
     String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario,idUsuario;
+    boolean shouldExecuteOnResume;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_peticiones_pasajero);
+
+        shouldExecuteOnResume = false;
+
         contexto = this;
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nombreUsuario = spSesion.getString("Nombre", "No hay datos");
@@ -234,6 +239,20 @@ public class MisPeticionesPasajero extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(shouldExecuteOnResume){
+            finish();
+            Intent pagVerViaje= new Intent(contexto,MisPeticionesPasajero.class);
+            startActivity(pagVerViaje);
+        } else{
+            shouldExecuteOnResume = true;
+        }
+
     }
 
 

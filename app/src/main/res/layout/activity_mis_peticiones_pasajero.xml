@@ -21,9 +21,10 @@
                 android:id="@+id/textView28"
                 android:layout_width="169dp"
                 android:layout_height="34dp"
-                android:layout_marginStart="120dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
                 android:text="Mis Peticiones"
+                android:textSize="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
