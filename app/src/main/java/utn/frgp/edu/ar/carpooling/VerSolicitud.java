@@ -1,11 +1,15 @@
 package utn.frgp.edu.ar.carpooling;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +17,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,7 +37,7 @@ public class VerSolicitud extends AppCompatActivity {
     GridView grillaverViaje;
     String nroSolicitud;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario, estadoViaje, localDateviaje;
-
+    String nroViaje;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +132,72 @@ public class VerSolicitud extends AppCompatActivity {
         editor.commit();
         Intent pagEditarSolicitud = new Intent(contexto, NuevaSolicitud.class);
         startActivity(pagEditarSolicitud);
+    }
+
+
+    public void onClickCancelarSolicitud (View view) {
+         nroViaje = ((TextView)findViewById(R.id.tvGridItemViajeNroViaje)).getText().toString();
+        AlertDialog.Builder EliminarSolicitud= new AlertDialog.Builder(VerSolicitud.this);
+        EliminarSolicitud.setMessage("¿Estas seguro que quieres eliminar tu Solicitud?")
+                .setCancelable(false)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new CancelarSolicitud().execute();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        return;
+                    }
+                });
+        AlertDialog titulo= EliminarSolicitud.create();
+        titulo.setTitle("Solicitud");
+        titulo.show();
+
+    }
+    private class CancelarSolicitud extends AsyncTask<Void,Integer,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " UPDATE 	Solicitudes Sol";
+                query += "  	    SET";
+                query += " 		    EstadoRegistro='0'";
+                query += " 	Where  Sol.Id=" + nroViaje;
+
+
+                int resultado = st.executeUpdate(query);
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Boolean resultado) {
+            super.onPostExecute(resultado);
+            if(resultado){
+                Toast.makeText(contexto, "La Solicitud fue eliminado correctamente", Toast.LENGTH_SHORT).show();
+                Intent pagVerMisSolicitudes = new Intent(contexto, MisViajesModoPasajero.class);
+                startActivity(pagVerMisSolicitudes);
+            }else{
+                Toast.makeText(contexto, "La Solicitud no se pudo eliminar correctamente", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private class CargarSolicitudSeleccionada extends AsyncTask<Void,Integer, ResultSet> {
