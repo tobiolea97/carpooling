@@ -101,14 +101,21 @@ public class NuevaSolicitud extends AppCompatActivity {
             Button btCrearViaje = findViewById(R.id.btnCrearViaje);
             tvTitulo.setText("Editar Solicitud");
             btCrearViaje.setText("Actualizar solicitud");
-            fechaViaje.setText(spEdicion.getString("fechaInicio",""));
+            String fechaInicioString = spEdicion.getString("fechaInicio","");
+            fechaViaje.setText(
+                    fechaInicioString.split("/")[0] + "/" +
+                    fechaInicioString.split("/")[1] + "/" +
+                    "20" + fechaInicioString.split("/")[2]
+            );
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            fechaViaje.setEnabled(false);
             spProvinciasOrigen.setEnabled(false);
             spProvinciasDestino.setEnabled(false);
             spCiudadesOrigen.setEnabled(false);
             spCiudadesDestino.setEnabled(false);
-            spCantPasajeros.setEnabled(false);
-            new CargarCantidadAcompañantes().execute();
+            spCantPasajeros.setEnabled(true);
+
+            new CargarSpinnerPasajeros().execute();
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
@@ -117,15 +124,19 @@ public class NuevaSolicitud extends AppCompatActivity {
         provOrigSelecc = null;
         nuevaSolicitud = null;
 
-        ArrayList<String> listaCantPasajeros = new ArrayList<String>();
+        if(!esModoEdicion) {
+            ArrayList<String> listaCantPasajeros = new ArrayList<String>();
 
-        for(int i = 0; i<=3; i++){
-            listaCantPasajeros.add(String.valueOf(i));
+            for(int i = 0; i<=3; i++){
+                listaCantPasajeros.add(String.valueOf(i));
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spCantPasajeros.setAdapter(adapter);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCantPasajeros.setAdapter(adapter);
+
 
         fechaViaje.setFocusable(false);
         fechaViaje.setFocusableInTouchMode(false);
@@ -281,7 +292,7 @@ public class NuevaSolicitud extends AppCompatActivity {
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
         //ESTA COMENTADO PORQUE AMI NO ME FUNCIONA, NO OLVIDAR ACTIVARLO NUEVAMENTE!!!!  JONNA.
-        nuevaSolicitud.setFechaHoraInicio(LocalDateTime.of(anio+2000,mes,dia,hora,minuto));
+        nuevaSolicitud.setFechaHoraInicio(LocalDateTime.of(anio,mes,dia,hora,minuto));
 
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
@@ -621,6 +632,55 @@ public class NuevaSolicitud extends AppCompatActivity {
                     spCantPasajeros.setSelection(resultado.getInt("CantidadAcompaniantes"));
                 }
             } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargarSpinnerPasajeros extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0) + "; ";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                while (resultados.next()) {
+
+                    String cantidadActualString = resultados.getString("CantidadAcompaniantes");
+                    Integer cantidadActual = Integer.parseInt(cantidadActualString == null ? "0" : cantidadActualString);
+                    Integer indexCantidadActual = 0;
+
+                    ArrayList<String> listaCantPasajeros = new ArrayList<String>();
+                    for (int i = 0; i <= 3; i++) {
+                        if(i == cantidadActual) indexCantidadActual = i;
+                        listaCantPasajeros.add(String.valueOf(i));
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCantPasajeros.setAdapter(adapter);
+                    spCantPasajeros.setSelection(indexCantidadActual);
+
+                }
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
