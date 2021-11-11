@@ -1,9 +1,11 @@
 package utn.frgp.edu.ar.carpooling;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -72,9 +74,31 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
         CancelarPeticion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new CancelarPeticion().execute();
-                Intent PagVerPeticiones= new Intent(contexto,MisPeticionesPasajero.class);
-                startActivity(PagVerPeticiones);
+                AlertDialog.Builder vtnConfirmacion = new AlertDialog.Builder(contexto);
+
+                vtnConfirmacion.setMessage("¿Esta seguro que quiere enviar una peticion para unirse al viaje?");
+                vtnConfirmacion.setCancelable(false);
+                vtnConfirmacion.setTitle("Confirmacion de Asignacion a viaje");
+
+                vtnConfirmacion.setPositiveButton("Si",new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new CancelarPeticion().execute();
+                    }
+                });
+
+                vtnConfirmacion.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alerta = vtnConfirmacion.create();
+                alerta.show();
+
+
             }
         });
 
@@ -397,7 +421,7 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(ConductorId));
-                Noti.setMensaje("El pasajero"+nombreUsuario+"  "+ apellidoUsuario+" ha  cancelado la peticion  del  nro de viaje "+NroViaje);
+                Noti.setMensaje("El pasajero "+nombreUsuario+"  "+ apellidoUsuario+" ha  cancelado la peticion  del  nro de viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
