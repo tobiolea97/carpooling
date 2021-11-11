@@ -166,7 +166,7 @@ public class PreRegistro extends AppCompatActivity {
                 nextForm.putExtra("dni", etDNI.getText().toString());
 
                 startActivity(nextForm);
-                finish();
+                //finish();
 
             } catch (SQLException e) {
                 e.printStackTrace();

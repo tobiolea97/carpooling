@@ -227,9 +227,8 @@ public class Registro extends AppCompatActivity {
                 if(Usuario.getRol().getId().equals("PAS")) {
                     nextForm = new Intent(context, Home.class);
                 }
-
+                nextForm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(nextForm);
-                finish();
 
             }else{
                 Toast.makeText(context, "No se pudo completar el registro.", Toast.LENGTH_SHORT).show();
