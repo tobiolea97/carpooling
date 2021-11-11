@@ -209,7 +209,7 @@ public class Validadores {
         int hora = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[0]);
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
-        if(hora > 24 || hora < 0){
+        if(hora > 23 || hora < 0){
             horaViaje.setError("Hora invalida");
             return false;
         }

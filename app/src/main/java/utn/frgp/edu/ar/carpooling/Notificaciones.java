@@ -45,7 +45,7 @@ public class Notificaciones extends AppCompatActivity {
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario,Mensaje;
     TextView TxtNotienesMensajes;
     ImageButton EliminarTodo;
-    boolean VerificacionMensaje;
+    boolean VerificacionMensaje=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,7 +220,7 @@ public class Notificaciones extends AppCompatActivity {
             try {
                 ArrayList<String> Mensajes= new ArrayList<String>();
                 ArrayList<String> EstadoNotificacion= new ArrayList<String>();
-        boolean VerificacionMensaje=false;
+                VerificacionMensaje=false;
 
                 while (resultados.next()) {
                     VerificacionMensaje=true;

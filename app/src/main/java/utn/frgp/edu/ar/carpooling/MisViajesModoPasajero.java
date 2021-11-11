@@ -366,7 +366,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
         query += " 	ON ci1.Id = vj.CiudadOrigenId";
         query += " LEFT JOIN Ciudades ci2";
         query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += " WHERE vj.PasajeroId = '" + idUsuario + "' ";
+        query += " WHERE vj.EstadoRegistro=1 and  vj.PasajeroId = '" + idUsuario + "' ";
 
         if (!filtros.isEmpty()) {
             if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {
