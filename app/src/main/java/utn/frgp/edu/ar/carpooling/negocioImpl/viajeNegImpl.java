@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -30,15 +31,16 @@ public class viajeNegImpl implements viajeNeg {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int validarDatosViaje(Viaje v) {
-
         int valor = -1;
         if(v.getProvDestino().getIdProvincia() == v.getProvOrigen().getIdProvincia() &&
                 v.getCiudadDestino().getIdCiudad() == v.getCiudadOrigen().getIdCiudad()){
             valor = EnumsErrores.viaje_DestinoyOrigenIguales.ordinal();
         }
 
+        LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC-3"));
+
         //VOLVER A HABILITAR, AMI NO ME ANDA! JONNA
-        if(v.getFechaHoraInicio().compareTo(LocalDateTime.now())<0){
+        if(v.getFechaHoraInicio().compareTo(time)<0){
             valor = EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal();
         }
         
@@ -77,20 +79,26 @@ public class viajeNegImpl implements viajeNeg {
     @Override
     public boolean validarSolicitudEnRangoFechayHora(Viaje obj) throws ExecutionException, InterruptedException {
         objOrigViaje = obj;
-        boolean vBoleana = false;
+        boolean hayConflictoConViajes = false;
         //UTILIZO EL GET PARA ESPERAR A QUE EL HILO TERMINE DE EJECUTARSE.
         ResultSet resultado = new buscarSolicitudEnRangoTiempo().execute().get();
 
         try {
-            while (resultado.next()) {
-                vBoleana = true;
+            if (obj.getIdViaje() > 0) {
+                while (resultado.next()) {
+                    if (obj.getIdViaje() != resultado.getInt("Id")) hayConflictoConViajes = true;
+                }
+            } else {
+                while (resultado.next()) {
+                    hayConflictoConViajes = true;
+                }
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return vBoleana;
+        return hayConflictoConViajes;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

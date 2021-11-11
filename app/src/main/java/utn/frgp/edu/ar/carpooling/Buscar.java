@@ -251,7 +251,7 @@ public class Buscar extends AppCompatActivity {
                     pagPeticionViaje.putExtra("NroViaje",part3);
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
 
-                    String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+                    String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
 
                     pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
                     pagPeticionViaje.putExtra("pPantallaPrev", "pBuscar");

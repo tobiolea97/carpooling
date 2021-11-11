@@ -71,8 +71,10 @@ public class MainActivity extends AppCompatActivity {
         login=findViewById(R.id.btnMainActivityLogin);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
 
+        /*
         email.setText("tobi@mail.com");
         password.setText("password");
+        */
 
         // Carga de roles
         ArrayList<String> roles = new ArrayList<String>();
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         Intent nextForm = new Intent(this, PreRegistro.class);
         login.setEnabled(true);
         startActivity(nextForm);
-        finish();
+        //finish();
     }
 
     public void onClickLogin(View view) {

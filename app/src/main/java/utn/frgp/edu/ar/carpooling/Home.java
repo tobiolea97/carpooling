@@ -34,15 +34,19 @@ public class Home extends AppCompatActivity {
     Context context;
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
+    private static int contador=0;
     private final static String CHANNEL_ID="NOTIFICACION";
     public final static int NOTIFICACION_ID=0;
     private PendingIntent pendingIntent;
     GridView grillaViajes;
     Button btnRedireccionarAMisViajes,btnRedireccionarABusqueda;
+    boolean shouldExecuteOnResume;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        shouldExecuteOnResume = false;
         setContentView(R.layout.activity_home);
         context = this;
         st1 = (ImageView) findViewById(R.id.ivHomeStar1);
@@ -89,7 +93,10 @@ public class Home extends AppCompatActivity {
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
 
-        new Home.VerificarNotificacion().execute();
+if(contador==0){
+    new Home.VerificarNotificacion().execute();
+}
+
 
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,7 +124,7 @@ public class Home extends AppCompatActivity {
                     pagPeticionViaje.putExtra("NroViaje",part3);
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
 
-                    String idConductorViaje = Texto.split("ConductorId=")[1].split(",")[0];
+                    String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
 
                     pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
                     pagPeticionViaje.putExtra("pPantallaPrev", "pGeneral");
@@ -173,6 +180,10 @@ public class Home extends AppCompatActivity {
 
             if (id == R.id.crearSolicitud) {
                 Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
                 startActivity(intent);
             }
         }
@@ -405,7 +416,7 @@ public class Home extends AppCompatActivity {
         protected void onPostExecute(ResultSet resultados) {
             super.onPostExecute(resultados);
             try {
-
+                contador++;
                 boolean verificacion=false;
                 while (resultados.next()) {
                 verificacion=true;
@@ -467,5 +478,20 @@ public class Home extends AppCompatActivity {
         notificationManagerCompat.notify(NOTIFICACION_ID,builder.build());
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(shouldExecuteOnResume){
+            finish();
+            Intent pagVerViaje= new Intent(context,Home.class);
+            startActivity(pagVerViaje);
+        } else{
+            shouldExecuteOnResume = true;
+        }
+
+    }
+
 
 }

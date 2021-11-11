@@ -101,8 +101,21 @@ public class NuevaSolicitud extends AppCompatActivity {
             Button btCrearViaje = findViewById(R.id.btnCrearViaje);
             tvTitulo.setText("Editar Solicitud");
             btCrearViaje.setText("Actualizar solicitud");
-            fechaViaje.setText(spEdicion.getString("fechaInicio",""));
+            String fechaInicioString = spEdicion.getString("fechaInicio","");
+            fechaViaje.setText(
+                    fechaInicioString.split("/")[0] + "/" +
+                    fechaInicioString.split("/")[1] + "/" +
+                    "20" + fechaInicioString.split("/")[2]
+            );
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            fechaViaje.setEnabled(false);
+            spProvinciasOrigen.setEnabled(false);
+            spProvinciasDestino.setEnabled(false);
+            spCiudadesOrigen.setEnabled(false);
+            spCiudadesDestino.setEnabled(false);
+            spCantPasajeros.setEnabled(true);
+
+            new CargarSpinnerPasajeros().execute();
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
@@ -111,15 +124,19 @@ public class NuevaSolicitud extends AppCompatActivity {
         provOrigSelecc = null;
         nuevaSolicitud = null;
 
-        ArrayList<String> listaCantPasajeros = new ArrayList<String>();
+        if(!esModoEdicion) {
+            ArrayList<String> listaCantPasajeros = new ArrayList<String>();
 
-        for(int i = 1; i<=4; i++){
-            listaCantPasajeros.add(String.valueOf(i));
+            for(int i = 0; i<=3; i++){
+                listaCantPasajeros.add(String.valueOf(i));
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spCantPasajeros.setAdapter(adapter);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCantPasajeros.setAdapter(adapter);
+
 
         fechaViaje.setFocusable(false);
         fechaViaje.setFocusableInTouchMode(false);
@@ -141,10 +158,15 @@ public class NuevaSolicitud extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
 
-        getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
 
-
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
 
         return true;
     }
@@ -153,29 +175,51 @@ public class NuevaSolicitud extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem opcionMenu) {
         int id = opcionMenu.getItemId();
 
-        if(id == R.id.miperfil) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
             finish();
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
         }
-      /*  if(id == R.id.misViajes) {
-            finish();
-            Intent intent = new Intent(this, MisViajes.class);
-            startActivity(intent);
-        }
 
-        if(id == R.id.crearViaje) {
-            finish();
-            Intent intent = new Intent(this, NuevoViaje.class);
-            startActivity(intent);
-        }*/
-        if(id == R.id.notificaciones) {
-            finish();
+        if (id == R.id.notificaciones) {
             Intent intent = new Intent(this, Notificaciones.class);
             startActivity(intent);
         }
 
-        if(id == R.id.cerrarSesion) {
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.cerrarSesion) {
 
             SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = spSesion.edit();
@@ -187,6 +231,14 @@ public class NuevaSolicitud extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem currentOption = menu.findItem(R.id.crearSolicitud);
+        currentOption.setVisible(false);
+
+        return true;
     }
 
     public void onClickFechaViaje(View view) {
@@ -212,7 +264,6 @@ public class NuevaSolicitud extends AppCompatActivity {
     public void onClickCrearSolicitud(View view) throws ExecutionException, InterruptedException {
         nuevaSolicitud = new Viaje();
 
-
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
         nuevaSolicitud.setIdConductor(Integer.parseInt(spSesion.getString("Id","No hay datos")));
         nuevaSolicitud.setProvOrigen(itemsProvincias.get(spProvinciasOrigen.getSelectedItemPosition()));
@@ -227,15 +278,9 @@ public class NuevaSolicitud extends AppCompatActivity {
             nuevaSolicitud.setIdViaje(spEdicion.getInt("idViaje", 0));
         }
 
-
-        if(!Validadores.validarNacimiento(true,fechaViaje)){
+        if (!Validadores.validarNacimiento(true,fechaViaje) || !Validadores.validarHoraViaje(true,horaViaje)) {
             return;
         }
-
-        if(!Validadores.validarHoraViaje(true,horaViaje)){
-            return;
-        }
-
 
         String separadorFecha = Pattern.quote("/");
         String separadorHora = Pattern.quote(":");
@@ -509,17 +554,9 @@ public class NuevaSolicitud extends AppCompatActivity {
                 query += ")";
 
                 int resultado = st.executeUpdate(query);
-
-
-                if(resultado>0){
-                    return true;
-                }
-                else {return false;}
-
-
+                return resultado > 0;
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
-
                 return false;
             }
         }
@@ -545,15 +582,13 @@ public class NuevaSolicitud extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "UPDATE Viajes SET ";
-                query += "PasajeroId='" + nuevaSolicitud.getIdViaje() + "',";
+                query += "UPDATE Solicitudes SET ";
                 query += "ProvinciaOrigenId='" + nuevaSolicitud.getProvOrigen().getIdProvincia()+ "',";
                 query += "CiudadOrigenId='" + nuevaSolicitud.getCiudadOrigen().getIdCiudad()+ "',";
                 query += "ProvinciaDestinoId='" + nuevaSolicitud.getProvDestino().getIdProvincia() + "',";
                 query += "CiudadDestinoId='" + nuevaSolicitud.getCiudadDestino().getIdCiudad() + "',";
                 query += "FechaHoraInicio='" + nuevaSolicitud.getFechaHoraInicio() + "',";
-                query += "CantidadAcompaniantes='" + nuevaSolicitud.getCantPasajeros() + "',";
-                query += "EstadoSolicitud='" + nuevaSolicitud.getEstadoViaje() + "'";
+                query += "CantidadAcompaniantes='" + nuevaSolicitud.getCantPasajeros() + "'";
                 query += " WHERE Id = " + nuevaSolicitud.getIdViaje();
 
                 int resultado = st.executeUpdate(query);
@@ -571,6 +606,83 @@ public class NuevaSolicitud extends AppCompatActivity {
                 finish();
             }
             else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class CargarCantidadAcompañantes extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                return st.executeQuery("SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0));
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultado) {
+            super.onPostExecute(resultado);
+            try {
+                while (resultado.next()) {
+                    spCantPasajeros.setSelection(resultado.getInt("CantidadAcompaniantes"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CargarSpinnerPasajeros extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0) + "; ";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                while (resultados.next()) {
+
+                    String cantidadActualString = resultados.getString("CantidadAcompaniantes");
+                    Integer cantidadActual = Integer.parseInt(cantidadActualString == null ? "0" : cantidadActualString);
+                    Integer indexCantidadActual = 0;
+
+                    ArrayList<String> listaCantPasajeros = new ArrayList<String>();
+                    for (int i = 0; i <= 3; i++) {
+                        if(i == cantidadActual) indexCantidadActual = i;
+                        listaCantPasajeros.add(String.valueOf(i));
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCantPasajeros.setAdapter(adapter);
+                    spCantPasajeros.setSelection(indexCantidadActual);
+
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

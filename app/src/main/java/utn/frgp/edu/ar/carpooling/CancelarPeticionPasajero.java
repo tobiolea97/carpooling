@@ -4,12 +4,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RatingBar;
@@ -32,39 +34,31 @@ import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Notificaciones;
 import utn.frgp.edu.ar.carpooling.negocioImpl.NotificacionesNegImpl;
 
-public class PeticionDeViaje extends AppCompatActivity {
+public class CancelarPeticionPasajero extends AppCompatActivity {
     Context contexto;
-    String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario;
-    GridView GrViajeSolicitado;
-    String EmailConductor, IdConductor;
-    String NroViaje,EstadoViaje;
-    String estadoViaje;
-    String localDateviaje;
-    TextView NombreConductor,CelularConductor,Trasladoa,MensajeError;
+    GridView GrCancelarPeticion;
+    String emailUsuario, rolUsuario,nombreUsuario,apellidoUsuario,idUsuario;
+    String NroViaje,ConductorId;
+    TextView NombreConductor,CelularConductor,ViajoCon;
     RatingBar ratingBar;
-    Button BotonSolicitar;
-
+    Button CancelarPeticion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_peticion_de_viaje);
-        /*contexto = this;
-        GrViajeSolicitado=findViewById(R.id.GrPeticionViaje);
-        ratingBar=findViewById(R.id.ratingBarPeticion);
-        Trasladoa=findViewById(R.id.TxtTrasladoPeticion);
-        BotonSolicitar=findViewById(R.id.BtnSolicitarViaje);
-        NombreConductor=findViewById(R.id.TxtNombrePeticion);
-        CelularConductor=findViewById(R.id.TxtTelefonoPeticion);
-        MensajeError=findViewById(R.id.MensajeError);
-
-
+        setContentView(R.layout.activity_cancelar_peticion_pasajero);
+        contexto = this;
         SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
-        nombreUsuario = spSesion.getString("Nombre","No hay datos");
+        nombreUsuario = spSesion.getString("Nombre", "No hay datos");
         apellidoUsuario = spSesion.getString("Apellido","No hay datos");
         emailUsuario = spSesion.getString("Email","No hay datos");
         rolUsuario = spSesion.getString("Rol","No hay datos");
         idUsuario = spSesion.getString("Id","No hay datos");
-
+        GrCancelarPeticion = (GridView) findViewById(R.id.GrCancelarPeticion);
+        NombreConductor=findViewById(R.id.TxtCancelarPetNombre);
+        CelularConductor=findViewById(R.id.TxtCancelarPetCelular);
+        ratingBar=findViewById(R.id.ratingBarCancelarPet);
+        ViajoCon=findViewById(R.id.TxtViajoConCanPet);
+        CancelarPeticion=findViewById(R.id.BtnCancelarPeticion);
         String Rol="";
         if(rolUsuario.equals("CON")){
             Rol="Conductor";
@@ -74,20 +68,108 @@ public class PeticionDeViaje extends AppCompatActivity {
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
         NroViaje=getIntent().getStringExtra("NroViaje");
-        EstadoViaje=getIntent().getStringExtra("EstadoViaje");
 
-
-        BotonSolicitar.setOnClickListener(new View.OnClickListener() {
+        CancelarPeticion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AgregarPasajeroxViaje().execute();
+                new CancelarPeticion().execute();
+                Intent PagVerPeticiones= new Intent(contexto,MisPeticionesPasajero.class);
+                startActivity(PagVerPeticiones);
             }
         });
 
 
 
         new CargarViajeSeleccionado().execute();
-        new VerificarPeticion().execute();*/
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem miPerfil = menu.findItem(R.id.miperfil);
+        miPerfil.setVisible(false);
+
+        return true;
     }
     private class CargarViajeSeleccionado extends AsyncTask<Void,Integer, ResultSet> {
 
@@ -105,9 +187,8 @@ public class PeticionDeViaje extends AppCompatActivity {
                 query += "          pr2.Nombre ProvinciaDestino,";
                 query += "          ci2.Nombre CiudadDestino,";
                 query += "          vj.FechaHoraFinalizacion,";
-                query += "          vj.CantidadPasajeros,";
-                query += "          vj.EstadoViaje,";
-                query += "          vj.ConductorId";
+                query += "          vj.ConductorId,";
+                query += "          vj.EstadoViaje";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -141,22 +222,17 @@ public class PeticionDeViaje extends AppCompatActivity {
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
                     item.put("estado", resultados.getString("EstadoViaje"));
-                    estadoViaje = resultados.getString("EstadoViaje");
+                    ConductorId = resultados.getString("ConductorId");
                     itemsGrilla.add(item);
-                    localDateviaje=resultados.getString("FechaHoraFinalizacion");
-                    //EmailConductor=resultados.getString("ConductorEmail");
-                    IdConductor=resultados.getString("ConductorId");
+                    //localDateviaje=resultados.getString("FechaHoraFinalizacion");
+                    //cantidadDeAsientos=resultados.getString("CantidadPasajeros");
                 }
 
                 String[] from = {"NroViaje","origen", "destino", "fecha", "hora","estado"};
                 int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora, R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
-                GrViajeSolicitado.setAdapter(simpleAdapter);
-
-                //cargo los datos del conductor de ese viaje
-
-                new CargarDatos().execute();
-
+                GrCancelarPeticion.setAdapter(simpleAdapter);
+                new CargarDatosConductor().execute();
 
             }
             catch (Exception e) {
@@ -164,7 +240,8 @@ public class PeticionDeViaje extends AppCompatActivity {
             }
         }
     }
-    private class CargarDatos extends AsyncTask<Void,Integer,ResultSet> {
+    private class CargarDatosConductor extends AsyncTask<Void,Integer,ResultSet> {
+
         @Override
         protected ResultSet doInBackground(Void... voids) {
             try {
@@ -174,12 +251,10 @@ public class PeticionDeViaje extends AppCompatActivity {
                 String query = "";
                 query += " SELECT 	usu.Nombre,";
                 query += "  	    usu.Apellido,";
-                query += " 		    usu.Telefono,";
-                query += " 		    usu.Email,";
-                query += " 		    usu.Rol";
-                query += " From Usuarios usu";
-                query += " 	Where	 usu.Id='" + IdConductor + "'";
-                query += " 	And	 usu.Rol='CON'";
+                query += " 		    usu.Telefono";
+                query += " FROM Usuarios usu";
+                query += " 	Where	usu.Id='" + ConductorId + "'";
+
 
                 return st.executeQuery(query);
 
@@ -195,9 +270,8 @@ public class PeticionDeViaje extends AppCompatActivity {
             try {
 
                 while (resultados.next()) {
-                    NombreConductor.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
-                    CelularConductor.setText(resultados.getString("Telefono"));
-
+                   NombreConductor.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
+                   CelularConductor.setText(resultados.getString("Telefono"));
                 }
                 new CargarCalificaciones().execute();
 
@@ -207,7 +281,6 @@ public class PeticionDeViaje extends AppCompatActivity {
             }
         }
     }
-
     private class CargarCalificaciones extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
@@ -216,9 +289,9 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-                String query = "";
-                query += "SELECT AVG(cal.Calificacion) as promedio FROM Calificaciones cal inner join Usuarios usu on usu.Id=cal.UsuarioId  Where	usu.Id='" + IdConductor + "'";
 
+                String query = "";
+                query += "SELECT AVG(Calificacion) as promedio FROM Calificaciones WHERE UsuarioId = " + ConductorId;
 
                 return st.executeQuery(query);
 
@@ -237,15 +310,10 @@ public class PeticionDeViaje extends AppCompatActivity {
                     promedio = resultados.getFloat("promedio");
                 }
 
-                if(promedio == 0 ){
-
-                    ratingBar.setIsIndicator(true);
-                    return;
-                }
+                if(promedio == 0 ) return;
 
                 //Le agrego el promedio al rating para que pueda mostrarlo
                 ratingBar.setRating(promedio);
-                //No se puede calificarlo
                 ratingBar.setIsIndicator(true);
 
                 new ContarCalificaciones().execute();
@@ -265,8 +333,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Statement st = con.createStatement();
 
                 String query = "";
-                query += "SELECT COUNT(cal.Calificacion) as cantidad FROM Calificaciones cal inner join Usuarios usu on usu.Id=cal.UsuarioId  Where	usu.Id='" + IdConductor + "'";
-
+                query += "SELECT COUNT(Calificacion) as cantidad FROM Calificaciones WHERE UsuarioId = " + ConductorId;
 
                 return st.executeQuery(query);
 
@@ -285,7 +352,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                     cantidad = resultados.getInt("cantidad");
                 }
 
-                Trasladoa.setText(cantidad > 0 ? cantidad.toString()  + " Pasajeros lo calificaron" : "No Traslado a ningun pasajero");
+                ViajoCon.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "Sin calificacion");
 
             }
             catch (SQLException e) {
@@ -293,50 +360,7 @@ public class PeticionDeViaje extends AppCompatActivity {
             }
         }
     }
-
-
-    private class VerificarPeticion extends AsyncTask<Void,Integer, ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-                String query = "";
-                query += " SELECT 	pv.ViajeId";
-                query += " FROM PasajerosPorViaje pv";
-                query += " 	Where	pv.EstadoPasajero='Pendiente' and pv.ViajeId='" + NroViaje + "' and pv.UsuarioId='" + idUsuario + "'";
-                return st.executeQuery(query);
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultados) {
-            super.onPostExecute(resultados);
-            try {
-            boolean verificacion= false;
-
-                while (resultados.next()) {
-                    verificacion=true;
-                }
-
-                if(verificacion){
-                    MensajeError.setError("Ya has enviado la peticion aguarden que el conductor te acepte");
-                    BotonSolicitar.setEnabled(false);
-                }
-
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    private class AgregarPasajeroxViaje extends AsyncTask<Void,Integer, Boolean> {
+    private class CancelarPeticion extends AsyncTask<Void,Integer,Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -344,26 +368,21 @@ public class PeticionDeViaje extends AppCompatActivity {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-
                 String query = "";
-                query += "INSERT INTO `PasajerosPorViaje`";
-                query += "(ViajeId,";
-                query += "UsuarioEmail,"; // TODO - fix
-                query += "EstadoRegistro,";
-                query += "EstadoPasajero,";
-                query += "cantAcompañantes)";
-                query += "VALUES";
-                query += "(";
-                query +=  "'" + NroViaje+ "',";
-                query +=  "'" + emailUsuario+ "',";
-                query +=  "'1',";
-                query +=  "'Pendiente',";
-                query +=  "'0'";
-                query += ")";
+                query += " UPDATE 	PasajerosPorViaje vj";
+                query += "  	    SET";
+                query += " 		    EstadoPasajero='Rechazado'";
+                query += " 	Where	vj.UsuarioId='" + idUsuario + "' and vj.ViajeId='" + NroViaje + "'";
 
 
                 int resultado = st.executeUpdate(query);
-                return resultado > 0;
+
+
+                if(resultado>0){
+                    return true;
+                }
+                else {return false;}
+
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -377,8 +396,8 @@ public class PeticionDeViaje extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioId(Integer.parseInt(IdConductor));
-                Noti.setMensaje("Tienes una nueva peticion en el  Nro de viaje "+NroViaje+"");
+                Noti.setUsuarioId(Integer.parseInt(ConductorId));
+                Noti.setMensaje("El pasajero"+nombreUsuario+"  "+ apellidoUsuario+" ha  cancelado la peticion  del  nro de viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -388,12 +407,11 @@ public class PeticionDeViaje extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La peticion fue enviada", Toast.LENGTH_SHORT).show();
-                BotonSolicitar.setEnabled(false);
+                Toast.makeText(contexto, "La Peticion a sido cancelada de este viaje!.", Toast.LENGTH_SHORT).show();
+                finish();
             }else{
-                Toast.makeText(contexto, "No se pudo agregar el pasajero al viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo canelar la peticion  intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
 }

@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -54,6 +57,91 @@ public class VerViaje_Pasajero extends AppCompatActivity {
     Usuario usuarioACalificar;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu miMenu) {
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+            getMenuInflater().inflate(R.menu.menu_conductor, miMenu);
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            getMenuInflater().inflate(R.menu.menu_pasajero, miMenu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem opcionMenu) {
+        int id = opcionMenu.getItemId();
+
+        SharedPreferences sp = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+
+        if(sp.getString("Rol","No hay datos").equals("CON")) {
+
+            if (id == R.id.misViajes) {
+                Intent intent = new Intent(this, MisViajes.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearViaje) {
+                Intent intent = new Intent(this, NuevoViaje.class);
+                startActivity(intent);
+            }
+
+        }
+
+        if(sp.getString("Rol","No hay datos").equals("PAS")) {
+            if (id == R.id.misSolicitudes) {
+                Intent intent = new Intent(this, MisViajesModoPasajero.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.crearSolicitud) {
+                Intent intent = new Intent(this, NuevaSolicitud.class);
+                startActivity(intent);
+            }
+        }
+
+        if (id == R.id.miperfil) {
+            finish();
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.notificaciones) {
+            Intent intent = new Intent(this, utn.frgp.edu.ar.carpooling.Notificaciones.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.editarPerfil) {
+            Intent intent = new Intent(this, EditarPerfil.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.cerrarSesion) {
+
+            SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spSesion.edit();
+            editor.clear();
+            editor.commit();
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(opcionMenu);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        //MenuItem currentOption = menu.findItem(R.id.misViajes);
+        //currentOption.setVisible(false);
+
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_viaje_pasajero);
@@ -67,6 +155,10 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         rolUsuario = spSesion.getString("Rol","No hay datos");
         dniUsuario = spSesion.getString("Dni","No hay datos");
         idUsuarioLog = spSesion.getString("Id","No hay datos");
+
+
+
+        getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: " + rolUsuario);
 
 
         NroViaje=getIntent().getStringExtra("NroViaje");
@@ -155,7 +247,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         AlertDialog.Builder vtnConfirmacion = new AlertDialog.Builder(contexto);
 
         if(botonQuieroUnirme.getText().equals("Quiero unirme al viaje")){
-            vtnConfirmacion.setMessage("Esta seguro que quiere enviar una peticion para unirse al viaje?");
+            vtnConfirmacion.setMessage("¿Esta seguro que quiere enviar una peticion para unirse al viaje?");
             vtnConfirmacion.setCancelable(false);
             vtnConfirmacion.setTitle("Confirmacion de Asignacion a viaje");
 
@@ -175,7 +267,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
             });
         }
         else{
-            vtnConfirmacion.setMessage("Esta seguro que quiere abandonar el viaje? (No podrá volver a ser incluido)");
+            vtnConfirmacion.setMessage("¿Esta seguro que quiere abandonar el viaje? (No podrá volver a ser incluido)");
             vtnConfirmacion.setCancelable(false);
             vtnConfirmacion.setTitle("Confirmacion de Abandono de viaje");
 
@@ -251,7 +343,9 @@ public class VerViaje_Pasajero extends AppCompatActivity {
 
                     calificacionInicial=false;
 
-                    if(resultados.getFloat("IdCalificacion") > 0 ) {
+                    Integer idCalificacion = resultados.getInt("IdCalificacion");
+
+                    if(idCalificacion > 0 ) {
                         Rating.setIsIndicator(true);
                     }
 
@@ -266,8 +360,8 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     itemsGrilla.add(item);
                 }
 
-                String[] from = {"NroViaje","origen", "destino", "fecha", "hora"};
-                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora};
+                String[] from = {"NroViaje","origen", "destino", "fecha", "hora", "estado"};
+                int[] to = {R.id.tvGridItemViajeNroViaje,R.id.tvGridItemViajeOrigen, R.id.tvGridItemViajeDestino, R.id.tvGridItemViajeOrigenFecha, R.id.tvGridItemViajeOrigenHora,R.id.tvGridItemEstadoViaje};
                 SimpleAdapter simpleAdapter = new SimpleAdapter(contexto, itemsGrilla, R.layout.grid_item_viaje, from, to);
                 grillaVerViaje.setAdapter(simpleAdapter);
 
@@ -392,6 +486,20 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
+                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" Quiere unirse al viaje "+NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(contexto,"Se generó correctamente la peticion. Te avisaremos cuando el conductor te conteste.", Toast.LENGTH_LONG).show();
                 botonQuieroUnirme.setEnabled(false);
             }else{

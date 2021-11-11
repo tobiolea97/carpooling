@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 public class Validadores {
 
     private static String regExpNoNumbers = "^([^0-9]*)$";
+    private static String regExpTelefono = "\\+54\\s9\\s[0-9\\s]+";
     private static String regExpHasNonNumericChar = "[\\+]{1}?[0-9\\s]+";
     private static String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
     private static String regExpDate = "[0-9]{1,2}-/[0-9]{1,2}-/[0-9]{4}";
@@ -69,7 +70,7 @@ public class Validadores {
             telefono.setError("Campo obligatorio");
             return false;
         }
-        if(!telefono.getText().toString().matches(regExpHasNonNumericChar)) {
+        if(!telefono.getText().toString().matches(regExpTelefono)) {
             telefono.setError("Formato aceptado: +54 9 11 2345 6789");
             return false;
         }
@@ -83,6 +84,12 @@ public class Validadores {
             telefono.setError("Este campo admite un máximo de 20 caracteres");
             return false;
         }
+
+        if(telefono.getText().toString().length() <= 14) {
+            telefono.setError("Este campo admite un mínimo de 14 caracteres");
+            return false;
+        }
+
         telefono.setError(null);
         return flag;
     }
@@ -202,7 +209,7 @@ public class Validadores {
         int hora = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[0]);
         int minuto = Integer.parseInt(horaViaje.getText().toString().split(separadorHora)[1]);
 
-        if(hora > 24 || hora < 0){
+        if(hora > 23 || hora < 0){
             horaViaje.setError("Hora invalida");
             return false;
         }

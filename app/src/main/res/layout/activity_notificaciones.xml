@@ -17,11 +17,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageButton
+                android:id="@+id/IBeliminarTodo"
+                android:layout_width="49dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="24dp"
+                android:onClick="EliminarTodosLosMensajes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView27"
+                app:srcCompat="@drawable/trash" />
+
+            <TextView
+                android:id="@+id/TxtNotienesMensajes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="16dp"
+                android:text="No tienes mensajes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView27" />
+
             <TextView
                 android:id="@+id/textView27"
                 android:layout_width="161dp"
                 android:layout_height="31dp"
-                android:layout_marginStart="104dp"
+                android:layout_marginStart="132dp"
                 android:text="MENSAJERIA"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="7dp" />
@@ -31,8 +51,9 @@
                 android:id="@+id/LvNotificacionesLeidos"
                 android:layout_width="391dp"
                 android:layout_height="628dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="36dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.111"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView27" />
 
