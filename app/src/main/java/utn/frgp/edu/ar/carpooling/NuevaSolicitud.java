@@ -103,6 +103,7 @@ public class NuevaSolicitud extends AppCompatActivity {
             btCrearViaje.setText("Actualizar solicitud");
             fechaViaje.setText(spEdicion.getString("fechaInicio",""));
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            new CargarCantidadAcompañantes().execute();
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
@@ -589,6 +590,34 @@ public class NuevaSolicitud extends AppCompatActivity {
                 finish();
             }
             else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class CargarCantidadAcompañantes extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                return st.executeQuery("SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0));
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultado) {
+            super.onPostExecute(resultado);
+            try {
+                while (resultado.next()) {
+                    spCantPasajeros.setSelection(resultado.getInt("CantidadAcompaniantes"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
