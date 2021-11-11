@@ -182,6 +182,10 @@ if(contador==0){
                 Intent intent = new Intent(this, NuevaSolicitud.class);
                 startActivity(intent);
             }
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
         }
 
         if (id == R.id.miperfil) {
