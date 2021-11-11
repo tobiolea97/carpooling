@@ -37,8 +37,10 @@ public class viajeNegImpl implements viajeNeg {
             valor = EnumsErrores.viaje_DestinoyOrigenIguales.ordinal();
         }
 
+        LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC-3"));
+
         //VOLVER A HABILITAR, AMI NO ME ANDA! JONNA
-        if(v.getFechaHoraInicio().compareTo(LocalDateTime.now(ZoneId.of("UTC-3")))<0){
+        if(v.getFechaHoraInicio().compareTo(time)<0){
             valor = EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal();
         }
         

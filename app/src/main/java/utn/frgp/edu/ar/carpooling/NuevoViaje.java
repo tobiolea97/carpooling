@@ -23,13 +23,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import utn.frgp.edu.ar.carpooling.conexion.DataDB;
 import utn.frgp.edu.ar.carpooling.entities.Ciudad;
 import utn.frgp.edu.ar.carpooling.entities.Provincia;
+import utn.frgp.edu.ar.carpooling.entities.Rol;
+import utn.frgp.edu.ar.carpooling.entities.Usuario;
 import utn.frgp.edu.ar.carpooling.entities.Viaje;
 import utn.frgp.edu.ar.carpooling.negocioImpl.viajeNegImpl;
 import utn.frgp.edu.ar.carpooling.utils.EnumsErrores;
@@ -111,6 +115,7 @@ public class NuevoViaje extends AppCompatActivity {
         }
 
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+        ArrayList<String> listaCantPasajeros = new ArrayList<String>();
 
         boolean esModoEdicion = spEdicion.getBoolean("modoEdicion", false);
         if (esModoEdicion) {
@@ -119,35 +124,93 @@ public class NuevoViaje extends AppCompatActivity {
             tvTitulo.setText("Editar Viaje");
             btCrearViaje.setText("Actualizar viaje");
             fechaViaje.setEnabled(false);
-            fechaViaje.setText(spEdicion.getString("fechaInicio",""));
+            String fechaInicio = spEdicion.getString("fechaInicio","");
+            fechaInicio = fechaInicio.split("/")[0] + "/" + fechaInicio.split("/")[1] + "/20" +fechaInicio.split("/")[2];
+            fechaViaje.setText(fechaInicio);
             horaViaje.setText(spEdicion.getString("horaInicio",""));
             spProvinciasOrigen.setEnabled(false);
             spCiudadesOrigen.setEnabled(false);
             spProvinciasDestino.setEnabled(false);
             spCiudadesDestino.setEnabled(false);
-            if (spEdicion.getInt("cantPasajeros", 0) > cantPasajerosMinima)
-                cantPasajerosMinima = spEdicion.getInt("cantPasajeros", 0);
-                cantAsientosMaxima = spEdicion.getInt("cantAsientos", 4);
+
+            new CargarSpinnerPasajeros().execute();
+
+            //if (spEdicion.getInt("cantPasajeros", 0) > cantPasajerosMinima)
+            //    cantPasajerosMinima = spEdicion.getInt("cantPasajeros", 0);
+            //    cantAsientosMaxima = spEdicion.getInt("cantAsientos", 4);
+        }
+        else {
+
+            for (int i = 1; i <= 4; i++) {
+                listaCantPasajeros.add(String.valueOf(i));
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spCantPasajeros.setAdapter(adapter);
+            }
         }
 
         provDestSelecc = null;
         provOrigSelecc = null;
         nuevoViaje = null;
-
-        ArrayList<String> listaCantPasajeros = new ArrayList<String>();
-        for (int i = cantPasajerosMinima; i <= cantAsientosMaxima; i++) {
-            listaCantPasajeros.add(String.valueOf(i));
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCantPasajeros.setAdapter(adapter);
-
         fechaViaje.setFocusable(false);
         fechaViaje.setFocusableInTouchMode(false);
         fechaViaje.setInputType(InputType.TYPE_NULL);
         fechaViaje.requestFocus();
         new CargarSpinnersProvincias().execute();
+    }
+
+    private class CargarSpinnerPasajeros extends AsyncTask<Void,Integer, ResultSet> {
+
+        @Override
+        protected ResultSet doInBackground(Void... voids) {
+
+            try {
+                SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+                Statement st = con.createStatement();
+                String query = "";
+                query += " CALL ObtenerCantidadAsientosOcupados(" + spEdicion.getInt("idViaje", 0) + "); ";
+
+                return st.executeQuery(query);
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResultSet resultados) {
+            super.onPostExecute(resultados);
+            try {
+                while (resultados.next()) {
+
+                    String cantidadActualString = resultados.getString("CantidadActual");
+                    Integer cantidadActual = Integer.parseInt(cantidadActualString == null ? "0" : cantidadActualString);
+                    Integer asientosOcupados = Integer.parseInt(resultados.getString("AsientosOcupados"));
+                    Integer indexCantidadActual = 0;
+                    Integer contador = 0;
+
+                    asientosOcupados = asientosOcupados == 0 ? 1 : asientosOcupados;
+
+                    ArrayList<String> listaCantPasajeros = new ArrayList<String>();
+                    for (int i = asientosOcupados; i <= 4; i++) {
+                        if(i == cantidadActual) indexCantidadActual = contador;
+                        contador++;
+                        listaCantPasajeros.add(String.valueOf(i));
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaCantPasajeros);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCantPasajeros.setAdapter(adapter);
+                    spCantPasajeros.setSelection(indexCantidadActual);
+
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
