@@ -103,6 +103,11 @@ public class NuevaSolicitud extends AppCompatActivity {
             btCrearViaje.setText("Actualizar solicitud");
             fechaViaje.setText(spEdicion.getString("fechaInicio",""));
             horaViaje.setText(spEdicion.getString("horaInicio",""));
+            spProvinciasOrigen.setEnabled(false);
+            spProvinciasDestino.setEnabled(false);
+            spCiudadesOrigen.setEnabled(false);
+            spCiudadesDestino.setEnabled(false);
+            spCantPasajeros.setEnabled(false);
             new CargarCantidadAcompañantes().execute();
         }
 
