@@ -486,6 +486,20 @@ public class VerViaje_Pasajero extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
+
+                NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
+                Notificaciones Noti = new Notificaciones();
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
+                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" Quiere unirse al viaje "+NroViaje);
+                Noti.setEstadoNotificacion("P");
+                Noti.setEstado(1);
+                try {
+                    NotiNeg.AñadirNotificacion(Noti);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(contexto,"Se generó correctamente la peticion. Te avisaremos cuando el conductor te conteste.", Toast.LENGTH_LONG).show();
                 botonQuieroUnirme.setEnabled(false);
             }else{
