@@ -340,9 +340,12 @@ public class ResponderSolicitud extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
 
-                String query = "UPDATE Solicitudes SET EstadoRegistro = 0";
-                query += " WHERE PasajeroId = " + IdSolicitante;
-                query += " AND (FechaHoraInicio BETWEEN '" + rangoFechaInicio + "' AND '" + rangoFechaFin + "')";
+                String query = "UPDATE PasajerosPorViaje pxv";
+                query += " INNER JOIN Viajes v ON v.Id = pxv.ViajeId";
+                query += " SET EstadoPasajero = 'Rechazado'";
+                query += " WHERE pxv.UsuarioId = " + IdSolicitante;
+                query += " AND pxv.ViajeId != " + NroViaje;
+                query += " AND (v.FechaHoraInicio BETWEEN '" + rangoFechaInicio + "' AND '" + rangoFechaFin + "')";
 
                 return st.executeUpdate(query);
             } catch (ClassNotFoundException | SQLException e) {
