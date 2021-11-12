@@ -250,7 +250,7 @@ public class Buscar extends AppCompatActivity {
                     Intent pagPeticionViaje= new Intent(context,VerViaje_Pasajero.class);
                     pagPeticionViaje.putExtra("NroViaje",part3);
                     pagPeticionViaje.putExtra("EstadoViaje", estadoViaje);
-
+//
                     String idConductorViaje = Texto.split("ConductorId=")[1].replace("}","");
 
                     pagPeticionViaje.putExtra("ConductorId", idConductorViaje);
