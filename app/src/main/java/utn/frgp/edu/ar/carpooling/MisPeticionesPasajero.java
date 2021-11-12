@@ -194,7 +194,8 @@ public class MisPeticionesPasajero extends AppCompatActivity {
                 query += "          ci2.Nombre CiudadDestino,";
                 query += "          vj.FechaHoraFinalizacion,";
                 query += "          vj.CantidadPasajeros,";
-                query += "          vj.EstadoViaje";
+                query += "          vj.EstadoViaje,";
+                query += "          pv.EstadoPasajero";
                 query += " FROM Viajes vj";
                 query += " LEFT JOIN Provincias pr1";
                 query += " 	ON pr1.Id = vj.ProvinciaOrigenId";
@@ -206,7 +207,7 @@ public class MisPeticionesPasajero extends AppCompatActivity {
                 query += " 	ON ci2.Id = vj.CiudadDestinoId";
                 query += " Inner JOIN PasajerosPorViaje pv";
                 query += " 	ON pv.ViajeId = vj.Id";
-                query += " 	Where	pv.UsuarioId='" + idUsuario + "' AND pv.EstadoPasajero='Pendiente' AND vj.EstadoViaje='En Espera'";
+                query += " 	Where	pv.UsuarioId='" + idUsuario + "' AND pv.EstadoPasajero IN ('Pendiente','Rechazado')";
                 query += " ORDER BY FechaHoraInicio ASC";
 
                 return st.executeQuery(query);
@@ -229,7 +230,7 @@ public class MisPeticionesPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado", resultados.getString("EstadoViaje"));
+                    item.put("estado", resultados.getString("EstadoPasajero"));
                    // estadoViaje = resultados.getString("EstadoViaje");
                     itemsGrilla.add(item);
                 }
