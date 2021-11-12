@@ -136,8 +136,6 @@ public class NuevaSolicitud extends AppCompatActivity {
             spCantPasajeros.setAdapter(adapter);
         }
 
-
-
         fechaViaje.setFocusable(false);
         fechaViaje.setFocusableInTouchMode(false);
         fechaViaje.setInputType(InputType.TYPE_NULL);
@@ -609,49 +607,17 @@ public class NuevaSolicitud extends AppCompatActivity {
         }
     }
 
-    private class CargarCantidadAcompañantes extends AsyncTask<Void,Integer, ResultSet> {
-
-        @Override
-        protected ResultSet doInBackground(Void... voids) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-                Statement st = con.createStatement();
-                return st.executeQuery("SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0));
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ResultSet resultado) {
-            super.onPostExecute(resultado);
-            try {
-                while (resultado.next()) {
-                    spCantPasajeros.setSelection(resultado.getInt("CantidadAcompaniantes"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private class CargarSpinnerPasajeros extends AsyncTask<Void,Integer, ResultSet> {
 
         @Override
         protected ResultSet doInBackground(Void... voids) {
-
             try {
                 SharedPreferences spSesion = getSharedPreferences("Sesion", Context.MODE_PRIVATE);
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
                 Statement st = con.createStatement();
-                String query = "";
-                query += " SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0) + "; ";
 
-                return st.executeQuery(query);
-
+                return st.executeQuery("SELECT CantidadAcompaniantes FROM Solicitudes WHERE Id = " + spEdicion.getInt("idViaje", 0));
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -677,7 +643,6 @@ public class NuevaSolicitud extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spCantPasajeros.setAdapter(adapter);
                     spCantPasajeros.setSelection(indexCantidadActual);
-
                 }
             }
             catch (Exception e) {
