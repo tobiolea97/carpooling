@@ -521,7 +521,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                     Notificaciones Noti = new Notificaciones();
                     Noti.setUsuarioId(Integer.parseInt(Email.split("-")[2]));
-                    Noti.setMensaje(" El nro de viaje "+NroViaje+" fue cancelado");
+                    Noti.setMensaje("El viaje "+NroViaje+" fué cancelado");
                     Noti.setEstadoNotificacion("P");
                     Noti.setEstado(1);
                     try {

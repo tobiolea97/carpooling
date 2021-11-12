@@ -486,7 +486,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(idPasajero));
-                Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
+                Noti.setMensaje("Tu solicitud "+NroViaje+" fue aceptada. Ahora estas adherido al viaje "+idviaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {

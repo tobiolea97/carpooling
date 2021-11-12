@@ -496,7 +496,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
-                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" Quiere unirse al viaje "+NroViaje);
+                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" quiere unirse al viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -551,7 +551,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(idUsuarioLog));
-                Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
+                Noti.setMensaje("Has sido desasignado del viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {

@@ -258,7 +258,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdSolicitante));
-                Noti.setMensaje(" El nro de viaje "+NroViaje+" rechazo tu solicitud");
+                Noti.setMensaje("Han rechazado tu solicitud para el viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -304,7 +304,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdSolicitante));
-                Noti.setMensaje(" El nro de viaje "+NroViaje+" ha aceptado tu solicitud");
+                Noti.setMensaje("Has sido aceptado en el viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
