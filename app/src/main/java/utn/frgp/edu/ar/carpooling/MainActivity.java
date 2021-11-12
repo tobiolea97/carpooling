@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     if(c==3){
                         Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Cierre la aplicacion y vuelva a intentar.", Toast.LENGTH_LONG).show();
                         login.setEnabled(false);
 
                     }
