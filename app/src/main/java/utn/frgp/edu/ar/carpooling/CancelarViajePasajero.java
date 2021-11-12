@@ -307,7 +307,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(conductorId));
-                Noti.setMensaje("El pasajero "+nombreUsuario+" "+apellidoUsuario+" ha abandonado el viaje Nro "+NroViaje+" ");
+                Noti.setMensaje("El pasajero "+nombreUsuario+" "+apellidoUsuario+" ha abandonado el viaje "+NroViaje+" ");
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -317,7 +317,7 @@ public class CancelarViajePasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }}
-                Toast.makeText(contexto, "Se envio la notificacion al conductor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "Se envió la notificacion al conductor", Toast.LENGTH_SHORT).show();
             }
             else System.out.println("No se pudo Abandonar el viaje");
         }

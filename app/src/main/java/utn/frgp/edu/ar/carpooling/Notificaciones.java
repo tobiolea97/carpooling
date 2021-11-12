@@ -384,7 +384,7 @@ public class Notificaciones extends AppCompatActivity {
 
 
         }else{
-            Toast.makeText(contexto, "No Tienes mensajes que eliminar.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(contexto, "No tienes mensajes que eliminar.", Toast.LENGTH_SHORT).show();
 
         }
 

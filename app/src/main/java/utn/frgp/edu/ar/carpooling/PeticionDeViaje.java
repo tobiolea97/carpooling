@@ -388,7 +388,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La peticion fue enviada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La petición fué enviada", Toast.LENGTH_SHORT).show();
                 BotonSolicitar.setEnabled(false);
             }else{
                 Toast.makeText(contexto, "No se pudo agregar el pasajero al viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();

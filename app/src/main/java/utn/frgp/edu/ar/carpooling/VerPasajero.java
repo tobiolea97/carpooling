@@ -358,7 +358,7 @@ public class VerPasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "El  Pasajero a sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El pasajero ha sido desasignado de este viaje", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();

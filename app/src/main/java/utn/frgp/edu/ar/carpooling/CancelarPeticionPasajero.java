@@ -440,10 +440,10 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La Peticion a sido cancelada de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La petición ha sido cancelada.", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
-                Toast.makeText(contexto, "No se pudo canelar la peticion  intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo canelar la petición. Intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }

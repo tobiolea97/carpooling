@@ -364,7 +364,7 @@ public class Ver_Busqueda extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El nuevo viaje ha sido creado", Toast.LENGTH_SHORT).show();
                 new BuscarDatosparaInsertarElPasajero().execute();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();

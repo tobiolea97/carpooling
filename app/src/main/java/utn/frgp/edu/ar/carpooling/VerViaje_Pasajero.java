@@ -443,7 +443,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Rating.setIsIndicator(true);
-                Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
+                Toast.makeText(contexto,"Calificó con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
             }else{
                 Toast.makeText(contexto, "No se pudo calificar al usuario intente nuevamente.", Toast.LENGTH_LONG).show();
             }
@@ -561,7 +561,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "Has sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "Has sido desasignado de este viaje", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar del viaje intente nuevamente.", Toast.LENGTH_SHORT).show();

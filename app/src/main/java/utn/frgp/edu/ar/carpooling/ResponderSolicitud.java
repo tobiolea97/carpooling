@@ -267,7 +267,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Toast.makeText(contexto, "La solicitud fue rechazada correctamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La solicitud fué rechazada correctamente.", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 Toast.makeText(contexto, "No se pudo rechazar la solicitud  intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -312,7 +312,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La solicitud fue Aceptada correctamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La solicitud fué aceptada correctamente.", Toast.LENGTH_SHORT).show();
                 new EliminarSolicitudesEnRangoOcupado().execute();
                 finish();
             } else {
@@ -391,7 +391,7 @@ public class ResponderSolicitud extends AppCompatActivity {
                 if(resultado >= 0 && resultado <= Integer.parseInt(Asientos)){
                     new AceptarPasajero().execute();
                 } else {
-                    Toast.makeText(contexto, "No se pudo Aceptar la solicitud  ya que la cantidad de asiento .", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(contexto, "No se pudo Aceptar la solicitud  ya que la cantidad de asientos", Toast.LENGTH_SHORT).show();
                 }
             }
             catch (Exception e) {
