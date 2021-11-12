@@ -53,9 +53,11 @@ public class Ver_Busqueda extends AppCompatActivity {
     RatingBar RbVerbusqueda;
     Button AceptarViaje;
     Spinner CantAsientos;
-    TextView Nombre,Celular,ViajoCon;
+    TextView Nombre,Celular,ViajoCon,cantidadAcompaniantes;
     Viaje viaj;
     String idviaje="",emailpasajero, idPasajero;
+    int cantidadAcompañantes = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +90,7 @@ public class Ver_Busqueda extends AppCompatActivity {
         Nombre=findViewById(R.id.TxtNombreVerBusq);
         Celular=findViewById(R.id.TxtCelVerBusque);
         ViajoCon=findViewById(R.id.TxtViajoVerBusq);
+        cantidadAcompaniantes=findViewById(R.id.tvVerBusquedaCantidadAcompaniantes);
 
 
         AceptarViaje.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +177,7 @@ public class Ver_Busqueda extends AppCompatActivity {
         protected void onPostExecute(ResultSet resultados) {
             super.onPostExecute(resultados);
             try {
-                int cantidadAcompañantes=0;
+
                 Float promedio = null;
                 Integer cantidad = null;
                 List<Map<String, String>> itemsGrilla = new ArrayList<Map<String, String>>();
@@ -185,6 +188,10 @@ public class Ver_Busqueda extends AppCompatActivity {
                     Nombre.setText(resultados.getString("Nombre")+" "+resultados.getString("Apellido"));
                     Celular.setText(resultados.getString("Telefono"));
                     cantidadAcompañantes=resultados.getInt("CantidadAcompaniantes");
+                    cantidadAcompaniantes.setText(
+                            cantidadAcompañantes == 0 ?
+                                "No tiene acompañantes" : "Viaja con " + cantidadAcompañantes + " acompañantes"
+                    );
                     promedio = resultados.getFloat("Promedio");
                     if(promedio > 0) {
                         RbVerbusqueda.setRating(promedio);
@@ -296,7 +303,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                     );
 
                     viaj.setFechaHoraInicio(inicioViaje);
-                    viaj.setCantPasajeros(Integer.parseInt(cantidadAsientos.getSelectedItem().toString()));
+                    viaj.setCantPasajeros(4);
                     //PasajeroEmail=resultados.getString("PasajeroEmail");
 
                 }
@@ -427,7 +434,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 query +=  "'" + idPasajero + "',";
                 query +=  "'1',";
                 query +=  "'Aceptado',";
-                query +=  "'0'";
+                query +=  "'" + cantidadAcompañantes + "'";
                 query += ")";
 
 
