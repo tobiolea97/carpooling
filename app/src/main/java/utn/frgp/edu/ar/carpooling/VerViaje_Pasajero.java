@@ -443,7 +443,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Rating.setIsIndicator(true);
-                Toast.makeText(contexto,"Califico con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
+                Toast.makeText(contexto,"Calificó con: " + calificacion + " estrellas.",Toast.LENGTH_LONG).show();
             }else{
                 Toast.makeText(contexto, "No se pudo calificar al usuario intente nuevamente.", Toast.LENGTH_LONG).show();
             }
@@ -496,7 +496,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
-                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" Quiere unirse al viaje "+NroViaje);
+                Noti.setMensaje("El Usuario "+nombreUsuario+" "+apellidoUsuario+" quiere unirse al viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -531,8 +531,10 @@ public class VerViaje_Pasajero extends AppCompatActivity {
 
                 int resultado = st.executeUpdate(query);
 
+                if(resultado > 0){
 
-                if(resultado>0){
+
+
                     return true;
                 }
                 else {return false;}
@@ -550,8 +552,8 @@ public class VerViaje_Pasajero extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioId(Integer.parseInt(idUsuarioLog));
-                Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
+                Noti.setMensaje("El usuario " + nombreUsuario + " " + apellidoUsuario +  " ha abandonado el viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -561,7 +563,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "Has sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "Has sido desasignado de este viaje", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar del viaje intente nuevamente.", Toast.LENGTH_SHORT).show();

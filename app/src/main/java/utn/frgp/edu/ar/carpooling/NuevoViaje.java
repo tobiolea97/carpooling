@@ -188,7 +188,8 @@ public class NuevoViaje extends AppCompatActivity {
 
                     String cantidadActualString = resultados.getString("CantidadActual");
                     Integer cantidadActual = Integer.parseInt(cantidadActualString == null ? "0" : cantidadActualString);
-                    Integer asientosOcupados = Integer.parseInt(resultados.getString("AsientosOcupados"));
+                    String asientosOcupadosString = resultados.getString("AsientosOcupados");
+                    Integer asientosOcupados = Integer.parseInt(asientosOcupadosString == null ? "0" : asientosOcupadosString);
                     Integer indexCantidadActual = 0;
                     Integer contador = 0;
 
@@ -341,13 +342,13 @@ public class NuevoViaje extends AppCompatActivity {
         viajeNegImpl vNegImpl = new viajeNegImpl();
 
         if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_DestinoyOrigenIguales.ordinal()){
-            Toast.makeText(contexto, "El lugar origen y destino no pueden ser los mismo!.", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "El lugar de origen y destino no pueden ser los mismos", Toast.LENGTH_LONG).show();
             return;
         }
 
         //VOLVER A HABILITAR, AMI NO ME ANDA!! JONA
         if(vNegImpl.validarDatosViaje(nuevoViaje) == EnumsErrores.viaje_FechayHoraAnteriorActual.ordinal()){
-            Toast.makeText(contexto, "Ingrese una fecha superior a la actual!.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(contexto, "Ingrese una fecha superior a la actual", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -633,7 +634,7 @@ public class NuevoViaje extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje ha sido creado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El nuevo viaje ha sido creado", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -672,7 +673,7 @@ public class NuevoViaje extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if (resultado) {
-                Toast.makeText(contexto, "El viaje fue actualizado correctamente", Toast.LENGTH_LONG).show();
+                Toast.makeText(contexto, "El viaje fué actualizado correctamente", Toast.LENGTH_LONG).show();
                 finish();
             }
             else Toast.makeText(contexto, "Ocurrio un error, intentelo nuevamente", Toast.LENGTH_LONG).show();

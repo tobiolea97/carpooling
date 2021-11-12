@@ -219,13 +219,13 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     if(c==3){
-                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos.", Toast.LENGTH_SHORT).show();
                         Toast.makeText(MainActivity.this, "Cierre la aplicacion y vuelva a intentar.", Toast.LENGTH_LONG).show();
                         login.setEnabled(false);
 
                     }
                     else{
-                        Toast.makeText(MainActivity.this, "Datos Incorrectos Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Datos incorrectos. Intentos "+c+" de 3.", Toast.LENGTH_SHORT).show();
                         c++;
 
 
@@ -316,11 +316,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     if(c==3){
-                        Toast.makeText(MainActivity.this, "Numeros de intentos maximos cierre la aplicacion para volver intentar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Números de intentos máximos. Cierre la aplicacion para volver intentar.", Toast.LENGTH_SHORT).show();
                         login.setEnabled(false);
                     }
                     else{
-                        Toast.makeText(MainActivity.this, " Datos Incorrectos Intentos "+c+"/ de 3", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, " Datos Incorrectos Intentos "+c+" de 3.", Toast.LENGTH_SHORT).show();
                         c++;
                     }
 

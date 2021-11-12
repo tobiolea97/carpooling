@@ -430,7 +430,7 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(ConductorId));
-                Noti.setMensaje("El pasajero "+nombreUsuario+"  "+ apellidoUsuario+" ha  cancelado la peticion  del  nro de viaje "+NroViaje);
+                Noti.setMensaje("El pasajero "+nombreUsuario+"  "+ apellidoUsuario+" ha cancelado la peticion al viaje."+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -440,10 +440,10 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La Peticion a sido cancelada de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La petición ha sido cancelada.", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
-                Toast.makeText(contexto, "No se pudo canelar la peticion  intente nuevamente.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "No se pudo canelar la petición. Intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
         }
     }

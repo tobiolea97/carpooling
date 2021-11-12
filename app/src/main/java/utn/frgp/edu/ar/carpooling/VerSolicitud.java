@@ -209,7 +209,7 @@ public class VerSolicitud extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "La Solicitud fue eliminado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La solicitud fué eliminada correctamente", Toast.LENGTH_SHORT).show();
                 Intent pagVerMisSolicitudes = new Intent(contexto, MisViajesModoPasajero.class);
                 startActivity(pagVerMisSolicitudes);
             }else{

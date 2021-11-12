@@ -348,7 +348,7 @@ public class VerPasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdVerUsuario));
-                Noti.setMensaje("Has sido desasignado del  nro de viaje "+NroViaje);
+                Noti.setMensaje("Has sido desasignado del viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -358,7 +358,7 @@ public class VerPasajero extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "El  Pasajero a sido desasignado de este viaje!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El pasajero ha sido desasignado de este viaje", Toast.LENGTH_SHORT).show();
                 finish();
             }else{
                 Toast.makeText(contexto, "No se pudo desasignar el pasajero  intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -419,7 +419,7 @@ public class VerPasajero extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdVerUsuario));
-                Noti.setMensaje("El usuario " + nombreUsuarioLog + " " + apellidoUsuarioLog + "te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
+                Noti.setMensaje("El usuario " + nombreUsuarioLog + " " + apellidoUsuarioLog + " te ha calificado con " + calificacion + "estrellas. Por el viaje: " + NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
 

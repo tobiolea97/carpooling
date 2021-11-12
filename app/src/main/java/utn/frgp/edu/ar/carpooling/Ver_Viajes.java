@@ -521,7 +521,7 @@ public class Ver_Viajes extends AppCompatActivity {
                     NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                     Notificaciones Noti = new Notificaciones();
                     Noti.setUsuarioId(Integer.parseInt(Email.split("-")[2]));
-                    Noti.setMensaje(" El nro de viaje "+NroViaje+" fue cancelado");
+                    Noti.setMensaje("El viaje "+NroViaje+" fué cancelado");
                     Noti.setEstadoNotificacion("P");
                     Noti.setEstado(1);
                     try {
@@ -535,7 +535,7 @@ public class Ver_Viajes extends AppCompatActivity {
 
                 }
 
-                Toast.makeText(contexto, "El  viaje a sido Cancelado!.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El  viaje ha sido Cancelado", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo cancelar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }
@@ -604,7 +604,7 @@ public class Ver_Viajes extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El viaje a sido Finalizado!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El viaje ha sido Finalizado", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(contexto, "No se pudo finalizar el  viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
             }

@@ -364,7 +364,7 @@ public class Ver_Busqueda extends AppCompatActivity {
         protected void onPostExecute(Boolean resultado) {
             super.onPostExecute(resultado);
             if(resultado){
-                Toast.makeText(contexto, "El nuevo viaje a sido creado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "El nuevo viaje ha sido creado", Toast.LENGTH_SHORT).show();
                 new BuscarDatosparaInsertarElPasajero().execute();
             }else{
                 Toast.makeText(contexto, "No se pudo generar el nuevo viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
@@ -486,7 +486,7 @@ public class Ver_Busqueda extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(idPasajero));
-                Noti.setMensaje("Tu solicitud Nro "+NroViaje+" fue creado y ahora estas  adherido al viaje "+idviaje);
+                Noti.setMensaje("Tu solicitud "+NroViaje+" fue aceptada. Ahora estas adherido al viaje "+idviaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {

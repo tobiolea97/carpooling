@@ -378,7 +378,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 utn.frgp.edu.ar.carpooling.entities.Notificaciones Noti = new Notificaciones();
                 Noti.setUsuarioId(Integer.parseInt(IdConductor));
-                Noti.setMensaje("Tienes una nueva peticion en el  Nro de viaje "+NroViaje+"");
+                Noti.setMensaje("Tienes una nueva peticion para el viaje "+NroViaje+"");
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
@@ -388,7 +388,7 @@ public class PeticionDeViaje extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(contexto, "La peticion fue enviada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "La petición fué enviada", Toast.LENGTH_SHORT).show();
                 BotonSolicitar.setEnabled(false);
             }else{
                 Toast.makeText(contexto, "No se pudo agregar el pasajero al viaje, intente nuevamente.", Toast.LENGTH_SHORT).show();
