@@ -108,7 +108,7 @@ public class NuevaSolicitud extends AppCompatActivity {
                     "20" + fechaInicioString.split("/")[2]
             );
             horaViaje.setText(spEdicion.getString("horaInicio",""));
-            fechaViaje.setEnabled(false);
+            //fechaViaje.setEnabled(false);
             spProvinciasOrigen.setEnabled(false);
             spProvinciasDestino.setEnabled(false);
             spCiudadesOrigen.setEnabled(false);

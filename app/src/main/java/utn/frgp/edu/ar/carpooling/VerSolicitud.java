@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class VerSolicitud extends AppCompatActivity {
     String nroSolicitud;
     String nombreUsuario, apellidoUsuario, emailUsuario, rolUsuario, idUsuario, estadoViaje, localDateviaje;
     String nroViaje;
+    ImageButton btnCancelar, btnEditar;
+    TextView tv1, tv2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +54,22 @@ public class VerSolicitud extends AppCompatActivity {
         rolUsuario = spSesion.getString("Rol","No hay datos");
         idUsuario = spSesion.getString("Id","No hay datos");
 
+        btnCancelar = findViewById(R.id.imageButton5);
+        btnEditar = findViewById(R.id.btEditarSolicitud);
+        tv1 = findViewById(R.id.textView12);
+        tv2 = findViewById(R.id.textView26);
+
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: " + rolUsuario);
 
         nroSolicitud = getIntent().getStringExtra("NroSolicitud");
+        String estadoSolicitud = getIntent().getStringExtra("estado");
+
+        if(estadoSolicitud.equals("Cerrada")) {
+            btnCancelar.setVisibility(View.INVISIBLE);
+            btnEditar.setVisibility(View.INVISIBLE);
+            tv1.setVisibility(View.INVISIBLE);
+            tv2.setVisibility(View.INVISIBLE);
+        }
 
         grillaverViaje = findViewById(R.id.GrVerSolicitud);
 
@@ -168,6 +184,7 @@ public class VerSolicitud extends AppCompatActivity {
                 String query = "";
                 query += " UPDATE 	Solicitudes Sol";
                 query += "  	    SET";
+                query += "  	    EstadoSolicitud='Cerrada',";
                 query += " 		    EstadoRegistro='0'";
                 query += " 	Where  Sol.Id=" + nroViaje;
 
