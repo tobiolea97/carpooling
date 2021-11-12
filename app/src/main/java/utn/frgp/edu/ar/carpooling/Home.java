@@ -34,7 +34,6 @@ public class Home extends AppCompatActivity {
     Context context;
     ImageView st1, st2, st3, st4, st5;
     RatingBar ratingBarconductor;
-    private static int contador=0;
     private final static String CHANNEL_ID="NOTIFICACION";
     public final static int NOTIFICACION_ID=0;
     private PendingIntent pendingIntent;
@@ -92,10 +91,8 @@ public class Home extends AppCompatActivity {
         new Home.CargarCalificaciones().execute();
         new Home.ContarCalificaciones().execute();
         new Home.CargarProximosViajes().execute();
+        new Home.VerificarNotificacion().execute();
 
-if(contador==0){
-    new Home.VerificarNotificacion().execute();
-}
 
 
         grillaViajes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -417,7 +414,7 @@ if(contador==0){
         protected void onPostExecute(ResultSet resultados) {
             super.onPostExecute(resultados);
             try {
-                contador++;
+
                 boolean verificacion=false;
                 while (resultados.next()) {
                 verificacion=true;
