@@ -297,12 +297,19 @@ INSERT INTO Viajes VALUES (1004,1,3,21,2,11,"2021-11-27 07:30",null,4,"En Espera
   INSERT INTO PasajerosPorViaje VALUES (1004,7,1,'Pendiente',0);
   INSERT INTO PasajerosPorViaje VALUES (1004,8,1,'Pendiente',1);
 
+  -- VIAJE 1005 Tobias Olea
+INSERT INTO Viajes VALUES (1005,1,3,21,2,11,"2021-11-12 09:00",null,4,"En Espera",1);
+  -- Pasajeros del viaje 1004
+  INSERT INTO PasajerosPorViaje VALUES (1005,6,1,'Aceptado',0);
+  INSERT INTO PasajerosPorViaje VALUES (1005,7,1,'Pendiente',0);
+  INSERT INTO PasajerosPorViaje VALUES (1005,8,1,'Pendiente',1);
+
 -- VIAJE 1005 Joni Costa
-INSERT INTO Viajes VALUES (1005,2,2,11,2,17,"2021-12-05 07:30",null,4,"En Espera",1);
+INSERT INTO Viajes VALUES (1006,2,2,11,2,17,"2021-12-05 07:30",null,4,"En Espera",1);
   -- Pasajeros del viaje 1005
 
 -- VIAJE 1006 Joni Costa
-INSERT INTO Viajes VALUES (1006,2,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera",1);
+INSERT INTO Viajes VALUES (1007,2,2,17,2,11,"2021-12-10 10:00",null,4,"En Espera",1);
 
 -- SOLICITUDES Tobi Olea
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)

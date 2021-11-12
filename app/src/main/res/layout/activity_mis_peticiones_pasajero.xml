@@ -8,14 +8,16 @@
 
     <ScrollView
         android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false">
 
             <TextView
                 android:id="@+id/textView28"
@@ -31,7 +33,8 @@
             <GridView
                 android:id="@+id/GrPeticionesPasajero"
                 android:layout_width="407dp"
-                android:layout_height="638dp"
+                android:layout_height="600dp"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView28" />

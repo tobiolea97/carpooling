@@ -44,6 +44,7 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
     TextView NombreConductor,CelularConductor,ViajoCon;
     RatingBar ratingBar;
     Button CancelarPeticion;
+    String estado;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +69,14 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
             Rol="Pasajero";
         }
 
+
+
         getSupportActionBar().setTitle(nombreUsuario+" "+ apellidoUsuario+" Rol: "+Rol);
+
         NroViaje=getIntent().getStringExtra("NroViaje");
+        estado=getIntent().getStringExtra("EstadoViaje"); // es en realidad el estado del pasajero
+
+        if(estado.equals("Rechazado")) CancelarPeticion.setEnabled(false);
 
         CancelarPeticion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,7 +253,8 @@ public class CancelarPeticionPasajero extends AppCompatActivity {
                     item.put("destino", resultados.getString("CiudadDestino") + ", " + resultados.getString("ProvinciaDestino"));
                     item.put("fecha", resultados.getString("FechaHoraInicio").substring(8,10) + "/" + resultados.getString("FechaHoraInicio").substring(5,7) + "/" + resultados.getString("FechaHoraInicio").substring(2,4));
                     item.put("hora", resultados.getString("FechaHoraInicio").substring(11,13) + ":" + resultados.getString("FechaHoraInicio").substring(14,16));
-                    item.put("estado", resultados.getString("EstadoViaje"));
+                    item.put("estado", estado);
+
                     ConductorId = resultados.getString("ConductorId");
                     itemsGrilla.add(item);
                     //localDateviaje=resultados.getString("FechaHoraFinalizacion");
