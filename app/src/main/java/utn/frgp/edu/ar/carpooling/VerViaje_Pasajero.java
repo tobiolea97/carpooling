@@ -335,7 +335,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     usuarioACalificar.setDni(resultados.getString("Dni"));
                     promedio = resultados.getFloat("Promedio");
                     cantidad = resultados.getInt("cantidad");
-                    CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No realizó ningún viaje.");
+                    CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No recibió calificaciones");
 
                     Nombre.setText(usuarioACalificar.getNombre() + " " + usuarioACalificar.getApellido());
                     Telefono.setText(usuarioACalificar.getTelefono());
