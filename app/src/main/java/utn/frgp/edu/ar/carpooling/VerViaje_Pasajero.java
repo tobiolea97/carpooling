@@ -101,6 +101,11 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                 Intent intent = new Intent(this, NuevaSolicitud.class);
                 startActivity(intent);
             }
+
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
         }
 
         if (id == R.id.miperfil) {
@@ -127,6 +132,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
             editor.commit();
             finish();
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
@@ -335,7 +341,7 @@ public class VerViaje_Pasajero extends AppCompatActivity {
                     usuarioACalificar.setDni(resultados.getString("Dni"));
                     promedio = resultados.getFloat("Promedio");
                     cantidad = resultados.getInt("cantidad");
-                    CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No realizó ningún viaje.");
+                    CantidadCalificaciones.setText(cantidad > 0 ? cantidad.toString()  + " calificaciones recibidas" : "No recibió calificaciones");
 
                     Nombre.setText(usuarioACalificar.getNombre() + " " + usuarioACalificar.getApellido());
                     Telefono.setText(usuarioACalificar.getTelefono());

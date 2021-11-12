@@ -78,9 +78,11 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                 Texto = adapterView.getItemAtPosition(position).toString();
 
                 String nroViaje = Texto.split("NroSolicitud=")[1].replace("}","");
+                String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
                 Intent pagVerViaje = new Intent(contexto, VerSolicitud.class);
                 pagVerViaje.putExtra("NroSolicitud", nroViaje);
+                pagVerViaje.putExtra("estado", estadoViaje);
                 startActivity(pagVerViaje);
             }
         });
@@ -191,6 +193,11 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                 Intent intent = new Intent(this, NuevaSolicitud.class);
                 startActivity(intent);
             }
+
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
         }
 
         if (id == R.id.miperfil) {
@@ -217,6 +224,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
             editor.commit();
             finish();
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
@@ -366,7 +374,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
         query += " 	ON ci1.Id = vj.CiudadOrigenId";
         query += " LEFT JOIN Ciudades ci2";
         query += " 	ON ci2.Id = vj.CiudadDestinoId";
-        query += " WHERE vj.EstadoRegistro=1 and  vj.PasajeroId = '" + idUsuario + "' ";
+        query += " WHERE vj.PasajeroId = '" + idUsuario + "' ";
 
         if (!filtros.isEmpty()) {
             if (!filtros.get("provinciaOrigen").equals("--NINGUNA--")) {
@@ -382,7 +390,7 @@ public class MisViajesModoPasajero  extends AppCompatActivity {
                 query += " AND ci2.Nombre = '" + filtros.get("ciudadDestino") + "'";
             }
             if (!filtros.get("estado").equals("--NINGUNO--")) {
-                query += " AND vj.EstadoViaje = '" + filtros.get("estado") + "'";
+                query += " AND vj.EstadoSolicitud = '" + filtros.get("estado") + "'";
             }
         }
         query += " ORDER BY FechaHoraInicio ASC";

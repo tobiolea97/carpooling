@@ -5,15 +5,16 @@ public class DataDB {
     //Información de la BD
     public static final String host="sql10.freesqldatabase.com";
     public static final String port="3306";
-    //  Uso en comun
+    /*  Uso en comun
     public static final String nameBD="sql10441832";
     public static final String user="sql10441832";
     public static final String pass="htqH2SiCQg";
+    /**/
 
     /* Pruebas Tobi */
-     /*public static final String nameBD="sql10448827";
+    public static final String nameBD="sql10448827";
     public static final String user="sql10448827";
-    public static final String pass="sPBzqci2hA";*/
+    public static final String pass="sPBzqci2hA";
     /**/
 
     //Información para la conexion
