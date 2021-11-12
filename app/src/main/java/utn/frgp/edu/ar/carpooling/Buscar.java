@@ -100,6 +100,11 @@ public class Buscar extends AppCompatActivity {
                 Intent intent = new Intent(this, NuevaSolicitud.class);
                 startActivity(intent);
             }
+
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
         }
 
         if (id == R.id.miperfil) {
@@ -126,6 +131,7 @@ public class Buscar extends AppCompatActivity {
             editor.commit();
             finish();
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
@@ -646,7 +652,9 @@ public class Buscar extends AppCompatActivity {
                 query += " 	ON vj.ProvinciaDestinoId = pd.Id ";
                 query += " LEFT JOIN Ciudades cd  ";
                 query += " 	ON vj.CiudadDestinoId = cd.Id ";
-                query += " WHERE (vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1) AND (vj.ConductorId <> '" + idUsuarioLog + "'" + " AND vj.EstadoViaje = 'En Espera')";
+                query += " LEFT JOIN Usuarios us ";
+                query += " 	ON vj.ConductorId = us.Id ";
+                query += " WHERE vj.FechaHoraInicio > now() AND  vj.EstadoRegistro=1 AND vj.EstadoViaje = 'En Espera' AND us.Dni <> '" + dniUsuario + "' ";
                 query += " AND vj.Id NOT IN (SELECT ViajeId FROM `PasajerosPorViaje` WHERE UsuarioId = '" + idUsuarioLog + "') ";
                 query += filtro;
                 query += " ORDER BY vj.FechaHoraInicio ASC";

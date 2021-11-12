@@ -202,6 +202,10 @@ public class EditarPerfil extends AppCompatActivity {
                 Intent intent = new Intent(this, NuevaSolicitud.class);
                 startActivity(intent);
             }
+            if (id == R.id.misPeticiones) {
+                Intent intent = new Intent(this, MisPeticionesPasajero.class);
+                startActivity(intent);
+            }
         }
 
         if (id == R.id.miperfil) {
@@ -228,6 +232,7 @@ public class EditarPerfil extends AppCompatActivity {
             editor.commit();
             finish();
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
