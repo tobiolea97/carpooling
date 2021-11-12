@@ -114,10 +114,10 @@ if(contador==0){
                 String estadoViaje = Texto.split("estado=")[1].split(",")[0];
 
                 if(rolUsuario.equals("CON")){
-                        /*Intent pagVerBusqueda= new Intent(context,Ver_Busqueda.class);
-                        pagVerBusqueda.putExtra("NroViaje",part3);
-                        pagVerBusqueda.putExtra("EstadoViaje", estadoViaje);
-                        startActivity(pagVerBusqueda);*/
+                    Intent pagVerViaje = new Intent(context, Ver_Viajes.class);
+                    pagVerViaje.putExtra("NroViaje", part3);
+                    pagVerViaje.putExtra("EstadoViaje", estadoViaje);
+                    startActivity(pagVerViaje);
                 }
                 else{
                     Intent pagPeticionViaje= new Intent(context,VerViaje_Pasajero.class);
