@@ -188,7 +188,8 @@ public class NuevoViaje extends AppCompatActivity {
 
                     String cantidadActualString = resultados.getString("CantidadActual");
                     Integer cantidadActual = Integer.parseInt(cantidadActualString == null ? "0" : cantidadActualString);
-                    Integer asientosOcupados = Integer.parseInt(resultados.getString("AsientosOcupados"));
+                    String asientosOcupadosString = resultados.getString("AsientosOcupados");
+                    Integer asientosOcupados = Integer.parseInt(asientosOcupadosString == null ? "0" : asientosOcupadosString);
                     Integer indexCantidadActual = 0;
                     Integer contador = 0;
 
