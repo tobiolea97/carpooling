@@ -17,6 +17,11 @@ public class DataDB {
     public static final String pass="sPBzqci2hA";
     /**/
 
+    /* Pruebas Matias */
+    /*public static final String nameBD="sql10450516";
+    public static final String user="sql10450516";
+    public static final String pass="kYVF32sPnV";*/
+
     //Información para la conexion
     public static final String urlMySQL = "jdbc:mysql://" + host + ":" + port + "/"+nameBD;
     public static final String driver = "com.mysql.jdbc.Driver";
