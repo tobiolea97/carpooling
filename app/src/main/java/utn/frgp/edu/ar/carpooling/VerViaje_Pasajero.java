@@ -531,8 +531,10 @@ public class VerViaje_Pasajero extends AppCompatActivity {
 
                 int resultado = st.executeUpdate(query);
 
+                if(resultado > 0){
 
-                if(resultado>0){
+
+
                     return true;
                 }
                 else {return false;}
@@ -550,8 +552,8 @@ public class VerViaje_Pasajero extends AppCompatActivity {
             if(resultado){
                 NotificacionesNegImpl NotiNeg = new NotificacionesNegImpl();
                 Notificaciones Noti = new Notificaciones();
-                Noti.setUsuarioId(Integer.parseInt(idUsuarioLog));
-                Noti.setMensaje("Has sido desasignado del viaje "+NroViaje);
+                Noti.setUsuarioId(Integer.parseInt(idUsuarioViaje));
+                Noti.setMensaje("El usuario " + nombreUsuario + " " + apellidoUsuario +  " ha abandonado el viaje "+NroViaje);
                 Noti.setEstadoNotificacion("P");
                 Noti.setEstado(1);
                 try {
