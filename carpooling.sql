@@ -331,6 +331,13 @@ INSERT INTO Viajes VALUES (1014,4,4,34,3,28,"2022-12-09 11:00",null,4,"En Espera
 -- VIAJE 1015 Mati Alvarado
 INSERT INTO Viajes VALUES (1015,4,2,20,2,18,"2021-12-10 11:00",null,4,"En Espera",1);
 
+-- VIAJE 1000 Tobias Olea
+INSERT INTO Viajes VALUES (1016,1,1,2,2,20,"2021-11-12 23:00",null,4,"Finalizado",1);
+  -- Pasajeros del viaje 1000
+  INSERT INTO PasajerosPorViaje VALUES (1000,6,1,'Aceptado',1);
+  INSERT INTO PasajerosPorViaje VALUES (1000,7,1,'Aceptado',0);
+  INSERT INTO PasajerosPorViaje VALUES (1000,8,1,'Aceptado',0);
+
 -- SOLICITUDES Tobi Olea
 INSERT INTO Solicitudes(Id,PasajeroId,ProvinciaOrigenId,CiudadOrigenId,ProvinciaDestinoId,CiudadDestinoId,FechaHoraInicio,CantidadAcompaniantes,EstadoSolicitud,EstadoRegistro)
 VALUES (1000,5,2,13,4,31,'2022-05-12 13:00',0,"Pendiente",1);

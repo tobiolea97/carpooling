@@ -29,7 +29,7 @@ import utn.frgp.edu.ar.carpooling.utils.Helper;
 public class MainActivity extends AppCompatActivity {
 
     private String regExpEmail = "[a-zA-Z0-9._-]+@[a-zA-Z]+\\.+[a-zA-Z]+";
-    TextView email, password;
+    TextView email, password,register;
     private Button login;
     Context context;
     private Spinner spRol;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         email = findViewById(R.id.etMainActivityEmail);
         password = findViewById(R.id.etMainActivityPassword);
         login=findViewById(R.id.btnMainActivityLogin);
+        register=findViewById(R.id.tvMainActivitySeparador);
         spRol = (Spinner) findViewById(R.id.spActivityMain);
 
         /*
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRegistrar(View view) {
         Intent nextForm = new Intent(this, PreRegistro.class);
-        login.setEnabled(true);
+      //  login.setEnabled(true);
         startActivity(nextForm);
         //finish();
     }
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Numeros de intentos maximos.", Toast.LENGTH_SHORT).show();
                         Toast.makeText(MainActivity.this, "Cierre la aplicacion y vuelva a intentar.", Toast.LENGTH_LONG).show();
                         login.setEnabled(false);
+                        register.setEnabled(false);
 
                     }
                     else{
@@ -318,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
                     if(c==3){
                         Toast.makeText(MainActivity.this, "Números de intentos máximos. Cierre la aplicacion para volver intentar.", Toast.LENGTH_SHORT).show();
                         login.setEnabled(false);
+                        register.setEnabled(false);
                     }
                     else{
                         Toast.makeText(MainActivity.this, " Datos Incorrectos Intentos "+c+" de 3.", Toast.LENGTH_SHORT).show();
