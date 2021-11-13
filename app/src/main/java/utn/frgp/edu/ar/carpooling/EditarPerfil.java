@@ -127,7 +127,7 @@ public class EditarPerfil extends AppCompatActivity {
             public void onClick(View view) {
 
                 boolean isValid = true;
-                isValid = Validadores.validarPassword(isValid,password,true);
+                isValid = Validadores.validarPassword(isValid,password,false);
                 isValid = Validadores.validarReingresoPassword(isValid,reingresoPassword, password, false);
                 isValid = Validadores.validarEmail(isValid,email);
 
