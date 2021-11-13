@@ -332,21 +332,21 @@ INSERT INTO Viajes VALUES (1014,4,4,34,3,28,"2022-12-09 11:00",null,4,"En Espera
 INSERT INTO Viajes VALUES (1015,4,2,20,2,18,"2021-12-10 11:00",null,4,"En Espera",1);
 
 -- VIAJE 1000 Tobias Olea
-INSERT INTO Viajes VALUES (1016,1,1,2,2,20,"2021-11-12 23:00",null,4,"Finalizado",1);
+INSERT INTO Viajes VALUES (1016,1,1,2,2,20,"2021-11-12 23:00",null,4,"En Espera",1);
   -- Pasajeros del viaje 1000
   INSERT INTO PasajerosPorViaje VALUES (1016,6,1,'Aceptado',1);
   INSERT INTO PasajerosPorViaje VALUES (1016,7,1,'Aceptado',0);
   INSERT INTO PasajerosPorViaje VALUES (1016,8,1,'Aceptado',0);
 
 -- VIAJE 1000 Tobias Olea
-INSERT INTO Viajes VALUES (1018,1,1,2,2,20,"2021-11-13 07:00",null,4,"Finalizado",1);
+INSERT INTO Viajes VALUES (1018,1,1,2,2,20,"2021-11-13 07:00",null,4,"En Espera",1);
   -- Pasajeros del viaje 1000
   INSERT INTO PasajerosPorViaje VALUES (1018,6,1,'Aceptado',1);
   INSERT INTO PasajerosPorViaje VALUES (1018,7,1,'Aceptado',0);
   INSERT INTO PasajerosPorViaje VALUES (1018,8,1,'Aceptado',0);
 
 -- VIAJE 1000 Tobias Olea
-INSERT INTO Viajes VALUES (1017,1,1,2,2,20,"2021-11-11 23:00",null,4,"Finalizado",1);
+INSERT INTO Viajes VALUES (1017,1,1,2,2,20,"2021-11-11 23:00",null,4,"En Espera",1);
   -- Pasajeros del viaje 1000
   INSERT INTO PasajerosPorViaje VALUES (1017,6,1,'Aceptado',1);
   INSERT INTO PasajerosPorViaje VALUES (1017,7,1,'Aceptado',0);
